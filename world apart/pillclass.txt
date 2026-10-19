@@ -1,0 +1,4 @@
+44179:private sealed class TbPillRecipe.<>c // TypeDefIndex: 1138
+44199:public class TbPillRecipe // TypeDefIndex: 1139
+69299:internal class PillRecipe.PillRecipeFormatter<T> : IMessagePackFormatter<T>, IMessagePackFormatter // TypeDefIndex: 1434
+69330:public class PillRecipe : BeanBase // TypeDefIndex: 1435

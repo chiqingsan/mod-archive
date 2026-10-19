@@ -1,0 +1,70 @@
+{
+ "id": 180000,
+ "effect": {
+  "func": [
+   "index",
+   {
+    "location": {
+     "script": "TbItemUseEffect.180000",
+     "line": 1,
+     "column": 1,
+     "position": 0,
+     "length": 3
+    },
+    "target": [
+     "variable",
+     {
+      "location": {
+       "script": "TbItemUseEffect.180000",
+       "line": 1,
+       "column": 1,
+       "position": 0,
+       "length": 3
+      },
+      "name": "玩家"
+     }
+    ],
+    "index": [
+     "string",
+     {
+      "value": "战斗丹药"
+     }
+    ]
+   }
+  ],
+  "args": [
+   [
+    "variable",
+    {
+     "location": {
+      "script": "TbItemUseEffect.180000",
+      "line": 1,
+      "column": 1,
+      "position": 0,
+      "length": 5
+     },
+     "name": "物品编号"
+    }
+   ],
+   [
+    "variable",
+    {
+     "location": {
+      "script": "TbItemUseEffect.180000",
+      "line": 1,
+      "column": 1,
+      "position": 0,
+      "length": 5
+     },
+     "name": "使用数量"
+    }
+   ]
+  ]
+ },
+ "useCondList": []
+}
+=== tbitem keys: ['autoUse', 'canBatchUse', 'canDeal', 'canDemand', 'canDiscard', 'canDropOnFall', 'canGift', 'canUse', 'can_consign', 'cultivateRealm', 'getToastStyle', 'id', 'intimacy_deduction', 'isGetNew', 'isUseConfirm', 'itemDesc', 'itemIcon', 'itemIconMax', 'itemIconMini', 'itemName', 'itemType', 'maxCntPerGrid', 'maxDropCount', 'minDropCount', 'price', 'priceGiftSend', 'quality', 'required_cultivation', 'saleFixRatio', 'sortId', 'sourceRoutes', 'useEffectId', 'use_strong_reveal_vfx']
+--- item: 180000 
+    useEffectId = 180000
+--- item: 190000 
+    useEffectId = 180000

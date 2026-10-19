@@ -1,0 +1,104 @@
+=== tbpassiveskill rows: 18 | keys: ['ability_kind', 'affect', 'battle_art_icon', 'companion_id', 'des', 'element', 'icon', 'id', 'init_skills', 'item_id', 'name', 'script', 'script_params', 'sect_id', 'show_in_battle', 'skill_tier', 'sub_passives', 'text_in_battle', 'text_skillBuff_stack', 'trigger', 'trigger_limit', 'trigger_rate', 'xmlLink']
+=== tbitemuseeffect rows: 250 | keys: ['effect', 'id', 'useCondList']
+[
+ {
+  "id": 1,
+  "effect": {
+   "func": [
+    "index",
+    {
+     "location": {
+      "script": "TbItemUseEffect.1",
+      "line": 1,
+      "column": 1,
+      "position": 0,
+      "length": 3
+     },
+     "target": [
+      "variable",
+      {
+       "location": {
+        "script": "TbItemUseEffect.1",
+        "line": 1,
+        "column": 1,
+        "position": 0,
+        "length": 3
+       },
+       "name": "玩家"
+      }
+     ],
+     "index": [
+      "string",
+      {
+       "value": "获得空气"
+      }
+     ]
+    }
+   ],
+   "args": []
+  },
+  "useCondList": []
+ },
+ {
+  "id": 1001,
+  "effect": {
+   "func": [
+    "index",
+    {
+     "location": {
+      "script": "TbItemUseEffect.1001",
+      "line": 1,
+      "column": 1,
+      "position": 0,
+      "length": 3
+     },
+     "target": [
+      "variable",
+      {
+       "location": {
+        "script": "TbItemUseEffect.1001",
+        "line": 1,
+        "column": 1,
+        "position": 0,
+        "length": 3
+       },
+       "name": "玩家"
+      }
+     ],
+     "index": [
+      "string",
+      {
+       "value": "增加玩家探索属性"
+      }
+     ]
+    }
+   ],
+   "args": [
+    [
+     "int",
+     {
+      "location": {
+       "script": "TbItemUseEffect.1001",
+       "line": 1,
+       "column": 1,
+       "position": 0,
+       "length": 4
+      },
+      "value": 1001
+     }
+    ],
+    [
+     "variable",
+     {
+      "location": {
+       "script": "TbItemUseEffect.1001",
+       "line": 1,
+       "column": 1,
+       "position": 0,
+       "length": 5
+      },
+
+=== tbpilleffect rows: 20 | keys: ['apply_scope', 'balance_value', 'balance_value_enhanced', 'balance_value_lore', 'can_be_upgrade_target', 'category', 'collect_exp', 'desc', 'desc_enhanced', 'duration', 'element', 'id', 'lore', 'map_icon', 'name', 'poi_scale_max', 'poi_scale_min', 'rarity', 'stat_type', 'tier']
+recover-ish pill effects: 2
+{"id": 21, "name": {"zh-Hans": "荣生", "zh-Hant": "榮生", "en-US": "Flourishing Life"}, "tier": 1, "element": 2, "rarity": 0, "category": 5, "apply_scope": 3, "stat_type": 1, "balance_value": 5, "balance_value_enhanced": 6, "balance_value_lore": 8, "duration": 0, "desc": {"zh-Hans": "立即回复5点生命", "zh-Hant": "立即回復5點生命", "en-US": "Immediately restore 5 Health"}, "desc_enhanced": {"zh-Hans": "立即回复6点生命", "zh-Hant": "立即回復6點生命", "en-US": "Immediately restore 6 Health"}, "lore": {"zh-Hans": "立即回复8点生命", "zh-H
+{"id": 41, "name": {"zh-Hans": "引灵", "zh-Hant": "引靈", "en-US": "Spirit Guidance"}, "tier": 1, "element": 4, "rarity": 0, "category": 5, "apply_scope": 3, "stat_type": 25, "balance_value": 10, "balance_value_enhanced": 12, "balance_value_lore": 15, "duration": 0, "desc": {"zh-Hans": "立即回复10点灵力", "zh-Hant": "立即回復10點靈力", "en-US": "Immediately restore 10 Spirit Power"}, "desc_enhanced": {"zh-Hans": "立即回复12点灵力", "zh-Hant": "立即回復12點靈力", "en-US": "Immediately restore 12 Spirit Power"}, "lore": {"zh-Han

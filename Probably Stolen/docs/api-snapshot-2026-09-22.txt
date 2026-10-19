@@ -1,0 +1,274 @@
+Probably Stolen Demo - selected API signature snapshot
+Source: MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll
+Date: 2026-09-22
+Namespace: Il2Cpp
+Assembly version: 0.0.0.0
+Assembly SHA-256: C1A0CA0FD8B5C250D3AED419301662C0247C2763B9FB25AEDA1B90CE5C20969D
+
+This is not an official API contract. It records selected public signatures from
+the currently installed game assemblies. Re-check after every game update.
+
+[PlayerStore]
+  static PlayerStore Instance { get; }
+  int playerCash { get; set; }
+  int wildFavor { get; set; }
+  int saveSlotId { get; set; }
+  Dictionary<string,string> modData { get; set; }
+  StoreClientManager storeClientManager { get; set; }
+  StoreClientInstance currentClientInstance { get; set; }
+  GameItem currentNegociatedItem { get; set; }
+  GameGridInventory gridInv { get; set; }
+  Dictionary<long,StorePhoneClient> PhoneClientDict { get; set; }
+  List<StoreRequest> storeRequests { get; set; }
+  bool isClientArrived { get; set; }
+  bool isClientBeingArrested { get; set; }
+  bool CanStartDay()
+  void OpenShutter()
+  void BeginDay()
+  bool CanNextClient()
+  void TryCallNextClient()
+  bool IsClientPresent()
+  bool IsClientDimissable()
+  void DismissCurrentClient(bool,bool,bool)
+  void EndDay()
+  void EndNight()
+  bool CanPay(int)
+  void PayMoney(int,bool)
+  int GetCash()
+  void ModCash(int,bool)
+  bool CanBuyItemFromTable()
+  bool CanSellThisItem(GameItem,bool)
+  bool CanSellItemFromTable(bool)
+  void BuyItemFromTable()
+  void BuyItem(GameItem)
+  void SellItem(GameItem)
+  void SellItemFromTable()
+  int GetWholesalePrice()
+  void AcceptBarter()
+  void InitialSave()
+  void SaveGame()
+  void WriteSlotFile()
+  void LoadGame()
+  PlayerStore PreLoadStore()
+
+[StoreUIManager]
+  static StoreUIManager Instance { get; }
+  StoreCalendar storeCalendar { get; set; }
+  GameObject clientCounter { get; set; }
+  GameObject pcScreenObject { get; set; }
+  GameObject inventoryCanvas { get; set; }
+  bool hoveringStoreUI { get; set; }
+  bool IsTyping()
+  void TryTrashHoveredItem()
+  void CloseAllUI()
+  void QueueClientLeaveAnimation(bool)
+  void OnClientStartLeaving(bool)
+  void DisplayClient()
+  void HideClient()
+  void OnNextClientArrived()
+  void Notify(string,string)
+
+[StoreShutterButton]
+  static StoreShutterButton Instance { get; }
+  bool isClosed { get; set; }
+  void OnClick()
+  void OpenShutter()
+  void CloseShutter()
+  void ToggleShutterDoor()
+
+[StoreBell]
+  float HoldDuration { get; set; }
+  bool ShouldRequireHold()
+  void OnClick()
+  void RingBell()
+
+[StoreDismissButton]
+  float HoldDuration { get; set; }
+  bool ShouldRequireHold()
+  void OnClick()
+
+[StoreSecButton]
+  static StoreSecButton Instance { get; }
+  float HoldDuration { get; set; }
+  bool ShouldRequireHold()
+  bool IsClientArrestable()
+  void OnClick()
+  void ResetLight()
+
+[StoreTransferButton]
+  void OnClick()
+
+[StoreCalendar]
+  string GetTooltip()
+  bool IsTooltipEnabled()
+  void OnClick()
+  string GetDayOfWeek()
+
+[StoreTablet]
+  string GetTooltip()
+  bool IsTooltipEnabled()
+  void OnClick()
+
+[PCUIManager]
+  static PCUIManager Instance { get; }
+  GameObject panel { get; set; }
+  StorePC storePC { get; set; }
+  List<StoreRequestElement> storeRequestElements { get; set; }
+  void OpenUI()
+  void HideUI()
+  void ToggleUI()
+  void OnChange()
+
+[StoreRequestElement]
+  Button acceptButton { get; set; }
+  StoreRequest storeRequest { get; set; }
+  void OnClick()
+
+[NegociationUIManager]
+  static NegociationUIManager Instance { get; }
+  GameObject uiObject { get; set; }
+  GameObject confirmPanel { get; set; }
+  GameObject acceptOfferButton { get; set; }
+  Button acceptOfferButtonButton { get; set; }
+  Button wholesaleButton { get; set; }
+  Button acceptMultipleButton { get; set; }
+  GameItem currentNegociatedItem { get; set; }
+  void OpenUI()
+  void CloseUI()
+  void ToggleUI()
+  void OnWholesaleClick()
+  void OnOfferAcceptClick()
+  void OnAcceptMultipleButtonClick()
+  void OnConfirmPanelYes()
+  void OnConfirmPanelNo()
+  void OpenConfirmPanel()
+  bool IsNegociatingItemOwned()
+  void BuyItem()
+  void TrySellItem()
+  void SellItem()
+  void RefreshUI()
+  void UpdateUI(GameItem)
+  int GetFinalOfferValue(GameItem)
+
+[GameItem]
+  string identifier { get; set; }
+  string identifierName { get; set; }
+  int uniqueId { get; set; }
+  int unitCount { get; set; }
+  long unitValue { get; set; }
+  long unitBaseValue { get; set; }
+  GameInventory parentInventory { get; set; }
+  List<ItemFeature> itemFeatures { get; set; }
+  List<string> itemTypes { get; set; }
+  static GameItem Create(string,string,PixelWindow)
+  string GetDisplayName(bool)
+  long GetBaseValue()
+  long GetNegociatedValue()
+  long GetCurrentValue(bool,bool,bool,bool,long)
+  GameItem SetValue(long)
+  GameItem SetUnitCount(int)
+  GameItem SetAmount(int)
+  bool IsTag(string)
+  bool IsGameItemType(string)
+  void SetType(string)
+  GameItem SetName(string)
+  GameItem CloneLinked()
+  void Destroy()
+
+[GameInventory]
+  string identifier { get; set; }
+  bool overrideLockInsert { get; set; }
+  bool overrideLockRemove { get; set; }
+  bool SupportsGroupPlacement { get; }
+  List<GameItem> childItems { get; set; }
+  bool MayHaveValidInventorySlot(GameItem)
+  SlotMarker TryFindOneValidInventorySlot(GameItem)
+  bool UncheckedAccept(GameItem)
+  bool Expel(GameItem)
+  GameInventory UncheckedAcceptAll(List<GameItem>)
+  GameInventory ExpelAll()
+  bool IsInsertLocked()
+  bool IsRemoveLocked()
+  void LockInv()
+  void UnlockInv()
+  void Validate()
+
+[GameGridInventory]
+  GameGridInventory SetShape(int,int)
+  GameGridInventory SetShape(string,int)
+  bool CheckShapePlacement(GameItem,GridShape,List<GameItem>)
+  SlotMarker TryFindOneValidInventorySlot(GameItem,bool)
+
+[CustomUIManager]
+  static CustomUIManager Instance { get; }
+  GameObject holdRingInstance { get; set; }
+  Image holdRingFill { get; set; }
+  CustomUIBuilder Window(string,string,string)
+  CustomUIBuilder CreateWindow(string,string,string)
+  CustomUIWindow GetWindow(string)
+  bool IsOpen(string)
+  void CloseWindow(string)
+  void CloseAllWindows()
+  CustomUIElement GetElement(string,string)
+  RectTransform OverlayRoot()
+  Sprite GetSprite(string)
+  Sprite GetModSprite(string,string)
+  void ShowTooltip(string,CustomUITooltipTrigger)
+  void HideTooltip(CustomUITooltipTrigger)
+  void ShowHoldRing(float)
+  void HideHoldRing()
+
+[PhoneUIManager]
+  static PhoneUIManager Instance { get; }
+  long currentNumber { get; set; }
+  StorePhoneClient currentPhoneClient { get; set; }
+  void OpenUI()
+  void CloseUI()
+  void AutoCall(long)
+  bool WillAnswerCall(long)
+  void StopCall()
+  bool IsPhoneBookShown()
+
+[PhoneClientList]
+  StorePhoneClient CreateSecPhoneClient()
+  StorePhoneClient CreateCommissaryPhone()
+  StorePhoneClient CreateWildClient()
+
+[StoreOperationManager]
+  int lowerLevelUnrest { get; set; }
+  int upperLevelFriendliness { get; set; }
+  int revPower { get; set; }
+  int secPower { get; set; }
+  int blackMarketPower { get; set; }
+  List<string> availableOperations { get; set; }
+  void OnDayStart()
+  void HandleBlackMarket()
+  void HandleUpperLevel()
+  void HandleLowerLevel()
+  void HandleRevolution()
+  void HandleSecurity()
+  void QueueOperation()
+  bool CanFactionQueueOperation(string)
+  bool CanQueueThisOperation(string)
+  bool IsOperationActive(string)
+  bool IsOperationInQueue(string)
+  bool IsOperationOnCooldown(string)
+
+[StoreClientManager]
+  void GenerateClient()
+  StoreClient PickClient()
+  StoreClient PickRandomClient(string)
+  StoreClient PickRandomValidClient(string)
+  StoreClient PickShopperClient()
+  StoreClient PickSupplierClient()
+  bool IsClientValid(StoreClient)
+  bool IsClientOnCooldown(StoreClient)
+  bool IsClientOnCooldown(string)
+  void AddClient(StoreClient)
+  void TryAddClient(StoreClient,bool)
+  void AddNextClient(StoreClient)
+  void HandleNormalClient()
+  void HandleSupplierClient()
+  void HandleInspectionClient()
+  void DismissClientStack()
+  int GetNormalCustomerCount()

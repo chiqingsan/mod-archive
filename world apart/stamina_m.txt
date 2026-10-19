@@ -1,0 +1,13 @@
+178376:	private static bool TryConsumeStamina() { }
+242611:	private static bool TryConsumeStamina(NpcInteractGameEntry entry) { }
+248698:	private static int GetStaminaCostPerCraft() { }
+324120:	private int m_PendingStaminaCost; // 0xF8
+324246:	private static int GetStaminaCostPerCraft() { }
+427909:	public static readonly ExploreLevelOutGameEffectTag StaminaMax; // 0x0
+427942:public sealed class StaminaMaxOutGameEffectData : PlayerAttributeOutGameEffectData // TypeDefIndex: 7024
+428007:	public StaminaMaxOutGameEffectData AddStaminaMax(int value) { }
+433764:	public int GetPeekStaminaCost() { }
+444565:	public void RestoreStaminaToMax() { }
+444586:	public bool ModifyStamina(float delta) { }
+444598:	public bool ConsumeStamina(float cost) { }
+446132:	public const CombatAttrId StaminaMax = 201;

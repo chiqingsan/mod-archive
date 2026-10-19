@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>XIAOWOTradePerks</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <TargetFramework>netcoreapp6.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="XIAOWOTradePerks.Icons.01_gold_appraiser.png" />
+    <None Remove="XIAOWOTradePerks.Icons.02_appraisal_sign.png" />
+    <None Remove="XIAOWOTradePerks.Icons.03_grey_insurance.png" />
+    <None Remove="XIAOWOTradePerks.Icons.04_blackout_broker.png" />
+    <None Remove="XIAOWOTradePerks.Icons.05_luxury_appointment.png" />
+    <None Remove="XIAOWOTradePerks.Icons.06_cashflow_gambler.png" />
+    <None Remove="XIAOWOTradePerks.Icons.07_security_target.png" />
+    <None Remove="XIAOWOTradePerks.Icons.08_rundown_storefront.png" />
+    <None Remove="XIAOWOTradePerks.Icons.09_regular_credit.png" />
+    <None Remove="XIAOWOTradePerks.Icons.10_owner_deal.png" />
+    <None Remove="XIAOWOTradePerks.Icons.11_peerless_prodigy.png" />
+    <None Remove="XIAOWOTradePerks.Icons.12_reckless_scavenger.png" />
+    <None Remove="XIAOWOTradePerks.Icons.13_aug_hunt_contract.png" />
+    <None Remove="XIAOWOTradePerks.Icons.14_stable_supply.png" />
+    <None Remove="XIAOWOTradePerks.Icons.15_reputation_business.png" />
+    <None Remove="XIAOWOTradePerks.Icons.16_negotiation_veteran.png" />
+    <None Remove="XIAOWOTradePerks.Icons.17_operating_surcharge.png" />
+    <None Remove="XIAOWOTradePerks.Icons.18_precision_bay_expansion.png" />
+    <None Remove="XIAOWOTradePerks.Assets.tiktok_logo.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.01_gold_appraiser.png" LogicalName="XIAOWOTradePerks.Icons.01_gold_appraiser.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.02_appraisal_sign.png" LogicalName="XIAOWOTradePerks.Icons.02_appraisal_sign.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.03_grey_insurance.png" LogicalName="XIAOWOTradePerks.Icons.03_grey_insurance.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.04_blackout_broker.png" LogicalName="XIAOWOTradePerks.Icons.04_blackout_broker.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.05_luxury_appointment.png" LogicalName="XIAOWOTradePerks.Icons.05_luxury_appointment.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.06_cashflow_gambler.png" LogicalName="XIAOWOTradePerks.Icons.06_cashflow_gambler.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.07_security_target.png" LogicalName="XIAOWOTradePerks.Icons.07_security_target.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.08_rundown_storefront.png" LogicalName="XIAOWOTradePerks.Icons.08_rundown_storefront.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.09_regular_credit.png" LogicalName="XIAOWOTradePerks.Icons.09_regular_credit.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.10_owner_deal.png" LogicalName="XIAOWOTradePerks.Icons.10_owner_deal.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.11_peerless_prodigy.png" LogicalName="XIAOWOTradePerks.Icons.11_peerless_prodigy.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.12_reckless_scavenger.png" LogicalName="XIAOWOTradePerks.Icons.12_reckless_scavenger.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.13_aug_hunt_contract.png" LogicalName="XIAOWOTradePerks.Icons.13_aug_hunt_contract.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.14_stable_supply.png" LogicalName="XIAOWOTradePerks.Icons.14_stable_supply.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.15_reputation_business.png" LogicalName="XIAOWOTradePerks.Icons.15_reputation_business.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.16_negotiation_veteran.png" LogicalName="XIAOWOTradePerks.Icons.16_negotiation_veteran.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.17_operating_surcharge.png" LogicalName="XIAOWOTradePerks.Icons.17_operating_surcharge.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Icons.18_precision_bay_expansion.png" LogicalName="XIAOWOTradePerks.Icons.18_precision_bay_expansion.png" />
+    <EmbeddedResource Include="XIAOWOTradePerks.Assets.tiktok_logo.png" LogicalName="XIAOWOTradePerks.Assets.tiktok_logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MelonLoader" />
+    <Reference Include="Assembly-CSharp" />
+    <Reference Include="0Harmony" />
+    <Reference Include="UnityEngine.CoreModule" />
+    <Reference Include="Unity.TextMeshPro" />
+    <Reference Include="UnityEngine.UI" />
+    <Reference Include="Il2Cppmscorlib" />
+    <Reference Include="UnityEngine.UIModule" />
+    <Reference Include="Il2CppInterop.Runtime" />
+    <Reference Include="UnityEngine.InputLegacyModule" />
+    <Reference Include="UnityEngine.ImageConversionModule" />
+    <Reference Include="UnityEngine.TextRenderingModule" />
+  </ItemGroup>
+</Project>

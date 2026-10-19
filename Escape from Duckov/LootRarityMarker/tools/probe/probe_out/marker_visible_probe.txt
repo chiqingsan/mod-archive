@@ -1,0 +1,102 @@
+MonoScript 数量 = 1（其中能拿到类名的 1）
+MonoBehaviour 组数 = 850
+
+==============================================================================
+<未知脚本 pathID=5078>   (脚本 pathID=5078, 实例 59 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'1': 53, '0': 6}
+  interactMarkerOffset 分布: {'y=1.3799999952316284': 4, 'y=0.0': 28, 'y=0.6600000262260437': 6, 'y=1.3300000429153442': 4, 'y=1.100000023841858': 1, 'y=1.059999942779541': 1, 'y=1.6100000143051147': 1, 'y=0.5199999809265137': 1, 'y=1.0': 1, 'y=0.7699999809265137': 1, 'y=1.1100000143051147': 5, 'y=0.5': 1, 'y=0.9599999785423279': 1, 'y=0.10000000149011612': 1, 'y=1.309999942779541': 1, 'y=1.4199999570846558': 1, 'y=0.6800000071525574': 1}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'requireItem', 'requireItemId', 'requireOnce', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=268>   (脚本 pathID=268, 实例 36 个)
+  判定为: InteractableLootbox
+  interactMarkerVisible 分布: {'1': 35, '0': 1}
+  interactMarkerOffset 分布: {'y=0.3400000035762787': 1, 'y=0.6100000143051147': 4, 'y=0.5': 1, 'y=0.0': 12, 'y=0.4300000071525574': 18}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'coolTime', 'disableOnFinish', 'displayNameKey', 'finishWhenTimeOut', 'hideIfEmpty', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'inventoryReference', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'needInspect', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'requireItem', 'requireItemId', 'requireOnce', 'showPickAllButton', 'showSortButton', 'unlockTime', 'useDefaultInteractName', 'usePages', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=598>   (脚本 pathID=598, 实例 12 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'0': 2, '1': 10}
+  interactMarkerOffset 分布: {'y=0.8700000047683716': 4, 'y=0.0': 3, 'y=1.3700000047683716': 4, 'y=1.75': 1}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'perkTreeID', 'requireItem', 'requireItemId', 'requireOnce', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=3920>   (脚本 pathID=3920, 实例 10 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'1': 10}
+  interactMarkerOffset 分布: {'y=1.2000000476837158': 1, 'y=1.3700000047683716': 7, 'y=1.409999966621399': 1, 'y=1.1200000047683716': 1}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'questGiverID', 'requireItem', 'requireItemId', 'requireOnce', 'spawnPOI', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=1287>   (脚本 pathID=1287, 实例 9 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'1': 9}
+  interactMarkerOffset 分布: {'y=0.0': 9}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'carryTarget', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'requireItem', 'requireItemId', 'requireOnce', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=3827>   (脚本 pathID=3827, 实例 8 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'0': 6, '1': 2}
+  interactMarkerOffset 分布: {'y=0.0': 4, 'y=0.4000000059604645': 1, 'y=-0.2199999988079071': 3}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'graphicRoot', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'itemAgent', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'requireItem', 'requireItemId', 'requireOnce', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=883>   (脚本 pathID=883, 实例 7 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'1': 4, '0': 3}
+  interactMarkerOffset 分布: {'y=0.0': 7}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'additionalTags', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'requireItem', 'requireItemId', 'requireOnce', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=1368>   (脚本 pathID=1368, 实例 6 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'1': 6}
+  interactMarkerOffset 分布: {'y=1.059999942779541': 4, 'y=0.6800000071525574': 1, 'y=0.9700000286102295': 1}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'requireItem', 'requireItemId', 'requireOnce', 'requireTag', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=3018>   (脚本 pathID=3018, 实例 6 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'1': 6}
+  interactMarkerOffset 分布: {'y=0.0': 6}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'limitTime', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'requireItem', 'requireItemId', 'requireOnce', 'specialAttachment', 'timeLimit', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=2731>   (脚本 pathID=2731, 实例 3 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'0': 3}
+  interactMarkerOffset 分布: {'y=0.0': 3}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'requireItem', 'requireItemId', 'requireOnce', 'targetSlotCollection', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=1504>   (脚本 pathID=1504, 实例 2 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'1': 2}
+  interactMarkerOffset 分布: {'y=0.550000011920929': 2}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'activeFov', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'fovCurve', 'incompleteNotificationText', 'inputHandler', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'mainItem', 'noGameNotificationText', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'posCurve', 'possibleGames', 'requireItem', 'requireItemId', 'requireOnce', 'rotCurve', 'rt', 'teleportToPositionWhenBegin', 'transitionTime', 'unlockTime', 'vcamEndPosition', 'vcamLookTarget', 'virtualCamera', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=2071>   (脚本 pathID=2071, 实例 1 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'1': 1}
+  interactMarkerOffset 分布: {'y=0.0': 1}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'requireItem', 'requireItemId', 'requireOnce', 'specialAttachment', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=2005>   (脚本 pathID=2005, 实例 1 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'1': 1}
+  interactMarkerOffset 分布: {'y=1.059999942779541': 1}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'requireItem', 'requireItemId', 'requireOnce', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+==============================================================================
+<未知脚本 pathID=5104>   (脚本 pathID=5104, 实例 1 个)
+  判定为: InteractableBase
+  interactMarkerVisible 分布: {'1': 1}
+  interactMarkerOffset 分布: {'y=1.0299999713897705': 1}
+  该类全部序列化字段: ['OnInteractFinishedEvent', 'OnInteractStartEvent', 'OnInteractTimeoutEvent', 'OnRequiredItemUsedEvent', '_overrideInteractNameKey', 'coolTime', 'disableOnFinish', 'finishWhenTimeOut', 'interactCollider', 'interactMarkerOffset', 'interactMarkerVisible', 'interactTime', 'interactableGroup', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'otherInterablesInGroup', 'overrideInteractName', 'overrideItemUsedKey', 'overrideItemUsedSaveKey', 'requireItem', 'requireItemId', 'requireOnce', 'unlockTime', 'whenToUseRequireItem', 'zoomIn']
+
+扫了 838 个组的 typetree

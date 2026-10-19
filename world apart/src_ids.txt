@@ -1,0 +1,263 @@
+=== sourceId 101 (1 effects):
+  unlock 1: 丹火初燃 - 炼丹经验获取速度+5%
+=== sourceId 102 (1 effects):
+  unlock 1: 岐黄初悟 - 医术经验获取速度+10%
+=== sourceId 103 (1 effects):
+  unlock 1: 一炉双成 - 炼丹时，有5%概率额外炼出一个丹药
+=== sourceId 104 (1 effects):
+  unlock 1: 百草初识 - 炼丹经验获取速度+5%
+=== sourceId 105 (1 effects):
+  unlock 1: 草木双生 - 采集草药时，有概率额外获得一份草药
+=== sourceId 106 (1 effects):
+  unlock 1: 丹医同参 - 医术经验获取速度+10%
+=== sourceId 107 (1 effects):
+  unlock 1: 炉火纯青 - 炼丹经验获取速度+10%
+=== sourceId 108 (1 effects):
+  unlock 1: 吞丹无碍 - 战斗中第一次成功使用丹药不占回合
+=== sourceId 109 (1 effects):
+  unlock 1: 岐黄精进 - 医术经验获取速度+10%
+=== sourceId 110 (1 effects):
+  unlock 1: 药力无穷 - 每种属性丹药使用上限+3
+=== sourceId 111 (1 effects):
+  unlock 1: 金丹蕴灵 - 炼丹经验获取速度+10%
+=== sourceId 112 (1 effects):
+  unlock 1: 金丹护体 - 结丹后，战斗开始至双方完成首个行动来回前免疫伤害。
+=== sourceId 201 (1 effects):
+  unlock 1: 锻火初鸣 - 炼器经验获取速度+5%
+=== sourceId 202 (1 effects):
+  unlock 1: 本命初铸 - 筑基期就能炼制本命法宝
+=== sourceId 203 (1 effects):
+  unlock 1: 灵鉴初开 - 灵机经验获取速度+10%
+=== sourceId 204 (1 effects):
+  unlock 1: 矿脉双收 - 采集矿物时，有概率额外获得一个赌石
+=== sourceId 205 (1 effects):
+  unlock 1: 百炼入门 - 炼器经验获取速度+5%
+=== sourceId 206 (1 effects):
+  unlock 1: 余材返炉 - 炼器完成后有概率返还部分炼器材料
+=== sourceId 207 (1 effects):
+  unlock 1: 明察器纹 - 灵机经验获取速度+10%
+=== sourceId 208 (1 effects):
+  unlock 1: 炉火精进 - 炼器经验获取速度+10%
+=== sourceId 209 (1 effects):
+  unlock 1: 灵鉴通玄 - 灵机经验获取速度+10%
+=== sourceId 210 (1 effects):
+  unlock 1: 双宝同御 - 可以额外装配一个任意部位的法宝
+=== sourceId 211 (1 effects):
+  unlock 1: 百炼精进 - 炼器经验获取速度+10%
+=== sourceId 212 (1 effects):
+  unlock 1: 宝轮疾转 - 法宝主动技能冷却回合 -1，最低为 1 回合。
+=== sourceId 301 (1 effects):
+  unlock 1: 灵石入囊 - 立即获得1000灵石
+=== sourceId 302 (1 effects):
+  unlock 1: 悬赏生财 - 悬赏任务获得的灵石提升5%
+=== sourceId 303 (1 effects):
+  unlock 1: 财源渐盛 - 立即获得2500灵石
+=== sourceId 304 (1 effects):
+  unlock 1: 声名通商 - 杂货铺购买物品所需声望降低15%
+=== sourceId 305 (1 effects):
+  unlock 1: 福星高照 - 幸运+25
+=== sourceId 306 (1 effects):
+  unlock 1: 万石归仓 - 立即获得5000灵石
+=== sourceId 307 (1 effects):
+  unlock 1: 奇货可居 - 交易时，卖出价格提升5%
+=== sourceId 308 (1 effects):
+  unlock 1: 灵石满囊 - 立即获得2500灵石
+=== sourceId 309 (1 effects):
+  unlock 1: 寄售无佣 - 拍卖会寄卖免手续费
+=== sourceId 310 (1 effects):
+  unlock 1: 鸿运当头 - 幸运+25
+=== sourceId 311 (1 effects):
+  unlock 1: 宝库充盈 - 立即获得5000灵石
+=== sourceId 312 (1 effects):
+  unlock 1: 一掷千金 - 拍卖会扰场值上限+100
+=== sourceId 401 (2 effects):
+  unlock 1: 善恶初分 - 善值获取速度增加5%
+  unlock 1: 善恶初分 - 恶值获取速度降低5%
+=== sourceId 402 (2 effects):
+  unlock 1: 红尘照心 - 善值获取速度增加5%
+  unlock 1: 红尘照心 - 恶值获取速度降低5%
+=== sourceId 403 (2 effects):
+  unlock 1: 德誉生辉 - 悬赏任务获得的城镇声望提升10%
+  unlock 1: 德誉生辉 - 魅力+25
+=== sourceId 404 (1 effects):
+  unlock 1: 善念精进 - 善值获取速度增加10%
+=== sourceId 405 (2 effects):
+  unlock 1: 仁名远播 - 索要消耗的亲密度降低25%
+  unlock 1: 仁名远播 - 魅力+25
+=== sourceId 406 (1 effects):
+  unlock 1: 善缘广结 - 善值获取速度增加10%
+=== sourceId 407 (2 effects):
+  unlock 1: 德被八方 - 所有人物的亲密度获取速度增加20%
+  unlock 1: 德被八方 - 魅力+50
+=== sourceId 408 (2 effects):
+  unlock 1: 妙手空空 - 偷窃成功率提升25个百分点
+  unlock 1: 妙手空空 - 魅力-25
+=== sourceId 409 (1 effects):
+  unlock 1: 恶念滋长 - 恶值获取速度降低10%
+=== sourceId 410 (2 effects):
+  unlock 1: 杀伐夺宝 - 击杀人物时，额外独立解析4次人物奖励池
+  unlock 1: 杀伐夺宝 - 魅力-25
+=== sourceId 411 (1 effects):
+  unlock 1: 恶途精进 - 恶值获取速度降低10%
+=== sourceId 412 (2 effects):
+  unlock 1: 匿迹无踪 - 被复仇/追杀的概率降低50%
+  unlock 1: 匿迹无踪 - 魅力-50
+=== sourceId 501 (1 effects):
+  unlock 1: 宗门初契 - 宗门贡献获取速度+5%
+=== sourceId 502 (1 effects):
+  unlock 1: 辩机初现 - 辩道经验获取速度+10%
+=== sourceId 503 (1 effects):
+  unlock 1: 年俸双禄 - 宗门俸禄增加25%
+=== sourceId 504 (1 effects):
+  unlock 1: 舌灿莲花 - 辩道经验获取速度+10%
+=== sourceId 505 (1 effects):
+  unlock 1: 藏经惠取 - 宗门藏经阁价格降低10%
+=== sourceId 506 (1 effects):
+  unlock 1: 道统归心 - 宗门贡献获取速度+5%
+=== sourceId 507 (1 effects):
+  unlock 1: 功勋日进 - 宗门贡献获取速度+10%
+=== sourceId 508 (1 effects):
+  unlock 1: 灵根承宗 - 当前宗门元素灵根+20（不计入灵根上限）
+=== sourceId 509 (1 effects):
+  unlock 1: 辩道通玄 - 辩道经验获取速度+10%
+=== sourceId 510 (1 effects):
+  unlock 1: 众志破敌 - 强敌来袭时，本宗门修士战斗力提升10%
+=== sourceId 511 (1 effects):
+  unlock 1: 宗门砥柱 - 宗门贡献获取速度+10%
+=== sourceId 512 (1 effects):
+  unlock 1: 老祖威临 - 担任大长老时，人物战斗首回合压制敌方行动。
+=== sourceId 601 (1 effects):
+  unlock 1: 血气初盛 - 生命+2%
+=== sourceId 602 (1 effects):
+  unlock 1: 力贯千钧 - 攻击+2%
+=== sourceId 603 (1 effects):
+  unlock 1: 铜皮铁骨 - 防御+2%
+=== sourceId 604 (1 effects):
+  unlock 1: 战罢回元 - 每次战斗胜利后，恢复10%生命
+=== sourceId 605 (1 effects):
+  unlock 1: 体魄精进 - 体魄经验获取速度+10%
+=== sourceId 606 (1 effects):
+  unlock 1: 万法难侵 - 战斗前三回合免疫控制
+=== sourceId 607 (1 effects):
+  unlock 1: 燃血淬体 - 体魄经验获取速度+10%
+=== sourceId 608 (1 effects):
+  unlock 1: 浴火金身 - 战斗中每回合燃烧1%的当前生命，增加2%防御
+=== sourceId 609 (1 effects):
+  unlock 1: 不灭真躯 - 体魄经验获取速度+10%
+=== sourceId 610 (1 effects):
+  unlock 1: 向死而生 - 战斗中首次进入濒死时，获得死亡免疫，持续1回合
+=== sourceId 611 (2 effects):
+  unlock 1: 攻守合一 - 伤害加成+2%
+  unlock 1: 攻守合一·守 - 伤害减免+2%
+=== sourceId 612 (1 effects):
+  unlock 1: 罡劲反震 - 每次受到伤害时，反弹(体魄等级*2.5）%攻击力的伤害
+=== sourceId 701 (1 effects):
+  unlock 1: 桃缘初绽 - 女性人物的亲密度获取速度增加5%
+=== sourceId 702 (1 effects):
+  unlock 1: 阴阳交泰 - 双修获得的修为增加25%
+=== sourceId 703 (1 effects):
+  unlock 1: 桃缘渐盛 - 女性人物的亲密度获取速度增加5%
+=== sourceId 704 (1 effects):
+  unlock 1: 天生媚骨 - 魅力+25
+=== sourceId 705 (1 effects):
+  unlock 1: 探香无痕 - 偷窃女性人物时，50%概率不被发现，不增加恶值且不降低亲密度
+=== sourceId 706 (1 effects):
+  unlock 1: 情丝渐长 - 女性人物的亲密度获取速度增加5%
+=== sourceId 707 (1 effects):
+  unlock 1: 风月无边 - 魅力+25
+=== sourceId 708 (1 effects):
+  unlock 1: 道侣同心 - 每个道侣使对怪物和无道侣人物的伤害提升2%，上限10%
+=== sourceId 709 (1 effects):
+  unlock 1: 倾城绝代 - 魅力+50
+=== sourceId 710 (1 effects):
+  unlock 1: 鸾凤和鸣 - 每个玩家自身回合开始额外获得 1 点共鸣。
+=== sourceId 711 (1 effects):
+  unlock 1: 魅世无双 - 魅力+50
+=== sourceId 712 (1 effects):
+  unlock 1: 心意相通 - 协战主动技能冷却回合 -1，最低为 1 回合。
+=== sourceId 801 (4 effects):
+  unlock 1: 魂幡初祭 - 获得魂幡，魂幡灵魂容量30
+  unlock 1: 魂幡初祭 - 魅力-25
+  unlock 1: 魂幡初祭 - 怪物或人物死亡时将它们的灵魂收入魂幡
+  unlock 1: 魂幡初祭 - 濒死时消耗20个灵魂，最终恢复至10%最大生命
+=== sourceId 802 (1 effects):
+  unlock 1: 纳魂扩幡 - 魂幡灵魂容量+2
+=== sourceId 803 (2 effects):
+  unlock 1: 群魂化煞 - 魂幡中每拥有一个灵魂，暴击率提升0.5%
+  unlock 1: 群魂化煞 - 魅力-50
+=== sourceId 804 (1 effects):
+  unlock 1: 幡域初开 - 魂幡灵魂容量+2
+=== sourceId 805 (2 effects):
+  unlock 1: 噬魂回生 - 魂幡每收集1个灵魂，恢复3%最大生命
+  unlock 1: 噬魂回生 - 魅力-50
+=== sourceId 806 (1 effects):
+  unlock 1: 幽幡精炼 - 魂幡灵魂容量+2
+=== sourceId 807 (1 effects):
+  unlock 1: 千魂幡成 - 魂幡祭炼为千魂幡，灵魂容量+5
+=== sourceId 808 (1 effects):
+  unlock 1: 魂域扩张 - 魂幡灵魂容量+2
+=== sourceId 809 (2 effects):
+  unlock 1: 阴魂自聚 - 魂幡中每2天能自然聚集1个灵魂
+  unlock 1: 阴魂自聚 - 魅力-50
+=== sourceId 810 (1 effects):
+  unlock 1: 纳魂无量 - 魂幡灵魂容量+2
+=== sourceId 811 (1 effects):
+  unlock 1: 万魂幡成 - 魂幡祭炼为万魂幡，灵魂容量+5
+=== sourceId 812 (2 effects):
+  unlock 1: 万魂收割 - 魅力-75
+  unlock 1: 万魂收割 - 战斗开始时临时授予万魂收割被动
+=== sourceId 901 (4 effects):
+  unlock 1: 吞魄入魔 - 魔气层数初始上限+250
+  unlock 1: 吞魄入魔 - 魅力-25
+  unlock 1: 吞魄入魔 - 击杀人物后，可以选择吞噬对方精魄，增加1点攻击力和10层魔气
+  unlock 1: 吞魄入魔 - 魔气达到层数上限后会走火入魔，堕入魔界
+=== sourceId 902 (1 effects):
+  unlock 1: 魔气初凝 - 魔气层数上限+25
+=== sourceId 903 (1 effects):
+  unlock 1: 魔元渐盛 - 魔气层数上限+25
+=== sourceId 904 (2 effects):
+  unlock 1: 魔息催灵 - 每有一层魔气，灵气获取速度加快0.1%
+  unlock 1: 魔息催灵 - 魅力-50
+=== sourceId 905 (1 effects):
+  unlock 1: 煞气盈脉 - 魔气层数上限+25
+=== sourceId 906 (2 effects):
+  unlock 1: 魔破天关 - 魔气达到100层后，阶段突破时，可以不消耗突破材料直接突破到下一阶段
+  unlock 1: 魔破天关 - 魅力-50
+=== sourceId 907 (1 effects):
+  unlock 1: 魔元精进 - 魔气层数上限+25
+=== sourceId 908 (1 effects):
+  unlock 1: 魔威浩荡 - 魔气层数上限+50
+=== sourceId 909 (1 effects):
+  unlock 1: 魔气冲霄 - 魔气层数上限+50
+=== sourceId 910 (2 effects):
+  unlock 1: 魔焰爆发 - 魅力-75
+  unlock 1: 魔焰爆发 - 战斗开始时临时授予魔焰爆发被动
+=== sourceId 911 (1 effects):
+  unlock 1: 魔海无涯 - 魔气层数上限+50
+=== sourceId 912 (2 effects):
+  unlock 1: 噬魂夺命 - 魅力-75
+  unlock 1: 噬魂夺命 - 战斗开始时临时授予噬魂夺命被动
+=== sourceId 1001 (1 effects):
+  unlock 1: 神意初生 - 精力上限+10
+=== sourceId 1002 (1 effects):
+  unlock 1: 灵台初明 - 神识经验获取速度+10%
+=== sourceId 1003 (1 effects):
+  unlock 1: 洞若观火 - 能够从线索中获取额外的信息
+=== sourceId 1004 (1 effects):
+  unlock 1: 识海初开 - 神识经验获取速度+10%
+=== sourceId 1005 (1 effects):
+  unlock 1: 御风遁形 - 允许逃跑的战斗中，逃跑必定成功。
+=== sourceId 1006 (1 effects):
+  unlock 1: 精元充盈 - 精力上限+10
+=== sourceId 1007 (1 effects):
+  unlock 1: 神识通明 - 神识经验获取速度+10%
+=== sourceId 1008 (1 effects):
+  unlock 1: 四海求道 - 没有宗门时，请教功法所需亲密度降低50%
+=== sourceId 1009 (1 effects):
+  unlock 1: 神魂壮大 - 精力上限+15
+=== sourceId 1010 (1 effects):
+  unlock 1: 斩妖得果 - 没有宗门时，击杀怪物有概率额外获得灵根果
+=== sourceId 1011 (1 effects):
+  unlock 1: 元神凝练 - 精力上限+15
+=== sourceId 1012 (1 effects):
+  unlock 1: 岁月长生 - 没有宗门时，每增加1岁，增加4点生命

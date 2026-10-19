@@ -1,0 +1,2 @@
+tbitem.json contains: ['回春散', '金砂散']
+tbpillrecipe.json contains: ['回春散', '金砂散']

@@ -1,0 +1,90 @@
+total 精力上限 rows: 6
+4001001 神意初生 | sourceType 4 sourceId 1001 unlock 1 | args: [["int", {"location": {"script": "TbExploreLevelOutGameEffect.4001001", "line": 1, "column": 16, "position": 15, "length": 2}, "value": 10}]]
+4001006 精元充盈 | sourceType 4 sourceId 1006 unlock 1 | args: [["int", {"location": {"script": "TbExploreLevelOutGameEffect.4001006", "line": 1, "column": 16, "position": 15, "length": 2}, "value": 10}]]
+4001009 神魂壮大 | sourceType 4 sourceId 1009 unlock 1 | args: [["int", {"location": {"script": "TbExploreLevelOutGameEffect.4001009", "line": 1, "column": 16, "position": 15, "length": 2}, "value": 15}]]
+4001011 元神凝练 | sourceType 4 sourceId 1011 unlock 1 | args: [["int", {"location": {"script": "TbExploreLevelOutGameEffect.4001011", "line": 1, "column": 16, "position": 15, "length": 2}, "value": 15}]]
+1005005 培元固本 | sourceType 1 sourceId 1005 unlock 10 | args: [["int", {"location": {"script": "TbExploreLevelOutGameEffect.1005005", "line": 1, "column": 16, "position": 15, "length": 2}, "value": 15}]]
+1005007 摄生养锐 | sourceType 1 sourceId 1005 unlock 20 | args: [["int", {"location": {"script": "TbExploreLevelOutGameEffect.1005007", "line": 1, "column": 16, "position": 15, "length": 2}, "value": 15}]]
+
+=== FULL JSON of row 4001001:
+{
+ "id": 4001001,
+ "sourceType": 4,
+ "sourceId": 1001,
+ "unlockValue": 1,
+ "effectDomain": 12,
+ "priority": 0,
+ "effectName": {
+  "zh-Hans": "神意初生",
+  "zh-Hant": "神意初生",
+  "en-US": "Nascent Divine Will"
+ },
+ "effectDesc": {
+  "zh-Hans": "精力上限+10",
+  "zh-Hant": "精力上限+10",
+  "en-US": "Max Energy +10"
+ },
+ "effectExprs": [
+  {
+   "func": [
+    "call",
+    {
+     "location": {
+      "script": "TbExploreLevelOutGameEffect.4001001",
+      "line": 1,
+      "column": 1,
+      "position": 0,
+      "length": 5
+     },
+     "target": [
+      "index",
+      {
+       "location": {
+        "script": "TbExploreLevelOutGameEffect.4001001",
+        "line": 1,
+        "column": 1,
+        "position": 0,
+        "length": 5
+       },
+       "target": [
+        "variable",
+        {
+         "location": {
+          "script": "TbExploreLevelOutGameEffect.4001001",
+          "line": 1,
+          "column": 1,
+          "position": 0,
+          "length": 5
+         },
+         "name": "玩家属性"
+        }
+       ],
+       "index": [
+        "string",
+        {
+         "value": "精力上限固定加成"
+        }
+       ]
+      }
+     ],
+     "arguments": [
+      [
+       "int",
+       {
+        "location": {
+         "script": "TbExploreLevelOutGameEffect.4001001",
+         "line": 1,
+         "column": 16,
+         "position": 15,
+         "length": 2
+        },
+        "value": 10
+       }
+      ]
+     ]
+    }
+   ],
+   "args": []
+  }
+ ]
+}

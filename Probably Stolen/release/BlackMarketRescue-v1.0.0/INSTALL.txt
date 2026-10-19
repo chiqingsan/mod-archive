@@ -1,0 +1,7 @@
+Install:
+
+1. Copy BlackMarketRescue.dll into the game's Mods folder.
+2. Start the game with MelonLoader.
+3. After a black market exchange or day start, any remaining trashcan items should move to the counter if space is available.
+
+The mod targets the counter inventories first and does not use the player's top-level inventory.

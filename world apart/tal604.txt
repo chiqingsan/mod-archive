@@ -1,0 +1,86 @@
+--- 4000604 战罢回元 | sourceType 4 sourceId 604
+  desc: 每次战斗胜利后，恢复10%生命
+  exprs: [{"func": ["call", {"location": {"script": "TbExploreLevelOutGameEffect.4000604", "line": 1, "column": 1, "position": 0, "length": 3}, "target": ["index", {"location": {"script": "TbExploreLevelOutGameEffect.4000604", "line": 1, "column": 1, "position": 0, "length": 3}, "target": ["variable", {"location": {"script": "TbExploreLevelOutGameEffect.4000604", "line": 1, "column": 1, "position": 0, "length": 3}, "name": "战斗"}], "index": ["string", {"value": "胜利恢复生命"}]}], "arguments": [["int", {"location": {"script": "TbExploreLevelOutGameEffect.4000604", "line": 1, "column": 12, "position": 11, "len
+
+=== FULL 604:
+{
+ "id": 4000604,
+ "sourceType": 4,
+ "sourceId": 604,
+ "unlockValue": 1,
+ "effectDomain": 2,
+ "priority": 0,
+ "effectName": {
+  "zh-Hans": "战罢回元",
+  "zh-Hant": "戰罷回元",
+  "en-US": "Battle's End, Essence Restored"
+ },
+ "effectDesc": {
+  "zh-Hans": "每次战斗胜利后，恢复10%生命",
+  "zh-Hant": "每次戰鬥勝利後，恢復10%生命",
+  "en-US": "After every battle victory, restore 10% HP."
+ },
+ "effectExprs": [
+  {
+   "func": [
+    "call",
+    {
+     "location": {
+      "script": "TbExploreLevelOutGameEffect.4000604",
+      "line": 1,
+      "column": 1,
+      "position": 0,
+      "length": 3
+     },
+     "target": [
+      "index",
+      {
+       "location": {
+        "script": "TbExploreLevelOutGameEffect.4000604",
+        "line": 1,
+        "column": 1,
+        "position": 0,
+        "length": 3
+       },
+       "target": [
+        "variable",
+        {
+         "location": {
+          "script": "TbExploreLevelOutGameEffect.4000604",
+          "line": 1,
+          "column": 1,
+          "position": 0,
+          "length": 3
+         },
+         "name": "战斗"
+        }
+       ],
+       "index": [
+        "string",
+        {
+         "value": "胜利恢复生命"
+        }
+       ]
+      }
+     ],
+     "arguments": [
+      [
+       "int",
+       {
+        "location": {
+         "script": "TbExploreLevelOutGameEffect.4000604",
+         "line": 1,
+         "column": 12,
+         "position": 11,
+         "length": 3
+        },
+        "value": 100
+       }
+      ]
+     ]
+    }
+   ],
+   "args": []
+  }
+ ]
+}

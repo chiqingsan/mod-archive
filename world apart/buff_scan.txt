@@ -1,0 +1,20 @@
+tbbuff rows: 220 | keys of row0: ['add_effect_pos', 'add_effect_res', 'buff_affect', 'buff_pose', 'buff_text', 'des', 'effect_pos', 'effect_res', 'icon', 'id', 'max_num', 'name', 'script', 'script_params', 'show_in_list', 'take_affect_type', 'type', 'wave_keep', 'xmlLink']
+heal-ish buffs: 27
+--- 4 回血
+{"id": 4, "name": {"zh-Hans": "回血", "zh-Hant": "回血", "en-US": "Health Regeneration"}, "des": {"zh-Hans": "每回合回复10点生命。", "zh-Hant": "每回合回覆10點生命。", "en-US": "Restore 10 HP each turn."}, "icon": 4, "show_in_list": 1, "add_effect_res": "", "add_effect_pos": 0, "effect_res": "", "effect_pos": 0, "buff_text": {"zh-Hans": "回血", "zh-Hant": "回血", "en-US": "Health Regeneration"}, "buff_pose": "", "script": 0, "script_params": [0], "type": 1, "take_affect_type": 2, "buff_affect": [{"type": 4, "values": [1, 10]}], "max_num": 0, "wave_keep": 0, "xmlLink": ""}
+
+--- 201 重伤
+{"id": 201, "name": {"zh-Hans": "重伤", "zh-Hant": "重傷", "en-US": "Severely Wounded"}, "des": {"zh-Hans": "受到的治疗量降低18.9%，持续3回合。", "zh-Hant": "受到的治療量降低18.9%，持續3回合。", "en-US": "Healing received reduced by 18.9% for 3 turns."}, "icon": 201, "show_in_list": 1, "add_effect_res": "", "add_effect_pos": 0, "effect_res": "", "effect_pos": 0, "buff_text": {"zh-Hans": "重伤", "zh-Hant": "重傷", "en-US": "Severely Wounded"}, "buff_pose": "", "script": 0, "script_params": [0], "type": 2, "take_affect_type": 2, "buff_affect": [], "max_num": 1, "wave_keep": 0, "xmlLink": "Assets/XMLAbilities/Effects/DeBuff_SevereWound.xml"}
+
+--- 208 噬魂烈焰
+{"id": 208, "name": {"zh-Hans": "噬魂烈焰", "zh-Hant": "噬魂烈焰", "en-US": "Soulfire Blaze"}, "des": {"zh-Hans": "持续3回合：每回合开始损失5%最大生命，基础攻击提高32.2%。", "zh-Hant": "持續3回合：每回合開始損失5%最大生命，基礎攻擊提高32.2%。", "en-US": "Lasts 3 turns: loses 5% Max Health at the start of each turn; base Attack increased by 32.2%."}, "icon": 208, "show_in_list": 1, "add_effect_res": "", "add_effect_pos": 0, "effect_res": "", "effect_pos": 0, "buff_text": {"zh-Hans": "噬魂烈焰", "zh-Hant": "噬魂烈焰", "en-US": "Soulfire Blaze"}, "buff_pose": "", "script": 0, "script_params": [0], "type": 1, "take_affect_type": 3, "buff_affect": [], "max_num": 1, "wave_keep": 0, "xmlLink": "Assets/XMLAbilities/Effects/Buff_ShiHunLieYan.xml"}
+
+--- 212 水幕
+{"id": 212, "name": {"zh-Hans": "水幕", "zh-Hant": "水幕", "en-US": "Water Veil"}, "des": {"zh-Hans": "抵挡相当于自身11.4%最大生命的伤害，持续3回合。", "zh-Hant": "抵擋相當於自身11.4%最大生命的傷害，持續3回合。", "en-US": "Blocks damage equal to 11.4% of your own Max Health for 3 turns."}, "icon": 212, "show_in_list": 1, "add_effect_res": "", "add_effect_pos": 0, "effect_res": "", "effect_pos": 0, "buff_text": {"zh-Hans": "水幕", "zh-Hant": "水幕", "en-US": "Water Veil"}, "buff_pose": "", "script": 0, "script_params": [0], "type": 1, "take_affect_type": 3, "buff_affect": [], "max_num": 1, "wave_keep": 0, "xmlLink": "Assets/XMLAbilities/Effects/Buff_WaterBarrier.xml"}
+
+--- 500 虚弱一阶
+{"id": 500, "name": {"zh-Hans": "虚弱一阶", "zh-Hant": "虛弱一階", "en-US": "Weakness I"}, "des": {"zh-Hans": "生命上限-20%。", "zh-Hant": "生命上限-20%。", "en-US": "Max Health -20%."}, "icon": 500, "show_in_list": 1, "add_effect_res": "", "add_effect_pos": 0, "effect_res": "", "effect_pos": 0, "buff_text": {"zh-Hans": "虚弱", "zh-Hant": "虛弱", "en-US": "Weakened"}, "buff_pose": "", "script": 0, "script_params": [0], "type": 2, "take_affect_type": 1, "buff_affect": [{"type": 4, "values": [11, -200]}], "max_num": 1, "wave_keep": 0, "xmlLink": ""}
+
+--- 501 虚弱二阶
+{"id": 501, "name": {"zh-Hans": "虚弱二阶", "zh-Hant": "虛弱二階", "en-US": "Weakness II"}, "des": {"zh-Hans": "生命上限-30%。", "zh-Hant": "生命上限-30%。", "en-US": "Max Health -30%."}, "icon": 501, "show_in_list": 1, "add_effect_res": "", "add_effect_pos": 0, "effect_res": "", "effect_pos": 0, "buff_text": {"zh-Hans": "虚弱", "zh-Hant": "虛弱", "en-US": "Weakened"}, "buff_pose": "", "script": 0, "script_params": [0], "type": 2, "take_affect_type": 1, "buff_affect": [{"type": 4, "values": [11, -300]}], "max_num": 1, "wave_keep": 0, "xmlLink": ""}
+

@@ -1,0 +1,43 @@
+heal-ish rows: 26
+--- 103 Skills/Skill_Meditation | 纳气归元，令周身剑势内敛而不发，守护己身。
+凝聚5层【青阳剑气】，并使自身防御提高<#65e7be>30.7%</color>，持续2回合。
+  affects: []
+  buffs: []
+  script_params: [0]
+--- 106 Skills/Skill_SwordIntent | 木生为荣，木死为枯。岁岁荣枯，死生相依。
+对敌方造成<#65e7be>131%</color>攻击力的木系伤害；每有1层<#65e7be>【青阳剑气】</color>，本次伤害提高<#65e7be>8.6%</color>。同时施加3回合【重伤】，使目标受到的治疗量降低<#65e7be>18.9%</color>。
+  affects: []
+  buffs: [{"buff_object": 2, "buff_times": 3, "buff_id": 201, "buff_num": 1}]
+  script_params: [0]
+--- 202 Skills/Skill_DampnessCurse | 引动深海之下的幽冷之气，悄无声息地侵入敌身。
+对敌方施加持续<#578fcb>1</color>回合的【潮湿】；处于【潮湿】状态的敌人受到的水系伤害提高<#578fcb>66.7%</color>。【潮湿】持续期间，自身获得的生命恢复效果提高<#578fcb>33.3%</color>。
+  affects: []
+  buffs: [{"buff_object": 2, "buff_times": 1, "buff_id": 202, "buff_num": 1}]
+  script_params: [0]
+--- 205 Skills/Skill_WaterEssence | 流水去而复归，在重创敌人的同时滋养自身。
+对敌方造成<#578fcb>84%</color>攻击力的水系伤害，同时恢复自身<#578fcb>6.3%</color>最大生命。
+  affects: [{"target": 1, "type": 1, "formula": 2, "value": 750}]
+  buffs: []
+  script_params: [0]
+--- 604 Skills/Skill_QingMuYuDao | 叶脉青光沿经络回流周身，枝叶虚影随吐纳舒展。
+恢复相当于自身<#65e7be>98%</color>攻击力的生命，并额外获得<#65e7be>3层</color><#65e7be>【木锦】</color>。
+  affects: []
+  buffs: []
+  script_params: [0]
+--- 606 Skills/Skill_LieYangFenJi | 叶脉青光在经络中轮转，先聚万叶攻敌，再敛生机归根。
+功法分<#65e7be>2回合</color>结算：第<#65e7be>1回合</color>消耗全部<#65e7be>【木锦】</color>，对敌方造成<#65e7be>125%</color>攻击力的木系伤害，每消耗<#65e7be>1层</color><#65e7be>【木锦】</color>使本次伤害再提高<#65e7be>5%</color>；第<#65e7be>2回合</color>恢复<#65e7be>18.6%</color>最大生命值，防御提高<#65e7be>16.6%</color>，并额外获得<#65e7be>3层</color><#65e7be>【木锦】</color>。
+  affects: []
+  buffs: []
+  script_params: [0]
+--- 10091 Skills/Skill_MonsterMoXiuManRecovery | 魔修男引血煞回流护体，为自身恢复9.5%最大生命。
+  affects: [{"target": 2, "type": 2, "formula": 1, "value": 0}]
+  buffs: []
+  script_params: [0]
+--- 103 Skills/Skill_Meditation | 纳气归元，令周身剑势内敛而不发，守护己身。凝聚<#65e7be>10</color>层<#65e7be>青阳剑气</color>，并使自身防御提升10%，持续1回合。
+凝聚5层【青阳剑气】，并使自身防御提高<#65e7be>30.7%</color>，持续2回合。
+  affects: []
+  buffs: []
+  script_params: [0]
+type dist: {1: 209, 101: 2, 2: 1}
+target dist: {1: 209, 2: 3}
+formula dist: {2: 211, 1: 1}

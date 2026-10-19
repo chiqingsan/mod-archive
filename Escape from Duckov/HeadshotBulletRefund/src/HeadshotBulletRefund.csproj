@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 爆头回弹 / HeadshotBulletRefund — 逃离鸭科夫 mod
+       构建：dotnet build -c Release
+       产物：bin/Release/HeadshotBulletRefund.dll
+       换机器/换安装路径时只需改下面的 GameManagedDir（或用 -p:GameManagedDir=... 覆盖）。 -->
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>HeadshotBulletRefund</AssemblyName>
+    <RootNamespace>HeadshotBulletRefund</RootNamespace>
+    <LangVersion>9.0</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <DebugType>none</DebugType>
+    <Deterministic>true</Deterministic>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <!-- 不要生成 .deps.json / runtimeconfig：mod 由游戏 Assembly.LoadFrom 直接加载 -->
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <GameManagedDir Condition="'$(GameManagedDir)' == ''">d:\app\steam\steamapps\common\Escape from Duckov\Duckov_Data\Managed\</GameManagedDir>
+  </PropertyGroup>
+
+  <!-- 只引用真正用到的引擎/游戏程序集；Private=false 表示不复制到输出目录 -->
+  <ItemGroup>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(GameManagedDir)UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- JsonUtility（读 config.json 用）在这个模块里 -->
+    <Reference Include="UnityEngine.JSONSerializeModule">
+      <HintPath>$(GameManagedDir)UnityEngine.JSONSerializeModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TeamSoda.Duckov.Core">
+      <HintPath>$(GameManagedDir)TeamSoda.Duckov.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ItemStatsSystem">
+      <HintPath>$(GameManagedDir)ItemStatsSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

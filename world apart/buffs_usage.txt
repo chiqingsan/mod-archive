@@ -1,0 +1,10 @@
+buff_object dist: {2: 21, 1: 7, 0: 1}
+skills using buff 4 (回血): [] total: 0
+friendly buff samples:
+   (100002, 'Skills/Skill_BloodEvilShield', {'buff_object': 1, 'buff_times': 1, 'buff_id': 100002, 'buff_num': 1}, '血煞盾')
+   (100004, 'Skills/Skill_BloodSoulRefine', {'buff_object': 1, 'buff_times': 1, 'buff_id': 100004, 'buff_num': 1}, '血煞转化')
+   (100002, 'Skills/Skill_BloodEvilShield', {'buff_object': 1, 'buff_times': 1, 'buff_id': 100002, 'buff_num': 1}, '血煞盾')
+   (100004, 'Skills/Skill_BloodSoulRefine', {'buff_object': 1, 'buff_times': 1, 'buff_id': 100004, 'buff_num': 1}, '血煞转化')
+   (10270, 'Skills/Skill_MonsterYuqianlinFlameMirror', {'buff_object': 0, 'buff_times': 2, 'buff_id': 100050, 'buff_num': 1}, '业火返照')
+PLAYER SKILL LEVEL ROW 101 | buffs: [] | affects: [{'target': 1, 'type': 1, 'formula': 2, 'value': 1500}]
+PLAYER SKILL LEVEL ROW 102 | buffs: [] | affects: [{'target': 1, 'type': 1, 'formula': 2, 'value': 1950}]

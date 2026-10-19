@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 水元回复：水属性单体攻击，0.75倍伤害，回复3%最大生命值 -->
+<Ability id="Skill_WaterEssence_1" baseId="WaterEssence" level="1">
+    <Meta>
+        <Name>水元回复</Name>
+        <Element>Water</Element>
+        <TargetType>SingleEnemy</TargetType>
+        <ClassType>WaterEssence</ClassType>
+    </Meta>
+    
+    <Cooldown turns="1"/>
+    
+    <Params>
+        <Param key="damageScaling" value="0.844"/>
+        <Param key="healPercent" value="0.0625"/>
+        <!-- 回血时在施法者Root挂点播放的恢复特效预设体；特效播放完毕后自动回收 -->
+        <Param key="healVfxPrefabPath" value="Assets/Res/Effects/Prefab/Common/fx_common_huilantongyong_001.prefab" resource="Vfx" warmupCount="1"/>
+        <!-- 恢复特效无法读取粒子/动画时使用的兜底持续时间，单位秒 -->
+        <Param key="healVfxFallbackDuration" value="1"/>
+        <!-- 恢复特效创建成功后播放的专属一次性音效 -->
+        <Param key="healAudioActionId" value="30732"/>
+        <!-- 命中时创建在目标Root挂点的受击特效；止水追加段会等待首个实例播放完毕并回收后再次创建 -->
+        <Param key="hitVfxPrefabPath" value="Assets/Res/Effects/Prefab/Skill/Liuyingjian/fx_skill_Liuyingjian_hit.prefab" resource="Vfx" warmupCount="1"/>
+        <!-- 命中特效无法读取粒子/动画时使用的兜底持续时间，单位秒 -->
+        <Param key="hitVfxFallbackDuration" value="2"/>
+        <!-- 命中特效创建在目标Root挂点后的本地Y轴初始旋转角度，单位度 -->
+        <Param key="hitVfxLocalEulerY" value="-180"/>
+        <!-- NPC 受击特效朝向覆盖；玩家仍使用 hitVfxLocalEulerY。 -->
+        <Param key="npcHitVfxLocalEulerY" value="40"/>
+        <!-- 命中特效创建成功后播放的专属一次性音效 -->
+        <Param key="hitAudioActionId" value="30733"/>
+        <!-- 命中径向模糊开关。 -->
+        <Param key="hitRadialBlurEnabled" value="true"/>
+        <!-- 命中径向模糊持续时间（秒），与强制归零时长一致。 -->
+        <Param key="hitRadialBlurDuration" value="0.2"/>
+        <!-- 命中径向模糊强制归零时间（秒），与本次反馈时长一致。 -->
+        <Param key="hitRadialBlurForceZeroDuration" value="0.2"/>
+        <!-- 受击反馈每帧减幅，以初始值 / (60 × 持续秒数) 标定；公共执行代码仍受实际帧率影响。 -->
+        <Param key="hitRadialBlurStrengthDecayPerFrame" value="0.0291666667"/>
+        <!-- 命中震屏开关。 -->
+        <Param key="hitCameraShakeEnabled" value="true"/>
+        <!-- 命中震屏噪声资源，由当前技能配置。 -->
+        <Param key="hitCameraShakeNoiseProfilePath" value="Assets/Res/Timelines/Noise/CinemachineCamera_15 Secondary Noise.asset" resource="NoiseSettings" warmupCount="1"/>
+        <!-- 命中震屏初始幅度，按当前技能实际特效重量分档。 -->
+        <Param key="hitCameraShakeInitialAmplitude" value="4"/>
+        <!-- 命中震屏持续时间（秒）；到时强制归零，重击保留更长余震。 -->
+        <Param key="hitCameraShakeDuration" value="0.2"/>
+        <!-- 受击反馈每帧减幅，以初始值 / (60 × 持续秒数) 标定；公共执行代码仍受实际帧率影响。 -->
+        <Param key="hitCameraShakeAmplitudeDecayPerFrame" value="0.333333333"/>
+        <!-- 受击径向模糊初始强度。 -->
+        <Param key="hitRadialBlurInitialStrength" value="0.35"/>
+    </Params>
+    
+    <Tags>
+        <Grant>Ability.Skill.Active</Grant>
+    </Tags>
+</Ability>
+

@@ -1,0 +1,2 @@
+tbskill rows: 351
+keys of row0: ['ability_kind', 'behavior_tree_type', 'behavior_tree_weight', 'cd', 'companion_id', 'costs', 'element', 'icon', 'id', 'item_id', 'levels', 'name', 'script', 'skill_availability', 'skill_tier', 'xmlLink']

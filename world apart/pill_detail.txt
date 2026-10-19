@@ -1,0 +1,26 @@
+ITEM 180001 金砂散 | useEffectId: 180001 | type: 18 | canUse: True | quality: 0 | price: 40
+ITEM 180002 回春散 | useEffectId: 180002 | type: 18 | canUse: True | quality: 0 | price: 40
+=== tbpillrecipe rows: 73 | keys: ['CoolDown', 'TimeType', 'apply_scope', 'batch_exp_per', 'collect_exp', 'condense_fail_exp', 'condense_fan_exp', 'condense_shen_exp', 'condense_xian_exp', 'desc', 'element', 'fan_threshold', 'id', 'is_enabled', 'item_id', 'main_duration', 'main_duration_enhanced', 'main_duration_shen', 'main_effects', 'main_effects_enhanced', 'main_effects_shen', 'map_icon', 'max_craft_count', 'max_use', 'name', 'pill_category', 'poi_scale_max', 'poi_scale_min', 'property', 'scope', 'shen_threshold', 'spirit_progress', 'stages', 'tier', 'total_time', 'toxin_max', 'xian_threshold']
+{"id": 1000003, "name": {"zh-Hans": "金砂散", "zh-Hant": "金砂散", "en-US": "Golden Sand Powder"}, "tier": 1, "element": 1, "item_id": 180001, "scope": 2, "apply_scope": 3, "max_use": 0, "main_effects": [{"type": 2, "values": [30, 1]}], "main_effects_enhanced": [{"type": 2, "values": [33, 1]}], "main_effects_shen": [{"type": 2, "values": [36, 1]}], "main_duration": 0, "main_duration_enhanced": 0, "main_duration_shen": 0, "CoolDown": 2, "TimeType": 0, "property": 1, "total_time": 15, "spirit_progress": 50, "fan_threshold": 600, "xian_threshold": 850, "shen_threshold": 950, "max_craft_count": 0, "stag
+{"id": 1000004, "name": {"zh-Hans": "回春散", "zh-Hant": "回春散", "en-US": "Spring-Returning Powder"}, "tier": 1, "element": 2, "item_id": 180002, "scope": 2, "apply_scope": 3, "max_use": 0, "main_effects": [{"type": 2, "values": [50, 2]}], "main_effects_enhanced": [{"type": 2, "values": [55, 2]}], "main_effects_shen": [{"type": 2, "values": [60, 2]}], "main_duration": 0, "main_duration_enhanced": 0, "main_duration_shen": 0, "CoolDown": 2, "TimeType": 0, "property": 2, "total_time": 15, "spirit_progress": 50, "fan_threshold": 600, "xian_threshold": 850, "shen_threshold": 950, "max_craft_count": 0, 
+=== all tbpilleffect:
+  11 敛息 | stat_type: 0 | category: 3 | value: 0.2
+  12 凝锋 | stat_type: 0 | category: 2 | value: 100
+  113 未知的药效 | stat_type: 51 | category: 1 | value: 165
+  114 未知的药效 | stat_type: 119 | category: 1 | value: 200
+  21 荣生 | stat_type: 1 | category: 5 | value: 5
+  22 蔓生 | stat_type: 0 | category: 3 | value: 0.3
+  23 未知的药效 | stat_type: 52 | category: 1 | value: 165
+  124 未知的药效 | stat_type: 0 | category: 6 | value: 1
+  31 清冽 | stat_type: 0 | category: 2 | value: 50
+  32 潺延 | stat_type: 0 | category: 3 | value: 0.3
+  33 未知的药效 | stat_type: 53 | category: 1 | value: 165
+  134 未知的药效 | stat_type: 0 | category: 6 | value: 200
+  41 引灵 | stat_type: 25 | category: 5 | value: 10
+  142 炽炼 | stat_type: 0 | category: 2 | value: 100
+  43 未知的药效 | stat_type: 54 | category: 1 | value: 165
+  244 未知的药效 | stat_type: 0 | category: 6 | value: 372
+  51 固本 | stat_type: 11 | category: 1 | value: 15
+  52 厚承 | stat_type: 0 | category: 2 | value: 100
+  53 未知的药效 | stat_type: 55 | category: 1 | value: 165
+  254 未知的药效 | stat_type: 120 | category: 1 | value: 200

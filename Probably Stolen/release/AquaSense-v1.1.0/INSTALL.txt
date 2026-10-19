@@ -1,0 +1,87 @@
+AQUASENSE 1.1.0
+Author / 作者: chiqingsan
+
+ENGLISH
+=======
+
+Requirements:
+- Probably Stolen Demo 0.46D
+- MelonLoader
+
+Installation:
+1. Install MelonLoader and launch the game once.
+2. Close the game.
+3. Copy `AquaSense.dll` into the game's `Mods` folder.
+4. Launch the game and load a save.
+
+Typical path:
+D:\app\steam\steamapps\common\Probably Stolen Demo\Mods\AquaSense.dll
+
+Important:
+- Keep only one AquaSense DLL in the Mods folder.
+- The mod does not include MelonLoader or game files.
+- If the game updates, this mod may require a rebuild.
+
+What it adds:
+- Scanner-gated water composition tooltip.
+- Standard bottled water support.
+- Original water-quality label after the purity value.
+- Automatic label refresh after liquid transfer when a scanner is owned.
+- Original game flow preserved when no scanner is owned.
+- Filter name and durability shown in the tooltip, including empty containers.
+- Automatic depleted-filter replacement across nested player containers.
+- Advanced > vanilla > other compatible filter priority.
+- Position, shape, boundary, and overlap checks before exchange.
+- A bilingual notice after a successful replacement.
+
+Settings:
+Open the `AquaSense` category in MelonPreferences. Three switches, all on by default:
+- Automatically replace depleted filters.
+- Show filter durability in the tooltip.
+- Refresh water labels after pouring.
+
+Uninstall:
+Close the game and delete `AquaSense.dll` from the Mods folder.
+
+
+中文
+====
+
+依赖：
+- Probably Stolen Demo 0.46D
+- MelonLoader
+
+安装：
+1. 安装 MelonLoader，并启动游戏一次。
+2. 关闭游戏。
+3. 将 `AquaSense.dll` 复制到游戏 Mods 目录。
+4. 启动游戏并载入存档。
+
+常见路径：
+D:\app\steam\steamapps\common\Probably Stolen Demo\Mods\AquaSense.dll
+
+注意：
+- Mods 目录中只保留一个 AquaSense DLL。
+- 本 Mod 不包含 MelonLoader 或游戏文件。
+- 游戏更新后，可能需要重新编译 Mod。
+
+功能：
+- 拥有水质扫描仪时显示水质成分。
+- 支持标准瓶装水。
+- 在纯度数值后显示游戏原有水质标签。
+- 拥有扫描仪时，倒水后自动更新原版水质标签。
+- 没有扫描仪时保持游戏原有逻辑，不强制刷新标签。
+- 悬浮面板显示滤芯名称与耐久度，水罐为空时同样显示。
+- 自动检索顶层库存和嵌套容器中的过滤器。
+- 替换优先级为高级过滤器、普通过滤器、其他兼容过滤器。
+- 交换前检查位置、形状、边界和重叠，无法安全交换时保持原状。
+- 替换成功后弹出中英双语提示。
+
+设置：
+在 MelonPreferences 的 `AquaSense` 分类下，三项开关默认全部开启：
+- 滤芯耗尽后自动更换。
+- 悬浮面板显示滤芯耐久。
+- 倒水后自动更新水质标签。
+
+卸载：
+关闭游戏后，从 Mods 目录删除 `AquaSense.dll`。

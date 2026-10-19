@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>FutureTech</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <TargetFramework>netcoreapp6.0</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="DeepSpacePawnshop.FutureTech.Assets.Icons.aging-cabinet.png" />
+    <None Remove="DeepSpacePawnshop.FutureTech.Assets.Icons.charger.png" />
+    <None Remove="DeepSpacePawnshop.FutureTech.Assets.Icons.dimensional-pocket.png" />
+    <None Remove="DeepSpacePawnshop.FutureTech.Assets.Icons.future-perk.png" />
+    <None Remove="DeepSpacePawnshop.FutureTech.Assets.Icons.module.png" />
+    <None Remove="DeepSpacePawnshop.FutureTech.Assets.Icons.nuclear-battery.png" />
+    <None Remove="DeepSpacePawnshop.FutureTech.Assets.Icons.purifier.png" />
+    <None Remove="DeepSpacePawnshop.FutureTech.Assets.Icons.void-jug.png" />
+    <EmbeddedResource Include="DeepSpacePawnshop.FutureTech.Assets.Icons.aging-cabinet.png" LogicalName="DeepSpacePawnshop.FutureTech.Assets.Icons.aging-cabinet.png" />
+    <EmbeddedResource Include="DeepSpacePawnshop.FutureTech.Assets.Icons.charger.png" LogicalName="DeepSpacePawnshop.FutureTech.Assets.Icons.charger.png" />
+    <EmbeddedResource Include="DeepSpacePawnshop.FutureTech.Assets.Icons.dimensional-pocket.png" LogicalName="DeepSpacePawnshop.FutureTech.Assets.Icons.dimensional-pocket.png" />
+    <EmbeddedResource Include="DeepSpacePawnshop.FutureTech.Assets.Icons.future-perk.png" LogicalName="DeepSpacePawnshop.FutureTech.Assets.Icons.future-perk.png" />
+    <EmbeddedResource Include="DeepSpacePawnshop.FutureTech.Assets.Icons.module.png" LogicalName="DeepSpacePawnshop.FutureTech.Assets.Icons.module.png" />
+    <EmbeddedResource Include="DeepSpacePawnshop.FutureTech.Assets.Icons.nuclear-battery.png" LogicalName="DeepSpacePawnshop.FutureTech.Assets.Icons.nuclear-battery.png" />
+    <EmbeddedResource Include="DeepSpacePawnshop.FutureTech.Assets.Icons.purifier.png" LogicalName="DeepSpacePawnshop.FutureTech.Assets.Icons.purifier.png" />
+    <EmbeddedResource Include="DeepSpacePawnshop.FutureTech.Assets.Icons.void-jug.png" LogicalName="DeepSpacePawnshop.FutureTech.Assets.Icons.void-jug.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MelonLoader" />
+    <Reference Include="Il2Cppmscorlib" />
+    <Reference Include="Assembly-CSharp" />
+    <Reference Include="UnityEngine.CoreModule" />
+    <Reference Include="Il2CppInterop.Runtime" />
+    <Reference Include="0Harmony" />
+    <Reference Include="UnityEngine.UI" />
+    <Reference Include="UnityEngine.ImageConversionModule" />
+    <Reference Include="UnityEngine.InputLegacyModule" />
+    <Reference Include="Unity.TextMeshPro" />
+  </ItemGroup>
+</Project>

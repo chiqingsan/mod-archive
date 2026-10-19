@@ -1,0 +1,575 @@
+{
+  "table": "tbexploreleveloutgameeffect",
+  "keyFields": [
+    "id"
+  ],
+  "upsert": [
+    {
+      "id": 4001001,
+      "sourceType": 4,
+      "sourceId": 1001,
+      "unlockValue": 1,
+      "effectDomain": 12,
+      "priority": 0,
+      "effectName": {
+        "zh-Hans": "神意初生",
+        "zh-Hant": "神意初生",
+        "en-US": "Nascent Divine Will"
+      },
+      "effectDesc": {
+        "zh-Hans": "精力上限+99999",
+        "zh-Hant": "精力上限+99999",
+        "en-US": "Max Energy +99999"
+      },
+      "effectExprs": [
+        {
+          "func": [
+            "call",
+            {
+              "location": {
+                "script": "TbExploreLevelOutGameEffect.4001001",
+                "line": 1,
+                "column": 1,
+                "position": 0,
+                "length": 5
+              },
+              "target": [
+                "index",
+                {
+                  "location": {
+                    "script": "TbExploreLevelOutGameEffect.4001001",
+                    "line": 1,
+                    "column": 1,
+                    "position": 0,
+                    "length": 5
+                  },
+                  "target": [
+                    "variable",
+                    {
+                      "location": {
+                        "script": "TbExploreLevelOutGameEffect.4001001",
+                        "line": 1,
+                        "column": 1,
+                        "position": 0,
+                        "length": 5
+                      },
+                      "name": "玩家属性"
+                    }
+                  ],
+                  "index": [
+                    "string",
+                    {
+                      "value": "精力上限固定加成"
+                    }
+                  ]
+                }
+              ],
+              "arguments": [
+                [
+                  "int",
+                  {
+                    "location": {
+                      "script": "TbExploreLevelOutGameEffect.4001001",
+                      "line": 1,
+                      "column": 16,
+                      "position": 15,
+                      "length": 2
+                    },
+                    "value": 99999
+                  }
+                ]
+              ]
+            }
+          ],
+          "args": []
+        }
+      ]
+    },
+    {
+      "id": 4001006,
+      "sourceType": 4,
+      "sourceId": 1006,
+      "unlockValue": 1,
+      "effectDomain": 12,
+      "priority": 0,
+      "effectName": {
+        "zh-Hans": "精元充盈",
+        "zh-Hant": "精元充盈",
+        "en-US": "Abundant Vital Essence"
+      },
+      "effectDesc": {
+        "zh-Hans": "精力上限+99999",
+        "zh-Hant": "精力上限+99999",
+        "en-US": "Max Energy +99999"
+      },
+      "effectExprs": [
+        {
+          "func": [
+            "call",
+            {
+              "location": {
+                "script": "TbExploreLevelOutGameEffect.4001006",
+                "line": 1,
+                "column": 1,
+                "position": 0,
+                "length": 5
+              },
+              "target": [
+                "index",
+                {
+                  "location": {
+                    "script": "TbExploreLevelOutGameEffect.4001006",
+                    "line": 1,
+                    "column": 1,
+                    "position": 0,
+                    "length": 5
+                  },
+                  "target": [
+                    "variable",
+                    {
+                      "location": {
+                        "script": "TbExploreLevelOutGameEffect.4001006",
+                        "line": 1,
+                        "column": 1,
+                        "position": 0,
+                        "length": 5
+                      },
+                      "name": "玩家属性"
+                    }
+                  ],
+                  "index": [
+                    "string",
+                    {
+                      "value": "精力上限固定加成"
+                    }
+                  ]
+                }
+              ],
+              "arguments": [
+                [
+                  "int",
+                  {
+                    "location": {
+                      "script": "TbExploreLevelOutGameEffect.4001006",
+                      "line": 1,
+                      "column": 16,
+                      "position": 15,
+                      "length": 2
+                    },
+                    "value": 99999
+                  }
+                ]
+              ]
+            }
+          ],
+          "args": []
+        }
+      ]
+    },
+    {
+      "id": 4001009,
+      "sourceType": 4,
+      "sourceId": 1009,
+      "unlockValue": 1,
+      "effectDomain": 12,
+      "priority": 0,
+      "effectName": {
+        "zh-Hans": "神魂壮大",
+        "zh-Hant": "神魂壯大",
+        "en-US": "Strengthened Primordial Spirit"
+      },
+      "effectDesc": {
+        "zh-Hans": "精力上限+99999",
+        "zh-Hant": "精力上限+99999",
+        "en-US": "Max Energy +99999"
+      },
+      "effectExprs": [
+        {
+          "func": [
+            "call",
+            {
+              "location": {
+                "script": "TbExploreLevelOutGameEffect.4001009",
+                "line": 1,
+                "column": 1,
+                "position": 0,
+                "length": 5
+              },
+              "target": [
+                "index",
+                {
+                  "location": {
+                    "script": "TbExploreLevelOutGameEffect.4001009",
+                    "line": 1,
+                    "column": 1,
+                    "position": 0,
+                    "length": 5
+                  },
+                  "target": [
+                    "variable",
+                    {
+                      "location": {
+                        "script": "TbExploreLevelOutGameEffect.4001009",
+                        "line": 1,
+                        "column": 1,
+                        "position": 0,
+                        "length": 5
+                      },
+                      "name": "玩家属性"
+                    }
+                  ],
+                  "index": [
+                    "string",
+                    {
+                      "value": "精力上限固定加成"
+                    }
+                  ]
+                }
+              ],
+              "arguments": [
+                [
+                  "int",
+                  {
+                    "location": {
+                      "script": "TbExploreLevelOutGameEffect.4001009",
+                      "line": 1,
+                      "column": 16,
+                      "position": 15,
+                      "length": 2
+                    },
+                    "value": 99999
+                  }
+                ]
+              ]
+            }
+          ],
+          "args": []
+        }
+      ]
+    },
+    {
+      "id": 4001011,
+      "sourceType": 4,
+      "sourceId": 1011,
+      "unlockValue": 1,
+      "effectDomain": 12,
+      "priority": 0,
+      "effectName": {
+        "zh-Hans": "元神凝练",
+        "zh-Hant": "元神凝練",
+        "en-US": "Primordial Spirit Refinement"
+      },
+      "effectDesc": {
+        "zh-Hans": "精力上限+99999",
+        "zh-Hant": "精力上限+99999",
+        "en-US": "Max Energy +99999"
+      },
+      "effectExprs": [
+        {
+          "func": [
+            "call",
+            {
+              "location": {
+                "script": "TbExploreLevelOutGameEffect.4001011",
+                "line": 1,
+                "column": 1,
+                "position": 0,
+                "length": 5
+              },
+              "target": [
+                "index",
+                {
+                  "location": {
+                    "script": "TbExploreLevelOutGameEffect.4001011",
+                    "line": 1,
+                    "column": 1,
+                    "position": 0,
+                    "length": 5
+                  },
+                  "target": [
+                    "variable",
+                    {
+                      "location": {
+                        "script": "TbExploreLevelOutGameEffect.4001011",
+                        "line": 1,
+                        "column": 1,
+                        "position": 0,
+                        "length": 5
+                      },
+                      "name": "玩家属性"
+                    }
+                  ],
+                  "index": [
+                    "string",
+                    {
+                      "value": "精力上限固定加成"
+                    }
+                  ]
+                }
+              ],
+              "arguments": [
+                [
+                  "int",
+                  {
+                    "location": {
+                      "script": "TbExploreLevelOutGameEffect.4001011",
+                      "line": 1,
+                      "column": 16,
+                      "position": 15,
+                      "length": 2
+                    },
+                    "value": 99999
+                  }
+                ]
+              ]
+            }
+          ],
+          "args": []
+        }
+      ]
+    },
+    {
+      "id": 1005005,
+      "sourceType": 1,
+      "sourceId": 1005,
+      "unlockValue": 1,
+      "effectDomain": 12,
+      "priority": 0,
+      "effectName": {
+        "zh-Hans": "培元固本",
+        "zh-Hant": "培元固本",
+        "en-US": "Nurture the Origin and Fortify the Foundation"
+      },
+      "effectDesc": {
+        "zh-Hans": "精力上限<color=#FFD71E>+99999</color>",
+        "zh-Hant": "精力上限<color=#FFD71E>+99999</color>",
+        "en-US": "Max Energy <color=#FFD71E>+99999</color>"
+      },
+      "effectExprs": [
+        {
+          "func": [
+            "call",
+            {
+              "location": {
+                "script": "TbExploreLevelOutGameEffect.1005005",
+                "line": 1,
+                "column": 1,
+                "position": 0,
+                "length": 5
+              },
+              "target": [
+                "index",
+                {
+                  "location": {
+                    "script": "TbExploreLevelOutGameEffect.1005005",
+                    "line": 1,
+                    "column": 1,
+                    "position": 0,
+                    "length": 5
+                  },
+                  "target": [
+                    "variable",
+                    {
+                      "location": {
+                        "script": "TbExploreLevelOutGameEffect.1005005",
+                        "line": 1,
+                        "column": 1,
+                        "position": 0,
+                        "length": 5
+                      },
+                      "name": "玩家属性"
+                    }
+                  ],
+                  "index": [
+                    "string",
+                    {
+                      "value": "精力上限固定加成"
+                    }
+                  ]
+                }
+              ],
+              "arguments": [
+                [
+                  "int",
+                  {
+                    "location": {
+                      "script": "TbExploreLevelOutGameEffect.1005005",
+                      "line": 1,
+                      "column": 16,
+                      "position": 15,
+                      "length": 2
+                    },
+                    "value": 99999
+                  }
+                ]
+              ]
+            }
+          ],
+          "args": []
+        }
+      ]
+    },
+    {
+      "id": 1005007,
+      "sourceType": 1,
+      "sourceId": 1005,
+      "unlockValue": 1,
+      "effectDomain": 12,
+      "priority": 0,
+      "effectName": {
+        "zh-Hans": "摄生养锐",
+        "zh-Hant": "攝生養銳",
+        "en-US": "Rest and Sharpen"
+      },
+      "effectDesc": {
+        "zh-Hans": "精力上限<color=#FFD71E>+99999</color>",
+        "zh-Hant": "精力上限<color=#FFD71E>+99999</color>",
+        "en-US": "Max Energy <color=#FFD71E>+99999</color>"
+      },
+      "effectExprs": [
+        {
+          "func": [
+            "call",
+            {
+              "location": {
+                "script": "TbExploreLevelOutGameEffect.1005007",
+                "line": 1,
+                "column": 1,
+                "position": 0,
+                "length": 5
+              },
+              "target": [
+                "index",
+                {
+                  "location": {
+                    "script": "TbExploreLevelOutGameEffect.1005007",
+                    "line": 1,
+                    "column": 1,
+                    "position": 0,
+                    "length": 5
+                  },
+                  "target": [
+                    "variable",
+                    {
+                      "location": {
+                        "script": "TbExploreLevelOutGameEffect.1005007",
+                        "line": 1,
+                        "column": 1,
+                        "position": 0,
+                        "length": 5
+                      },
+                      "name": "玩家属性"
+                    }
+                  ],
+                  "index": [
+                    "string",
+                    {
+                      "value": "精力上限固定加成"
+                    }
+                  ]
+                }
+              ],
+              "arguments": [
+                [
+                  "int",
+                  {
+                    "location": {
+                      "script": "TbExploreLevelOutGameEffect.1005007",
+                      "line": 1,
+                      "column": 16,
+                      "position": 15,
+                      "length": 2
+                    },
+                    "value": 99999
+                  }
+                ]
+              ]
+            }
+          ],
+          "args": []
+        }
+      ]
+    },
+    {
+      "id": 4000604,
+      "sourceType": 4,
+      "sourceId": 604,
+      "unlockValue": 1,
+      "effectDomain": 2,
+      "priority": 0,
+      "effectName": {
+        "zh-Hans": "战罢回元",
+        "zh-Hant": "戰罷回元",
+        "en-US": "Battle's End, Essence Restored"
+      },
+      "effectDesc": {
+        "zh-Hans": "每次战斗胜利后，恢复50%生命",
+        "zh-Hant": "每次戰鬥勝利後，恢復50%生命",
+        "en-US": "After every battle victory, restore 50% HP."
+      },
+      "effectExprs": [
+        {
+          "func": [
+            "call",
+            {
+              "location": {
+                "script": "TbExploreLevelOutGameEffect.4000604",
+                "line": 1,
+                "column": 1,
+                "position": 0,
+                "length": 3
+              },
+              "target": [
+                "index",
+                {
+                  "location": {
+                    "script": "TbExploreLevelOutGameEffect.4000604",
+                    "line": 1,
+                    "column": 1,
+                    "position": 0,
+                    "length": 3
+                  },
+                  "target": [
+                    "variable",
+                    {
+                      "location": {
+                        "script": "TbExploreLevelOutGameEffect.4000604",
+                        "line": 1,
+                        "column": 1,
+                        "position": 0,
+                        "length": 3
+                      },
+                      "name": "战斗"
+                    }
+                  ],
+                  "index": [
+                    "string",
+                    {
+                      "value": "胜利恢复生命"
+                    }
+                  ]
+                }
+              ],
+              "arguments": [
+                [
+                  "int",
+                  {
+                    "location": {
+                      "script": "TbExploreLevelOutGameEffect.4000604",
+                      "line": 1,
+                      "column": 12,
+                      "position": 11,
+                      "length": 3
+                    },
+                    "value": 500
+                  }
+                ]
+              ]
+            }
+          ],
+          "args": []
+        }
+      ]
+    }
+  ]
+}

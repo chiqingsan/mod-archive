@@ -1,0 +1,33 @@
+# Local task metadata
+/.zcode/
+/crash-context-*.txt
+
+# Nested repository metadata is kept locally, but the parent backup tracks the files.
+**/.git/
+
+# IDE, tool and build caches
+**/.mimosa/
+**/.store/
+**/.vs/
+**/.idea/
+**/bin/
+**/obj/
+**/*.cache
+
+# Rebuildable game/mod binaries and packaged toolchains
+**/*.dll
+**/*.pdb
+**/*.exe
+**/*.zip
+**/DummyDll/
+
+# Runtime diagnostics and crash artifacts
+**/*.log
+**/*.wer
+**/Player.log
+
+# Game snapshots and generated data dumps
+**/game-snapshot-*/
+**/tables_dump/
+**/il2cppdumper/script.json
+**/il2cppdumper/il2cpp.h

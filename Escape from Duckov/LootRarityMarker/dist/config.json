@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "scanRadius": 25,
+  "scanIntervalMs": 500,
+  "scanOnlyWhenMoving": true,
+  "scanMoveDistance": 1.0,
+  "rankByValue": false,
+  "glowByValue": false,
+  "outline": false,
+  "diagnostics": false,
+  "maxWorkPerFrame": 8,
+  "colorProperties": ""
+}

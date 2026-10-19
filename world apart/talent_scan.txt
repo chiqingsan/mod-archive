@@ -1,0 +1,9 @@
+=== tbtalentpathnode: 120 rows | keys: ['combat_buff_desc', 'combat_buff_icon', 'cost', 'desc', 'icon', 'id', 'name', 'pos_x', 'pos_y', 'pre_nodes']
+{"id": 1001, "name": {"zh-Hans": "神意初生", "zh-Hant": "神意初生", "en-US": "Nascent Divine Will"}, "icon": "Assets/Res/GUI/Icons/talent/talent16.png", "desc": {"zh-Hans": "精力上限+10", "zh-Hant": "精力上限+10", "en-US": "Max Energy +10"}, "pre_nodes": [], "cost": 2, "pos_x": 10, "pos_y": 50, "combat_buff_desc": {"zh-Hans": "", "zh-Hant": "", "en-US": ""}, "combat_buff_icon": 0}
+
+{"id": 1006, "name": {"zh-Hans": "精元充盈", "zh-Hant": "精元充盈", "en-US": "Abundant Vital Essence"}, "icon": "", "desc": {"zh-Hans": "精力上限+10", "zh-Hant": "精力上限+10", "en-US": "Max Energy +10"}, "pre_nodes": [1002, 1004], "cost": 2, "pos_x": 45, "pos_y": 50, "combat_buff_desc": {"zh-Hans": "", "zh-Hant": "", "en-US": ""}, "combat_buff_icon": 0}
+
+{"id": 1009, "name": {"zh-Hans": "神魂壮大", "zh-Hant": "神魂壯大", "en-US": "Strengthened Primordial Spirit"}, "icon": "", "desc": {"zh-Hans": "精力上限+15", "zh-Hant": "精力上限+15", "en-US": "Max Energy +15"}, "pre_nodes": [1008], "cost": 2, "pos_x": 78, "pos_y": 35, "combat_buff_desc": {"zh-Hans": "", "zh-Hant": "", "en-US": ""}, "combat_buff_icon": 0}
+
+=== tbtalentpath: 10 rows | keys: ['desc', 'id', 'name', 'node_ids']
+=== tbtalent: 43 rows | keys: ['des', 'icon', 'id', 'name', 'script', 'script_params', 'talent_attribute_affect']

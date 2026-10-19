@@ -1,0 +1,66 @@
+=== skill 101 清辉初照
+{
+ "id": 101,
+ "name": {
+  "zh-Hans": "清辉初照",
+  "zh-Hant": "清輝初照",
+  "en-US": "Radiant Dawn Strike"
+ },
+ "icon": 50,
+ "behavior_tree_type": 1,
+ "behavior_tree_weight": 100,
+ "cd": 0,
+ "ability_kind": 2,
+ "skill_availability": 1,
+ "levels": [
+  1
+ ],
+ "element": 2,
+ "costs": [
+  {
+   "type": 1,
+   "value": 3
+  }
+ ],
+ "script": 0,
+ "xmlLink": "",
+ "skill_tier": 1,
+ "companion_id": 0,
+ "item_id": 32010,
+ "sect_id": 4
+}
+
+=== skill 102 青虹贯日
+{
+ "id": 102,
+ "name": {
+  "zh-Hans": "青虹贯日",
+  "zh-Hant": "青虹貫日",
+  "en-US": "Azure Rainbow Pierces the Sun"
+ },
+ "icon": 51,
+ "behavior_tree_type": 1,
+ "behavior_tree_weight": 100,
+ "cd": 0,
+ "ability_kind": 2,
+ "skill_availability": 1,
+ "levels": [
+  1
+ ],
+ "element": 2,
+ "costs": [
+  {
+   "type": 1,
+   "value": 15
+  }
+ ],
+ "script": 0,
+ "xmlLink": "",
+ "skill_tier": 1,
+ "companion_id": 0,
+ "item_id": 33011,
+ "sect_id": 4
+}
+
+=== tbskilllevel rows: 395 | keys: ['affects', 'briefDes', 'buffs', 'cut_resilience', 'des', 'id', 'level', 'script_params', 'skill_show', 'xmlLink']
+{"id": 1, "level": 1, "des": {"zh-Hans": "普攻", "zh-Hant": "普攻", "en-US": "Basic Attack"}, "briefDes": {"zh-Hans": "", "zh-Hant": "", "en-US": ""}, "skill_show": 1, "script_params": [0], "cut_resilience": 0, "affects": [{"target": 1, "type": 1, "formula": 2, "value": 1000}], "buffs": [], "xmlLink": "Skills/Skill_AuraBullet"}

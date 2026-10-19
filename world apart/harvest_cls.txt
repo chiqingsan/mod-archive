@@ -1,0 +1,15 @@
+47017:private sealed class TbSceneHarvest.<>c // TypeDefIndex: 1218
+47037:public class TbSceneHarvest // TypeDefIndex: 1219
+108028:private sealed class SceneHarvest.<get_items_Ref>d__17 : IEnumerable<RewardDrop>, IEnumerable, IEnumerator<RewardDrop>, IEnumerator, IDisposable // TypeDefIndex: 1836
+108081:public class SceneHarvest : BeanBase // TypeDefIndex: 1837
+255507:private sealed class SpaceMaskVideoPanel.HarvestMaskTransitionLayer // TypeDefIndex: 4105
+264764:public class SpaceInteractAreaCompStyleHarvest : SpaceInteractAreaCompStyleBase // TypeDefIndex: 4345
+265181:public sealed class HarvestInteractStyleData // TypeDefIndex: 4354
+265260:internal static class SpaceInteractAreaHarvestLogic // TypeDefIndex: 4355
+265265:	public static void OpenTargetSceneHarvest(SpaceInteractAreaElementModel model, TbSceneHarvestId harvestId) { }
+265268:	public static string GetHarvestHoverText(SpaceInteractAreaElementModel model, TbSceneHarvestId harvestId, bool isHovering) { }
+503884:public class TalentPathSoulHarvestPassiveBinder : IXmlParamBinder // TypeDefIndex: 9161
+514289:private sealed class TalentPathSoulHarvestPassive.<>c__DisplayClass38_0 // TypeDefIndex: 9535
+514319:private sealed class TalentPathSoulHarvestPassive.<>c__DisplayClass42_0 // TypeDefIndex: 9536
+514336:private sealed class TalentPathSoulHarvestPassive.<ResolveSoulHarvestAfterArrival>d__39 : IEnumerator<object>, IEnumerator, IDisposable // TypeDefIndex: 9537
+514377:public sealed class TalentPathSoulHarvestPassive : PassiveBase // TypeDefIndex: 9538

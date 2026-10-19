@@ -1,0 +1,646 @@
+11253:internal sealed class GeneratedMessagePackResolver.Imagine.Exported.MeditateVideoFormatter : IMessagePackFormatter<MeditateVideo>, IMessagePackFormatter // TypeDefIndex: 344
+11264:	public void Serialize(ref MessagePackWriter writer, MeditateVideo value, MessagePackSerializerOptions options) { }
+11267:	public MeditateVideo Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options) { }
+18550:	public const NpcBehaviorType SECT_SECLUSION = 6;
+84777:	private CinematicClipLocation <meditate_video>k__BackingField; // 0xB8
+84816:	public CinematicClipLocation meditate_video { get; set; }
+85053:	public CinematicClipLocation get_meditate_video() { }
+85057:	public void set_meditate_video(CinematicClipLocation value) { }
+161850:public class MeditateVideo // TypeDefIndex: 2013
+162758:public class ImMeditateVideo // TypeDefIndex: 2039
+162762:	private List<MeditateVideo> <Items>k__BackingField; // 0x10
+162763:	private Dictionary<long, MeditateVideo> _index; // 0x18
+162766:	public List<MeditateVideo> Items { get; set; }
+162767:	public MeditateVideo Item { get; }
+162773:	public List<MeditateVideo> get_Items() { }
+162777:	public void set_Items(List<MeditateVideo> value) { }
+162784:	public MeditateVideo Get(long realm_id) { }
+162787:	public MeditateVideo get_Item(long realm_id) { }
+162875:	private readonly ImMeditateVideo <ImMeditateVideo>k__BackingField; // 0xC8
+162903:	public ImMeditateVideo ImMeditateVideo { get; }
+163002:	public ImMeditateVideo get_ImMeditateVideo() { }
+181258:	private bool <Closing>k__BackingField; // 0x41
+181263:	public bool Closing { get; set; }
+181285:	public bool get_Closing() { }
+181289:	private void set_Closing(bool value) { }
+224678:	public CinematicPlayer _meditateCinematicPlayer; // 0x100
+227500:	private bool _isClosingCgOptionSelection; // 0x109
+319107:	private bool m_IsClosing; // 0x29
+319152:	public bool IsClosing { get; set; }
+319269:	public bool get_IsClosing() { }
+319272:	public void set_IsClosing(bool value) { }
+332577:	private bool _isClosing; // 0xE1
+338156:	private bool _isClosing; // 0xD1
+342774:	private bool _isClosing; // 0x54
+343174:	public const DaoCompanionSuccessPanel.PresentationPhase Closing = 3;
+368470:	private bool m_IsClosing; // 0xE0
+369756:private struct UPFCultivationPanel.<PlayMeditateVideoAsync>d__93 : IAsyncStateMachine // TypeDefIndex: 5915
+369842:	private int _meditateVideoPlaySequence; // 0x168
+369843:	private bool _waitingForInitialMeditateVideo; // 0x16C
+370021:	private void RefreshMeditateVideo() { }
+370024:	private static void HideMeditateDisplay(CinematicPlayer player) { }
+370026:	[AsyncStateMachine(typeof(UPFCultivationPanel.<PlayMeditateVideoAsync>d__93))]
+370028:	private UniTaskVoid PlayMeditateVideoAsync(CinematicPlayer player, CinematicGroupId groupId, CinematicClipId clipId, int playSequence) { }
+370031:	private bool IsCurrentMeditateVideoRequest(CinematicPlayer player, int playSequence) { }
+377400:	private void ResetClosingState() { }
+377424:	private bool m_IsClosing; // 0x56
+377444:	public bool IsClosing { get; set; }
+377539:	public bool get_IsClosing() { }
+377542:	public void set_IsClosing(bool value) { }
+555982:	public void BeginRecording(int samples, float shutterInterval, float shutterFullyOpen = 0, float shutterBeginsClosing = 1) { }
+569466:	private float m_ShutterBeginsClosing; // 0x18
+569516:	internal void BeginRecording(int samples, float shutterInterval, float shutterFullyOpen = 0, float shutterBeginsClosing = 1) { }
+589989:	|-Action<NativeArray<CopyClosingMeshJobData>>..ctor
+589992:	|-Action<NativeSlice<CopyClosingMeshJobData>>..ctor
+590686:	|-Action<NativeArray<CopyClosingMeshJobData>>.Invoke
+590689:	|-Action<NativeSlice<CopyClosingMeshJobData>>.Invoke
+595528:	|-Comparison<NativeArray<CopyClosingMeshJobData>>..ctor
+595531:	|-Comparison<NativeSlice<CopyClosingMeshJobData>>..ctor
+596480:	|-Comparison<NativeArray<CopyClosingMeshJobData>>.Invoke
+596483:	|-Comparison<NativeSlice<CopyClosingMeshJobData>>.Invoke
+597142:	|-Predicate<NativeArray<CopyClosingMeshJobData>>..ctor
+597145:	|-Predicate<NativeSlice<CopyClosingMeshJobData>>..ctor
+597820:	|-Predicate<NativeArray<CopyClosingMeshJobData>>.Invoke
+597823:	|-Predicate<NativeSlice<CopyClosingMeshJobData>>.Invoke
+630987:	|-ThrowHelper.IfNullAndNullsAreIllegalThenThrow<NativeArray<CopyClosingMeshJobData>>
+630990:	|-ThrowHelper.IfNullAndNullsAreIllegalThenThrow<NativeSlice<CopyClosingMeshJobData>>
+633100:	|-Array.InternalEnumerator<NativeArray<CopyClosingMeshJobData>>..ctor
+633103:	|-Array.InternalEnumerator<NativeSlice<CopyClosingMeshJobData>>..ctor
+633498:	|-Array.InternalEnumerator<CopyClosingMeshJobData>..ctor
+635846:	|-Array.InternalEnumerator<NativeArray<CopyClosingMeshJobData>>.Dispose
+635849:	|-Array.InternalEnumerator<NativeSlice<CopyClosingMeshJobData>>.Dispose
+636244:	|-Array.InternalEnumerator<CopyClosingMeshJobData>.Dispose
+638592:	|-Array.InternalEnumerator<NativeArray<CopyClosingMeshJobData>>.MoveNext
+638595:	|-Array.InternalEnumerator<NativeSlice<CopyClosingMeshJobData>>.MoveNext
+638990:	|-Array.InternalEnumerator<CopyClosingMeshJobData>.MoveNext
+640488:	|-Array.InternalEnumerator<NativeArray<CopyClosingMeshJobData>>.get_Current
+640491:	|-Array.InternalEnumerator<NativeSlice<CopyClosingMeshJobData>>.get_Current
+642062:	|-Array.InternalEnumerator<CopyClosingMeshJobData>.get_Current
+644258:	|-Array.InternalEnumerator<NativeArray<CopyClosingMeshJobData>>.System.Collections.IEnumerator.Reset
+644261:	|-Array.InternalEnumerator<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IEnumerator.Reset
+644656:	|-Array.InternalEnumerator<CopyClosingMeshJobData>.System.Collections.IEnumerator.Reset
+646154:	|-Array.InternalEnumerator<NativeArray<CopyClosingMeshJobData>>.System.Collections.IEnumerator.get_Current
+646157:	|-Array.InternalEnumerator<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IEnumerator.get_Current
+647727:	|-Array.InternalEnumerator<CopyClosingMeshJobData>.System.Collections.IEnumerator.get_Current
+649941:	|-Array.EmptyInternalEnumerator<NativeArray<CopyClosingMeshJobData>>.Dispose
+649944:	|-Array.EmptyInternalEnumerator<NativeSlice<CopyClosingMeshJobData>>.Dispose
+650339:	|-Array.EmptyInternalEnumerator<CopyClosingMeshJobData>.Dispose
+652687:	|-Array.EmptyInternalEnumerator<NativeArray<CopyClosingMeshJobData>>.MoveNext
+652690:	|-Array.EmptyInternalEnumerator<NativeSlice<CopyClosingMeshJobData>>.MoveNext
+653085:	|-Array.EmptyInternalEnumerator<CopyClosingMeshJobData>.MoveNext
+655194:	|-Array.EmptyInternalEnumerator<NativeArray<CopyClosingMeshJobData>>.get_Current
+655197:	|-Array.EmptyInternalEnumerator<NativeSlice<CopyClosingMeshJobData>>.get_Current
+655525:	|-Array.EmptyInternalEnumerator<CopyClosingMeshJobData>.get_Current
+657363:	|-Array.EmptyInternalEnumerator<NativeArray<CopyClosingMeshJobData>>.System.Collections.IEnumerator.get_Current
+657366:	|-Array.EmptyInternalEnumerator<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IEnumerator.get_Current
+659294:	|-Array.EmptyInternalEnumerator<CopyClosingMeshJobData>.System.Collections.IEnumerator.get_Current
+661013:	|-Array.EmptyInternalEnumerator<NativeArray<CopyClosingMeshJobData>>.System.Collections.IEnumerator.Reset
+661016:	|-Array.EmptyInternalEnumerator<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IEnumerator.Reset
+661411:	|-Array.EmptyInternalEnumerator<CopyClosingMeshJobData>.System.Collections.IEnumerator.Reset
+663759:	|-Array.EmptyInternalEnumerator<NativeArray<CopyClosingMeshJobData>>..ctor
+663762:	|-Array.EmptyInternalEnumerator<NativeSlice<CopyClosingMeshJobData>>..ctor
+664157:	|-Array.EmptyInternalEnumerator<CopyClosingMeshJobData>..ctor
+666505:	|-Array.EmptyInternalEnumerator<NativeArray<CopyClosingMeshJobData>>..cctor
+666508:	|-Array.EmptyInternalEnumerator<NativeSlice<CopyClosingMeshJobData>>..cctor
+666903:	|-Array.EmptyInternalEnumerator<CopyClosingMeshJobData>..cctor
+668452:	|-Array.BinarySearch<NativeArray<CopyClosingMeshJobData>>
+668461:	|-Array.BinarySearch<NativeSlice<CopyClosingMeshJobData>>
+670045:	|-Array.IndexOf<NativeArray<CopyClosingMeshJobData>>
+670054:	|-Array.IndexOf<NativeSlice<CopyClosingMeshJobData>>
+671656:	|-Array.LastIndexOf<NativeArray<CopyClosingMeshJobData>>
+671665:	|-Array.LastIndexOf<NativeSlice<CopyClosingMeshJobData>>
+673280:	|-Array.Reverse<NativeArray<CopyClosingMeshJobData>>
+673283:	|-Array.Reverse<NativeSlice<CopyClosingMeshJobData>>
+673906:	|-Array.Sort<NativeArray<CopyClosingMeshJobData>>
+673915:	|-Array.Sort<NativeSlice<CopyClosingMeshJobData>>
+676874:	|-Array.InternalArray__IEnumerable_GetEnumerator<NativeArray<CopyClosingMeshJobData>>
+676877:	|-Array.InternalArray__IEnumerable_GetEnumerator<NativeSlice<CopyClosingMeshJobData>>
+677272:	|-Array.InternalArray__IEnumerable_GetEnumerator<CopyClosingMeshJobData>
+679623:	|-Array.InternalArray__ICollection_Add<NativeArray<CopyClosingMeshJobData>>
+679626:	|-Array.InternalArray__ICollection_Add<NativeSlice<CopyClosingMeshJobData>>
+680021:	|-Array.InternalArray__ICollection_Add<CopyClosingMeshJobData>
+682369:	|-Array.InternalArray__ICollection_Remove<NativeArray<CopyClosingMeshJobData>>
+682372:	|-Array.InternalArray__ICollection_Remove<NativeSlice<CopyClosingMeshJobData>>
+682767:	|-Array.InternalArray__ICollection_Remove<CopyClosingMeshJobData>
+685539:	|-Array.InternalArray__ICollection_Contains<CopyClosingMeshJobData>
+685867:	|-Array.InternalArray__ICollection_Contains<NativeArray<CopyClosingMeshJobData>>
+685872:	|-Array.InternalArray__ICollection_Contains<NativeSlice<CopyClosingMeshJobData>>
+689259:	|-Array.InternalArray__ICollection_CopyTo<NativeArray<CopyClosingMeshJobData>>
+689262:	|-Array.InternalArray__ICollection_CopyTo<NativeSlice<CopyClosingMeshJobData>>
+689657:	|-Array.InternalArray__ICollection_CopyTo<CopyClosingMeshJobData>
+691155:	|-Array.InternalArray__IReadOnlyList_get_Item<NativeArray<CopyClosingMeshJobData>>
+691158:	|-Array.InternalArray__IReadOnlyList_get_Item<NativeSlice<CopyClosingMeshJobData>>
+692729:	|-Array.InternalArray__IReadOnlyList_get_Item<CopyClosingMeshJobData>
+694928:	|-Array.InternalArray__Insert<NativeArray<CopyClosingMeshJobData>>
+694931:	|-Array.InternalArray__Insert<NativeSlice<CopyClosingMeshJobData>>
+695326:	|-Array.InternalArray__Insert<CopyClosingMeshJobData>
+698107:	|-Array.InternalArray__IndexOf<CopyClosingMeshJobData>
+698435:	|-Array.InternalArray__IndexOf<NativeArray<CopyClosingMeshJobData>>
+698440:	|-Array.InternalArray__IndexOf<NativeSlice<CopyClosingMeshJobData>>
+700967:	|-Array.InternalArray__get_Item<NativeArray<CopyClosingMeshJobData>>
+700970:	|-Array.InternalArray__get_Item<NativeSlice<CopyClosingMeshJobData>>
+702541:	|-Array.InternalArray__get_Item<CopyClosingMeshJobData>
+703887:	|-Array.InternalArray__set_Item<NativeArray<CopyClosingMeshJobData>>
+703890:	|-Array.InternalArray__set_Item<NativeSlice<CopyClosingMeshJobData>>
+705460:	|-Array.InternalArray__set_Item<CopyClosingMeshJobData>
+706707:	|-Array.IndexOfImpl<NativeArray<CopyClosingMeshJobData>>
+706716:	|-Array.IndexOfImpl<NativeSlice<CopyClosingMeshJobData>>
+708227:	|-Array.LastIndexOfImpl<NativeArray<CopyClosingMeshJobData>>
+708236:	|-Array.LastIndexOfImpl<NativeSlice<CopyClosingMeshJobData>>
+769464:	|-RuntimeHelpers.IsReferenceOrContainsReferences<NativeArray<CopyClosingMeshJobData>>
+769467:	|-RuntimeHelpers.IsReferenceOrContainsReferences<NativeSlice<CopyClosingMeshJobData>>
+770316:	|-Unsafe.Add<NativeArray<CopyClosingMeshJobData>>
+770319:	|-Unsafe.Add<NativeSlice<CopyClosingMeshJobData>>
+771104:	|-Unsafe.As<byte, NativeArray<CopyClosingMeshJobData>>
+771107:	|-Unsafe.As<byte, NativeSlice<CopyClosingMeshJobData>>
+771898:	|-Unsafe.IsAddressLessThan<NativeArray<CopyClosingMeshJobData>>
+771901:	|-Unsafe.IsAddressLessThan<NativeSlice<CopyClosingMeshJobData>>
+780725:	public const UnicodeCategory EnclosingMark = 7;
+789968:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>..ctor
+789971:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>..ctor
+790470:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.get_Count
+790473:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.get_Count
+791088:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.get_Item
+791091:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.get_Item
+791576:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.Contains
+791579:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.Contains
+792110:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.CopyTo
+792113:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.CopyTo
+792612:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.GetEnumerator
+792615:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.GetEnumerator
+793158:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.IndexOf
+793161:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.IndexOf
+793692:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.get_Items
+793695:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.get_Items
+794194:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.Generic.ICollection<T>.get_IsReadOnly
+794197:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.Generic.ICollection<T>.get_IsReadOnly
+794812:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.Generic.IList<T>.get_Item
+794815:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.Generic.IList<T>.get_Item
+795256:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.Generic.IList<T>.set_Item
+795259:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.Generic.IList<T>.set_Item
+795758:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.Generic.ICollection<T>.Add
+795761:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.Generic.ICollection<T>.Add
+796260:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.Generic.ICollection<T>.Clear
+796263:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.Generic.ICollection<T>.Clear
+796762:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.Generic.IList<T>.Insert
+796765:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.Generic.IList<T>.Insert
+797264:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.Generic.ICollection<T>.Remove
+797267:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.Generic.ICollection<T>.Remove
+797766:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.Generic.IList<T>.RemoveAt
+797769:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.Generic.IList<T>.RemoveAt
+798322:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IEnumerable.GetEnumerator
+798331:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IEnumerable.GetEnumerator
+799758:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.ICollection.get_IsSynchronized
+799761:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.ICollection.get_IsSynchronized
+800314:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.ICollection.get_SyncRoot
+800323:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.ICollection.get_SyncRoot
+801804:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.ICollection.CopyTo
+801813:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.ICollection.CopyTo
+803240:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.get_IsFixedSize
+803243:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.get_IsFixedSize
+803742:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.get_IsReadOnly
+803745:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.get_IsReadOnly
+804296:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.get_Item
+804299:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.get_Item
+804814:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.set_Item
+804817:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.set_Item
+805316:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.Add
+805319:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.Add
+805818:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.Clear
+805821:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.Clear
+806320:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.IsCompatibleObject
+806323:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.IsCompatibleObject
+806869:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.Contains
+806872:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.Contains
+807455:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.IndexOf
+807458:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.IndexOf
+807998:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.Insert
+808001:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.Insert
+808500:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.Remove
+808503:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.Remove
+809002:	|-ReadOnlyCollection<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.RemoveAt
+809005:	|-ReadOnlyCollection<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.RemoveAt
+932410:	|-List.Enumerator<NativeArray<CopyClosingMeshJobData>>..ctor
+932413:	|-List.Enumerator<NativeSlice<CopyClosingMeshJobData>>..ctor
+932918:	|-List.Enumerator<NativeArray<CopyClosingMeshJobData>>.Dispose
+932921:	|-List.Enumerator<NativeSlice<CopyClosingMeshJobData>>.Dispose
+933565:	|-List.Enumerator<NativeArray<CopyClosingMeshJobData>>.MoveNext
+933568:	|-List.Enumerator<NativeSlice<CopyClosingMeshJobData>>.MoveNext
+934099:	|-List.Enumerator<NativeArray<CopyClosingMeshJobData>>.MoveNextRare
+934102:	|-List.Enumerator<NativeSlice<CopyClosingMeshJobData>>.MoveNextRare
+934653:	|-List.Enumerator<NativeArray<CopyClosingMeshJobData>>.get_Current
+934656:	|-List.Enumerator<NativeSlice<CopyClosingMeshJobData>>.get_Current
+935219:	|-List.Enumerator<NativeArray<CopyClosingMeshJobData>>.System.Collections.IEnumerator.get_Current
+935222:	|-List.Enumerator<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IEnumerator.get_Current
+935794:	|-List.Enumerator<NativeArray<CopyClosingMeshJobData>>.System.Collections.IEnumerator.Reset
+935797:	|-List.Enumerator<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IEnumerator.Reset
+936331:	|-List<NativeArray<CopyClosingMeshJobData>>..ctor
+936334:	|-List<NativeSlice<CopyClosingMeshJobData>>..ctor
+936830:	|-List<NativeArray<CopyClosingMeshJobData>>..ctor
+936833:	|-List<NativeSlice<CopyClosingMeshJobData>>..ctor
+937383:	|-List<NativeArray<CopyClosingMeshJobData>>..ctor
+937392:	|-List<NativeSlice<CopyClosingMeshJobData>>..ctor
+938810:	|-List<NativeArray<CopyClosingMeshJobData>>.get_Capacity
+938813:	|-List<NativeSlice<CopyClosingMeshJobData>>.get_Capacity
+939309:	|-List<NativeArray<CopyClosingMeshJobData>>.set_Capacity
+939312:	|-List<NativeSlice<CopyClosingMeshJobData>>.set_Capacity
+939808:	|-List<NativeArray<CopyClosingMeshJobData>>.get_Count
+939811:	|-List<NativeSlice<CopyClosingMeshJobData>>.get_Count
+940307:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.get_IsFixedSize
+940310:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.get_IsFixedSize
+940806:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.Generic.ICollection<T>.get_IsReadOnly
+940809:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.Generic.ICollection<T>.get_IsReadOnly
+941305:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.get_IsReadOnly
+941308:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.get_IsReadOnly
+941804:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.ICollection.get_IsSynchronized
+941807:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.ICollection.get_IsSynchronized
+942357:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.ICollection.get_SyncRoot
+942366:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.ICollection.get_SyncRoot
+943836:	|-List<NativeArray<CopyClosingMeshJobData>>.get_Item
+943839:	|-List<NativeSlice<CopyClosingMeshJobData>>.get_Item
+944494:	|-List<NativeArray<CopyClosingMeshJobData>>.set_Item
+944497:	|-List<NativeSlice<CopyClosingMeshJobData>>.set_Item
+944988:	|-List<NativeArray<CopyClosingMeshJobData>>.IsCompatibleObject
+944991:	|-List<NativeSlice<CopyClosingMeshJobData>>.IsCompatibleObject
+945536:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.get_Item
+945539:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.get_Item
+946204:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.set_Item
+946207:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.set_Item
+946841:	|-List<NativeArray<CopyClosingMeshJobData>>.Add
+946844:	|-List<NativeSlice<CopyClosingMeshJobData>>.Add
+947490:	|-List<NativeArray<CopyClosingMeshJobData>>.AddWithResize
+947493:	|-List<NativeSlice<CopyClosingMeshJobData>>.AddWithResize
+948136:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.Add
+948139:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.Add
+948698:	|-List<NativeArray<CopyClosingMeshJobData>>.AddRange
+948707:	|-List<NativeSlice<CopyClosingMeshJobData>>.AddRange
+950125:	|-List<NativeArray<CopyClosingMeshJobData>>.AsReadOnly
+950128:	|-List<NativeSlice<CopyClosingMeshJobData>>.AsReadOnly
+950680:	|-List<NativeArray<CopyClosingMeshJobData>>.BinarySearch
+950689:	|-List<NativeSlice<CopyClosingMeshJobData>>.BinarySearch
+952161:	|-List<NativeArray<CopyClosingMeshJobData>>.BinarySearch
+952170:	|-List<NativeSlice<CopyClosingMeshJobData>>.BinarySearch
+953642:	|-List<NativeArray<CopyClosingMeshJobData>>.BinarySearch
+953651:	|-List<NativeSlice<CopyClosingMeshJobData>>.BinarySearch
+955053:	|-List<NativeArray<CopyClosingMeshJobData>>.Clear
+955056:	|-List<NativeSlice<CopyClosingMeshJobData>>.Clear
+955626:	|-List<NativeArray<CopyClosingMeshJobData>>.Contains
+955635:	|-List<NativeSlice<CopyClosingMeshJobData>>.Contains
+957107:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.Contains
+957116:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.Contains
+958548:	|-List<NativeArray<CopyClosingMeshJobData>>.CopyTo
+958551:	|-List<NativeSlice<CopyClosingMeshJobData>>.CopyTo
+959049:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.ICollection.CopyTo
+959052:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.ICollection.CopyTo
+959548:	|-List<NativeArray<CopyClosingMeshJobData>>.CopyTo
+959551:	|-List<NativeSlice<CopyClosingMeshJobData>>.CopyTo
+960047:	|-List<NativeArray<CopyClosingMeshJobData>>.CopyTo
+960050:	|-List<NativeSlice<CopyClosingMeshJobData>>.CopyTo
+960546:	|-List<NativeArray<CopyClosingMeshJobData>>.EnsureCapacity
+960549:	|-List<NativeSlice<CopyClosingMeshJobData>>.EnsureCapacity
+961095:	|-List<NativeArray<CopyClosingMeshJobData>>.Exists
+961098:	|-List<NativeSlice<CopyClosingMeshJobData>>.Exists
+961662:	|-List<NativeArray<CopyClosingMeshJobData>>.Find
+961665:	|-List<NativeSlice<CopyClosingMeshJobData>>.Find
+962327:	|-List<NativeArray<CopyClosingMeshJobData>>.FindAll
+962330:	|-List<NativeSlice<CopyClosingMeshJobData>>.FindAll
+962878:	|-List<NativeArray<CopyClosingMeshJobData>>.FindIndex
+962881:	|-List<NativeSlice<CopyClosingMeshJobData>>.FindIndex
+963445:	|-List<NativeArray<CopyClosingMeshJobData>>.FindIndex
+963448:	|-List<NativeSlice<CopyClosingMeshJobData>>.FindIndex
+964012:	|-List<NativeArray<CopyClosingMeshJobData>>.FindLastIndex
+964015:	|-List<NativeSlice<CopyClosingMeshJobData>>.FindLastIndex
+964579:	|-List<NativeArray<CopyClosingMeshJobData>>.FindLastIndex
+964582:	|-List<NativeSlice<CopyClosingMeshJobData>>.FindLastIndex
+965146:	|-List<NativeArray<CopyClosingMeshJobData>>.ForEach
+965149:	|-List<NativeSlice<CopyClosingMeshJobData>>.ForEach
+965720:	|-List<NativeArray<CopyClosingMeshJobData>>.GetEnumerator
+965723:	|-List<NativeSlice<CopyClosingMeshJobData>>.GetEnumerator
+966281:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.Generic.IEnumerable<T>.GetEnumerator
+966284:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.Generic.IEnumerable<T>.GetEnumerator
+966842:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.IEnumerable.GetEnumerator
+966845:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IEnumerable.GetEnumerator
+967350:	|-List<NativeArray<CopyClosingMeshJobData>>.GetRange
+967353:	|-List<NativeSlice<CopyClosingMeshJobData>>.GetRange
+967905:	|-List<NativeArray<CopyClosingMeshJobData>>.IndexOf
+967914:	|-List<NativeSlice<CopyClosingMeshJobData>>.IndexOf
+969386:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.IndexOf
+969395:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.IndexOf
+970957:	|-List<NativeArray<CopyClosingMeshJobData>>.Insert
+970960:	|-List<NativeSlice<CopyClosingMeshJobData>>.Insert
+971601:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.Insert
+971604:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.Insert
+972169:	|-List<NativeArray<CopyClosingMeshJobData>>.InsertRange
+972178:	|-List<NativeSlice<CopyClosingMeshJobData>>.InsertRange
+973650:	|-List<NativeArray<CopyClosingMeshJobData>>.LastIndexOf
+973659:	|-List<NativeSlice<CopyClosingMeshJobData>>.LastIndexOf
+975131:	|-List<NativeArray<CopyClosingMeshJobData>>.LastIndexOf
+975140:	|-List<NativeSlice<CopyClosingMeshJobData>>.LastIndexOf
+976612:	|-List<NativeArray<CopyClosingMeshJobData>>.Remove
+976621:	|-List<NativeSlice<CopyClosingMeshJobData>>.Remove
+978093:	|-List<NativeArray<CopyClosingMeshJobData>>.System.Collections.IList.Remove
+978102:	|-List<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IList.Remove
+979667:	|-List<NativeArray<CopyClosingMeshJobData>>.RemoveAll
+979670:	|-List<NativeSlice<CopyClosingMeshJobData>>.RemoveAll
+980137:	|-List<NativeArray<CopyClosingMeshJobData>>.RemoveAt
+980140:	|-List<NativeSlice<CopyClosingMeshJobData>>.RemoveAt
+980716:	|-List<NativeArray<CopyClosingMeshJobData>>.RemoveRange
+980719:	|-List<NativeSlice<CopyClosingMeshJobData>>.RemoveRange
+981382:	|-List<NativeArray<CopyClosingMeshJobData>>.Reverse
+981385:	|-List<NativeSlice<CopyClosingMeshJobData>>.Reverse
+982017:	|-List<NativeArray<CopyClosingMeshJobData>>.Reverse
+982020:	|-List<NativeSlice<CopyClosingMeshJobData>>.Reverse
+982559:	|-List<NativeArray<CopyClosingMeshJobData>>.Sort
+982568:	|-List<NativeSlice<CopyClosingMeshJobData>>.Sort
+984040:	|-List<NativeArray<CopyClosingMeshJobData>>.Sort
+984049:	|-List<NativeSlice<CopyClosingMeshJobData>>.Sort
+985521:	|-List<NativeArray<CopyClosingMeshJobData>>.Sort
+985530:	|-List<NativeSlice<CopyClosingMeshJobData>>.Sort
+987093:	|-List<NativeArray<CopyClosingMeshJobData>>.Sort
+987096:	|-List<NativeSlice<CopyClosingMeshJobData>>.Sort
+987589:	|-List<NativeArray<CopyClosingMeshJobData>>.ToArray
+987592:	|-List<NativeSlice<CopyClosingMeshJobData>>.ToArray
+988088:	|-List<NativeArray<CopyClosingMeshJobData>>.TrimExcess
+988091:	|-List<NativeSlice<CopyClosingMeshJobData>>.TrimExcess
+988637:	|-List<NativeArray<CopyClosingMeshJobData>>.TrueForAll
+988640:	|-List<NativeSlice<CopyClosingMeshJobData>>.TrueForAll
+989214:	|-List<NativeArray<CopyClosingMeshJobData>>.AddEnumerable
+989223:	|-List<NativeSlice<CopyClosingMeshJobData>>.AddEnumerable
+990641:	|-List<NativeArray<CopyClosingMeshJobData>>..cctor
+990644:	|-List<NativeSlice<CopyClosingMeshJobData>>..cctor
+994337:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.Sort
+994346:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.Sort
+995827:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.BinarySearch
+995836:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.BinarySearch
+997405:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.Sort
+997408:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.Sort
+997948:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.InternalBinarySearch
+997951:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.InternalBinarySearch
+998635:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.SwapIfGreater
+998638:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.SwapIfGreater
+999273:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.Swap
+999276:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.Swap
+999909:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.IntrospectiveSort
+999912:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.IntrospectiveSort
+1000553:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.IntroSort
+1000556:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.IntroSort
+1001197:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.PickPivotAndPartition
+1001200:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.PickPivotAndPartition
+1001841:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.Heapsort
+1001844:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.Heapsort
+1002485:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.DownHeap
+1002488:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.DownHeap
+1003129:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.InsertionSort
+1003132:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.InsertionSort
+1003629:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>.get_Default
+1003632:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>.get_Default
+1004131:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>..ctor
+1004134:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>..ctor
+1004633:	|-ArraySortHelper<NativeArray<CopyClosingMeshJobData>>..cctor
+1004636:	|-ArraySortHelper<NativeSlice<CopyClosingMeshJobData>>..cctor
+1005410:	|-Comparer<NativeArray<CopyClosingMeshJobData>>.get_Default
+1005419:	|-Comparer<NativeSlice<CopyClosingMeshJobData>>.get_Default
+1007442:	|-Comparer<NativeArray<CopyClosingMeshJobData>>.Create
+1007445:	|-Comparer<NativeSlice<CopyClosingMeshJobData>>.Create
+1008204:	|-Comparer<NativeArray<CopyClosingMeshJobData>>.CreateComparer
+1008213:	|-Comparer<NativeSlice<CopyClosingMeshJobData>>.CreateComparer
+1010301:	|-Comparer<NativeArray<CopyClosingMeshJobData>>.System.Collections.IComparer.Compare
+1010304:	|-Comparer<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IComparer.Compare
+1011048:	|-Comparer<NativeArray<CopyClosingMeshJobData>>..ctor
+1011051:	|-Comparer<NativeSlice<CopyClosingMeshJobData>>..ctor
+1013053:	|-ObjectComparer<NativeArray<CopyClosingMeshJobData>>.Compare
+1013062:	|-ObjectComparer<NativeSlice<CopyClosingMeshJobData>>.Compare
+1015085:	|-ObjectComparer<NativeArray<CopyClosingMeshJobData>>.Equals
+1015088:	|-ObjectComparer<NativeSlice<CopyClosingMeshJobData>>.Equals
+1015787:	|-ObjectComparer<NativeArray<CopyClosingMeshJobData>>.GetHashCode
+1015790:	|-ObjectComparer<NativeSlice<CopyClosingMeshJobData>>.GetHashCode
+1016489:	|-ObjectComparer<NativeArray<CopyClosingMeshJobData>>..ctor
+1016492:	|-ObjectComparer<NativeSlice<CopyClosingMeshJobData>>..ctor
+1017203:	|-ComparisonComparer<NativeArray<CopyClosingMeshJobData>>..ctor
+1017206:	|-ComparisonComparer<NativeSlice<CopyClosingMeshJobData>>..ctor
+1018111:	|-ComparisonComparer<NativeArray<CopyClosingMeshJobData>>.Compare
+1018114:	|-ComparisonComparer<NativeSlice<CopyClosingMeshJobData>>.Compare
+1018833:	|-EqualityComparer<NativeArray<CopyClosingMeshJobData>>.get_Default
+1018842:	|-EqualityComparer<NativeSlice<CopyClosingMeshJobData>>.get_Default
+1021877:	|-EqualityComparer<NativeArray<CopyClosingMeshJobData>>.CreateComparer
+1021886:	|-EqualityComparer<NativeSlice<CopyClosingMeshJobData>>.CreateComparer
+1024791:	|-EqualityComparer<NativeArray<CopyClosingMeshJobData>>.IndexOf
+1024794:	|-EqualityComparer<NativeSlice<CopyClosingMeshJobData>>.IndexOf
+1025923:	|-EqualityComparer<NativeArray<CopyClosingMeshJobData>>.LastIndexOf
+1025926:	|-EqualityComparer<NativeSlice<CopyClosingMeshJobData>>.LastIndexOf
+1027055:	|-EqualityComparer<NativeArray<CopyClosingMeshJobData>>.System.Collections.IEqualityComparer.GetHashCode
+1027058:	|-EqualityComparer<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IEqualityComparer.GetHashCode
+1028187:	|-EqualityComparer<NativeArray<CopyClosingMeshJobData>>.System.Collections.IEqualityComparer.Equals
+1028190:	|-EqualityComparer<NativeSlice<CopyClosingMeshJobData>>.System.Collections.IEqualityComparer.Equals
+1029367:	|-EqualityComparer<NativeArray<CopyClosingMeshJobData>>..ctor
+1029370:	|-EqualityComparer<NativeSlice<CopyClosingMeshJobData>>..ctor
+1030342:	|-GenericEqualityComparer<NativeArray<CopyClosingMeshJobData>>.Equals
+1030347:	|-GenericEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.Equals
+1031924:	|-GenericEqualityComparer<NativeArray<CopyClosingMeshJobData>>.GetHashCode
+1031929:	|-GenericEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.GetHashCode
+1033514:	|-GenericEqualityComparer<NativeArray<CopyClosingMeshJobData>>.IndexOf
+1033519:	|-GenericEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.IndexOf
+1035096:	|-GenericEqualityComparer<NativeArray<CopyClosingMeshJobData>>.LastIndexOf
+1035101:	|-GenericEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.LastIndexOf
+1036678:	|-GenericEqualityComparer<NativeArray<CopyClosingMeshJobData>>.Equals
+1036681:	|-GenericEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.Equals
+1037224:	|-GenericEqualityComparer<NativeArray<CopyClosingMeshJobData>>.GetHashCode
+1037227:	|-GenericEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.GetHashCode
+1037770:	|-GenericEqualityComparer<NativeArray<CopyClosingMeshJobData>>..ctor
+1037773:	|-GenericEqualityComparer<NativeSlice<CopyClosingMeshJobData>>..ctor
+1038866:	|-ObjectEqualityComparer<NativeArray<CopyClosingMeshJobData>>.Equals
+1038871:	|-ObjectEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.Equals
+1041058:	|-ObjectEqualityComparer<NativeArray<CopyClosingMeshJobData>>.GetHashCode
+1041063:	|-ObjectEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.GetHashCode
+1043230:	|-ObjectEqualityComparer<NativeArray<CopyClosingMeshJobData>>.IndexOf
+1043235:	|-ObjectEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.IndexOf
+1045424:	|-ObjectEqualityComparer<NativeArray<CopyClosingMeshJobData>>.LastIndexOf
+1045429:	|-ObjectEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.LastIndexOf
+1047269:	|-ObjectEqualityComparer<NativeArray<CopyClosingMeshJobData>>.Equals
+1047272:	|-ObjectEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.Equals
+1048289:	|-ObjectEqualityComparer<NativeArray<CopyClosingMeshJobData>>.GetHashCode
+1048292:	|-ObjectEqualityComparer<NativeSlice<CopyClosingMeshJobData>>.GetHashCode
+1049309:	|-ObjectEqualityComparer<NativeArray<CopyClosingMeshJobData>>..ctor
+1049312:	|-ObjectEqualityComparer<NativeSlice<CopyClosingMeshJobData>>..ctor
+1103438:	internal static JobHandle ScheduleCopyClosingMeshJobs(IntPtr buffer, int jobCount) { }
+1103447:	private static void ScheduleCopyClosingMeshJobs_Injected(IntPtr buffer, int jobCount, out JobHandle ret) { }
+1104292:	internal bool closing; // 0x30
+1104426:	private NativePagedList<CopyClosingMeshJobData> m_CopyClosingMeshJobs; // 0x20
+1104444:	public void Add(ref CopyClosingMeshJobData job) { }
+1104453:	public void CompleteClosingMeshJobs() { }
+1104480:	public IntPtr closingSrc; // 0x18
+1104481:	public IntPtr closingDst; // 0x20
+1104482:	public int closingCount; // 0x28
+1104512:internal struct CopyClosingMeshJobData // TypeDefIndex: 14403
+1104800:	|-NativePagedList<CopyClosingMeshJobData>..ctor
+1104817:	|-NativePagedList<CopyClosingMeshJobData>.Add
+1104834:	|-NativePagedList<CopyClosingMeshJobData>.GetPages
+1104849:	|-NativePagedList<CopyClosingMeshJobData>.Reset
+1104863:	|-NativePagedList<CopyClosingMeshJobData>.get_disposed
+1104875:	|-NativePagedList<CopyClosingMeshJobData>.set_disposed
+1104888:	|-NativePagedList<CopyClosingMeshJobData>.Dispose
+1104903:	|-NativePagedList<CopyClosingMeshJobData>.Dispose
+1105434:	internal RenderChainCommand firstClosingCommand; // 0x50
+1105435:	internal RenderChainCommand lastClosingCommand; // 0x58
+1105447:	internal MeshHandle closingData; // 0x80
+1105467:	internal RenderChainCommand lastClosingOrLastCommand { get; }
+1105473:	internal RenderChainCommand get_lastClosingOrLastCommand() { }
+1106431:	private static readonly ProfilerMarker k_GenerateClosingCommandsMarker; // 0x10
+1106453:	public static UIRStylePainter.ClosingInfo PaintElement(RenderChain renderChain, VisualElement ve, ref ChainBuilderStats stats) { }
+1106465:	public static void ClosePaintElement(VisualElement ve, UIRStylePainter.ClosingInfo closingInfo, RenderChain renderChain, ref ChainBuilderStats stats) { }
+1106486:	private static RenderChainCommand InjectClosingMeshDrawCommand(RenderChain renderChain, VisualElement ve, ref RenderChainCommand cmdPrev, ref RenderChainCommand cmdNext, MeshHandle mesh, int indexCount, int indexOffset, Material material, TextureId texture, int stencilRef) { }
+1106492:	private static void FindClosingCommandInsertionPoint(VisualElement ve, out RenderChainCommand prev, out RenderChainCommand next) { }
+1106498:	private static void InjectClosingCommandInBetween(RenderChain renderChain, RenderChainCommand cmd, ref RenderChainCommand prev, ref RenderChainCommand next) { }
+1106629:internal struct UIRStylePainter.ClosingInfo // TypeDefIndex: 14455
+1106632:	public bool needsClosing; // 0x0
+1106661:	private UIRStylePainter.ClosingInfo m_ClosingInfo; // 0x80
+1106691:	public UIRStylePainter.ClosingInfo closingInfo { get; }
+1106726:	public UIRStylePainter.ClosingInfo get_closingInfo() { }
+1157649:	public const DtdParser.ScanningFunction ClosingTag = 31;
+1157861:	private DtdParser.Token ScanClosingTag() { }
+1167902:	private Uri ResolveSchemaLocationUri(XmlSchema enclosingSchema, string location) { }
+1168436:	private Uri ResolveSchemaLocationUri(XmlSchema enclosingSchema, string location) { }
+1204616:	private bool _closing; // 0x3B
+1205368:	public const FtpStatusCode ClosingControl = 221;
+1205369:	public const FtpStatusCode ClosingData = 226;
+1277133:	|-NativeArray.Enumerator<CopyClosingMeshJobData>..ctor
+1277244:	|-NativeArray.Enumerator<CopyClosingMeshJobData>.Dispose
+1277359:	|-NativeArray.Enumerator<CopyClosingMeshJobData>.MoveNext
+1277472:	|-NativeArray.Enumerator<CopyClosingMeshJobData>.Reset
+1277588:	|-NativeArray.Enumerator<CopyClosingMeshJobData>.get_Current
+1277741:	|-NativeArray.Enumerator<CopyClosingMeshJobData>.System.Collections.IEnumerator.get_Current
+1277911:	|-NativeArray.ReadOnly.Enumerator<CopyClosingMeshJobData>..ctor
+1278022:	|-NativeArray.ReadOnly.Enumerator<CopyClosingMeshJobData>.Dispose
+1278137:	|-NativeArray.ReadOnly.Enumerator<CopyClosingMeshJobData>.MoveNext
+1278250:	|-NativeArray.ReadOnly.Enumerator<CopyClosingMeshJobData>.Reset
+1278366:	|-NativeArray.ReadOnly.Enumerator<CopyClosingMeshJobData>.get_Current
+1278519:	|-NativeArray.ReadOnly.Enumerator<CopyClosingMeshJobData>.System.Collections.IEnumerator.get_Current
+1278657:	|-NativeArray.ReadOnly<CopyClosingMeshJobData>..ctor
+1278736:	|-NativeArray.ReadOnly<CopyClosingMeshJobData>.get_Length
+1278813:	|-NativeArray.ReadOnly<CopyClosingMeshJobData>.get_Item
+1278994:	|-NativeArray.ReadOnly<CopyClosingMeshJobData>.GetEnumerator
+1279141:	|-NativeArray.ReadOnly<CopyClosingMeshJobData>.System.Collections.Generic.IEnumerable<T>.GetEnumerator
+1279288:	|-NativeArray.ReadOnly<CopyClosingMeshJobData>.System.Collections.IEnumerable.GetEnumerator
+1279459:	|-NativeArray<CopyClosingMeshJobData>..ctor
+1279610:	|-NativeArray<CopyClosingMeshJobData>..ctor
+1279761:	|-NativeArray<CopyClosingMeshJobData>..ctor
+1279912:	|-NativeArray<CopyClosingMeshJobData>.Allocate
+1280027:	|-NativeArray<CopyClosingMeshJobData>.get_Length
+1280104:	|-NativeArray<CopyClosingMeshJobData>.get_Item
+1280248:	|-NativeArray<CopyClosingMeshJobData>.set_Item
+1280393:	|-NativeArray<CopyClosingMeshJobData>.get_IsCreated
+1280473:	|-NativeArray<CopyClosingMeshJobData>.Dispose
+1280576:	|-NativeArray<CopyClosingMeshJobData>.Dispose
+1280774:	|-NativeArray<CopyClosingMeshJobData>.CopyFrom
+1280912:	|-NativeArray<CopyClosingMeshJobData>.CopyFrom
+1281049:	|-NativeArray<CopyClosingMeshJobData>.CopyTo
+1281186:	|-NativeArray<CopyClosingMeshJobData>.ToArray
+1281361:	|-NativeArray<CopyClosingMeshJobData>.GetEnumerator
+1281508:	|-NativeArray<CopyClosingMeshJobData>.System.Collections.Generic.IEnumerable<T>.GetEnumerator
+1281655:	|-NativeArray<CopyClosingMeshJobData>.System.Collections.IEnumerable.GetEnumerator
+1281766:	|-NativeArray<CopyClosingMeshJobData>.Equals
+1281845:	|-NativeArray<CopyClosingMeshJobData>.Equals
+1281926:	|-NativeArray<CopyClosingMeshJobData>.GetHashCode
+1282005:	|-NativeArray<CopyClosingMeshJobData>.op_Equality
+1282084:	|-NativeArray<CopyClosingMeshJobData>.Copy
+1282221:	|-NativeArray<CopyClosingMeshJobData>.Copy
+1282358:	|-NativeArray<CopyClosingMeshJobData>.Copy
+1282495:	|-NativeArray<CopyClosingMeshJobData>.Copy
+1282632:	|-NativeArray<CopyClosingMeshJobData>.Copy
+1282769:	|-NativeArray<CopyClosingMeshJobData>.Copy
+1282906:	|-NativeArray<CopyClosingMeshJobData>.CopySafe
+1283043:	|-NativeArray<CopyClosingMeshJobData>.CopySafe
+1283180:	|-NativeArray<CopyClosingMeshJobData>.CopySafe
+1283375:	|-NativeArray<CopyClosingMeshJobData>.GetSubArray
+1283514:	|-NativeArray<CopyClosingMeshJobData>.AsReadOnly
+1283633:	|-NativeSliceExtensions.Slice<CopyClosingMeshJobData>
+1283684:	|-NativeSlice.Enumerator<CopyClosingMeshJobData>..ctor
+1283703:	|-NativeSlice.Enumerator<CopyClosingMeshJobData>.Dispose
+1283722:	|-NativeSlice.Enumerator<CopyClosingMeshJobData>.MoveNext
+1283743:	|-NativeSlice.Enumerator<CopyClosingMeshJobData>.Reset
+1283764:	|-NativeSlice.Enumerator<CopyClosingMeshJobData>.get_Current
+1283797:	|-NativeSlice.Enumerator<CopyClosingMeshJobData>.System.Collections.IEnumerator.get_Current
+1283852:	|-NativeSlice<CopyClosingMeshJobData>..ctor
+1283873:	|-NativeSlice<CopyClosingMeshJobData>..ctor
+1283906:	|-NativeSlice<CopyClosingMeshJobData>.op_Implicit
+1283939:	|-NativeSlice<CopyClosingMeshJobData>..ctor
+1283972:	|-NativeSlice<CopyClosingMeshJobData>.get_Item
+1284006:	|-NativeSlice<CopyClosingMeshJobData>.set_Item
+1284040:	|-NativeSlice<CopyClosingMeshJobData>.CopyFrom
+1284074:	|-NativeSlice<CopyClosingMeshJobData>.CopyFrom
+1284105:	|-NativeSlice<CopyClosingMeshJobData>.get_Stride
+1284124:	|-NativeSlice<CopyClosingMeshJobData>.get_Length
+1284143:	|-NativeSlice<CopyClosingMeshJobData>.GetEnumerator
+1284162:	|-NativeSlice<CopyClosingMeshJobData>.System.Collections.Generic.IEnumerable<T>.GetEnumerator
+1284181:	|-NativeSlice<CopyClosingMeshJobData>.System.Collections.IEnumerable.GetEnumerator
+1284202:	|-NativeSlice<CopyClosingMeshJobData>.Equals
+1284221:	|-NativeSlice<CopyClosingMeshJobData>.Equals
+1284242:	|-NativeSlice<CopyClosingMeshJobData>.GetHashCode
+1284731:	|-NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<CopyClosingMeshJobData>
+1284894:	|-NativeSliceUnsafeUtility.GetUnsafePtr<CopyClosingMeshJobData>
+1284914:	|-NativeSliceUnsafeUtility.GetUnsafeReadOnlyPtr<CopyClosingMeshJobData>
+1285176:	|-UnsafeUtility.AlignOf<CopyClosingMeshJobData>
+1285339:	|-UnsafeUtility.ReadArrayElement<CopyClosingMeshJobData>
+1285475:	|-UnsafeUtility.ReadArrayElementWithStride<CopyClosingMeshJobData>
+1285514:	|-UnsafeUtility.WriteArrayElement<CopyClosingMeshJobData>
+1285665:	|-UnsafeUtility.WriteArrayElementWithStride<CopyClosingMeshJobData>
+1285874:	|-UnsafeUtility.SizeOf<UnsafeUtility.AlignOfHelper<CopyClosingMeshJobData>>
+1285924:	|-UnsafeUtility.SizeOf<CopyClosingMeshJobData>
+1308874:	private bool m_ConservativeEnclosingSphere; // 0x628
+1308875:	private int m_NumIterationsEnclosingSphere; // 0x62C
+1409667:	|-AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<TaskAwaiter, UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>
+1409949:	|-AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<YieldAwaitable.Awaiter, UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>
+1410216:	|-AsyncUniTaskVoidMethodBuilder.Start<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>
+1410523:	|-AsyncUniTaskVoid.<>c<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>..cctor
+1410644:	|-AsyncUniTaskVoid.<>c<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>..ctor
+1410761:	|-AsyncUniTaskVoid.<>c<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>.<.cctor>b__10_0
+1410902:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>.get_ReturnAction
+1410983:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>.get_MoveNext
+1411330:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>..ctor
+1411668:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>.SetStateMachine
+1412006:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>..cctor
+1412145:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>.get_NextNode
+1412293:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>.Return
+1412641:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>.Run
+1412821:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>.Cysharp.Threading.Tasks.IUniTaskSource.GetStatus
+1412939:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>.Cysharp.Threading.Tasks.IUniTaskSource.UnsafeGetStatus
+1413057:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>.Cysharp.Threading.Tasks.IUniTaskSource.OnCompleted
+1413175:	|-AsyncUniTaskVoid<UPFCultivationPanel.<PlayMeditateVideoAsync>d__93>.Cysharp.Threading.Tasks.IUniTaskSource.GetResult
+1450438:	private readonly string <ClosingTag>k__BackingField; // 0x8
+1450442:	public string ClosingTag { get; }
+1450447:	public void .ctor(string openingTag, string closingTag) { }
+1450455:	public string get_ClosingTag() { }
+1450467:	public static void Register(string styleKey, string openingTag, string closingTag) { }
+1450473:	internal static bool TryGet(string styleKey, out string openingTag, out string closingTag) { }
+1589465:	private string m_ClosingDefinition; // 0x28
+1589469:	private int[] m_ClosingTagArray; // 0x38
+1589473:	internal uint[] m_ClosingTagUnicodeArray; // 0x48
+1589480:	public string styleClosingDefinition { get; }
+1589482:	public int[] styleClosingTagArray { get; }
+1589505:	public string get_styleClosingDefinition() { }
+1589511:	public int[] get_styleClosingTagArray() { }
+1589514:	internal void .ctor(string styleName, string styleOpeningDefinition, string styleClosingDefinition) { }
+1591245:	private void ReplaceClosingStyleTag(ref TMP_Text.TextBackingContainer sourceText, int srcIndex, ref TMP_Text.UnicodeChar[] charBuffer, ref int writeIndex) { }
+1591248:	private void ReplaceClosingStyleTag(ref int[] sourceText, int srcIndex, ref TMP_Text.UnicodeChar[] charBuffer, ref int writeIndex) { }
+1591254:	private void InsertClosingStyleTag(ref TMP_Text.UnicodeChar[] charBuffer, ref int writeIndex) { }
+1692722:	public const DiagnosticId ERR_StringInvalidFormatMissingClosingBrace = 1341;
+1728081:	internal static void InsertClosingTextStyle(TextStyle style, ref TextProcessingElement[] charBuffer, ref int writeIndex, ref int textStyleStackDepth, ref TextProcessingStack<int>[] textStyleStacks, ref TextGenerationSettings generationSettings) { }
+1728090:	public static void ReplaceClosingStyleTag(ref TextProcessingElement[] charBuffer, ref int writeIndex, ref int textStyleStackDepth, ref TextProcessingStack<int>[] textStyleStacks, ref TextGenerationSettings generationSettings) { }
+1728096:	internal static void InsertClosingStyleTag(ref TextProcessingElement[] charBuffer, ref int writeIndex, ref int textStyleStackDepth, ref TextProcessingStack<int>[] textStyleStacks, ref TextGenerationSettings generationSettings) { }
+1729346:	private string m_ClosingDefinition; // 0x28
+1729350:	private uint[] m_ClosingTagArray; // 0x38
+1729354:	internal uint[] m_ClosingTagUnicodeArray; // 0x48
+1729359:	public uint[] styleClosingTagArray { get; }
+1729370:	public uint[] get_styleClosingTagArray() { }
+1729373:	internal void .ctor(string styleName, string styleOpeningDefinition, string styleClosingDefinition) { }
+1731009:	private readonly Parser _enclosing; // 0x10
+1731015:	public void .ctor(TextWriter output, Parser enclosing) { }
+1731030:	internal void .ctor(Parser _enclosing) { }
+1745401:	private HashSet<string> _enclosingSignals; // 0x80
+1749313:	public const MediaPlayerEvent.EventType Closing = 5;
+1849975:	internal int surfaceClosing; // 0x60
+1850109:	private void SurfaceClosing() { }
+1857088:	private Action<GameMediaHandle> OnClosing; // 0x80
+1857216:	public void add_OnClosing(Action<GameMediaHandle> value) { }
+1857220:	public void remove_OnClosing(Action<GameMediaHandle> value) { }
+1858441:	public const GameMediaState Closing = 7;

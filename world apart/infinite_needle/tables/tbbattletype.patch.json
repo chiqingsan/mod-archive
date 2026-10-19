@@ -1,0 +1,425 @@
+{
+  "table": "tbbattletype",
+  "keyFields": [
+    "id"
+  ],
+  "upsert": [
+    {
+      "id": 1,
+      "typeName": "野外怪物战斗",
+      "ownerType": 1,
+      "dropItems": false,
+      "reviveSpaceMode": 1,
+      "allowDeathRescue": true,
+      "maxDropCount": 0,
+      "minDropCount": 0,
+      "revivedHpRatio": 0.5,
+      "revivedMpRatio": 0.5,
+      "revivePanelTexts": [
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "妖物攻势难当，归元之力正重塑残躯，宜暂避其锋",
+            "zh-Hant": "妖物攻勢難當，歸元之力正重塑殘軀，宜暫避其鋒",
+            "en-US": "The monster's assault is too fierce to withstand; the power of Origin Return is reshaping your broken body—better to avoid its edge for now."
+          }
+        },
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "此番遭逢凶险，经脉受创、灵力涣散，需静养调息",
+            "zh-Hant": "此番遭逢兇險，經脈受創、靈力渙散，需靜養調息",
+            "en-US": "This dangerous encounter has damaged your meridians and scattered your spirit power. Rest quietly and regulate your breath."
+          }
+        },
+        {
+          "weight": 5,
+          "reason": {
+            "zh-Hans": "荒野杀机四伏，待神魂归定、肉身复原后再行历练",
+            "zh-Hant": "荒野殺機四伏，待神魂歸定、肉身復原後再行歷練",
+            "en-US": "The wilderness is fraught with deadly peril. Continue your training after your soul is settled and your body is restored."
+          }
+        }
+      ],
+      "nonLethalDefeat": false
+    },
+    {
+      "id": 2,
+      "typeName": "副本小怪战斗",
+      "ownerType": 1,
+      "dropItems": false,
+      "reviveSpaceMode": 1,
+      "allowDeathRescue": true,
+      "maxDropCount": 0,
+      "minDropCount": 0,
+      "revivedHpRatio": 0.5,
+      "revivedMpRatio": 0.5,
+      "revivePanelTexts": [
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "秘境群敌环伺，归元之力正修复伤势，整备后再入",
+            "zh-Hant": "秘境群敵環伺，歸元之力正修復傷勢，整備後再入",
+            "en-US": "Foes press in from all sides in the Secret Realm; the power of Origin Return is mending your wounds—regroup before entering again."
+          }
+        },
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "久战之下灵力枯竭、经脉受损，宜暂退调息",
+            "zh-Hant": "久戰之下靈力枯竭、經脈受損，宜暫退調息",
+            "en-US": "After a prolonged battle, Spirit Energy is depleted and the meridians are damaged. Retreat and recuperate for now."
+          }
+        },
+        {
+          "weight": 5,
+          "reason": {
+            "zh-Hans": "此行未竟，待肉身复原、气息平稳后可再探秘境",
+            "zh-Hant": "此行未竟，待肉身復原、氣息平穩後可再探秘境",
+            "en-US": "This journey remains unfinished. Once your body has recovered and your aura has steadied, you may explore the secret realm again."
+          }
+        }
+      ],
+      "nonLethalDefeat": false
+    },
+    {
+      "id": 3,
+      "typeName": "副本Boss战斗",
+      "ownerType": 1,
+      "dropItems": false,
+      "reviveSpaceMode": 1,
+      "allowDeathRescue": true,
+      "maxDropCount": 0,
+      "minDropCount": 0,
+      "revivedHpRatio": 0.5,
+      "revivedMpRatio": 0.5,
+      "revivePanelTexts": [
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "强敌威势远胜寻常，归元之力正重塑残躯",
+            "zh-Hant": "強敵威勢遠勝尋常，歸元之力正重塑殘軀",
+            "en-US": "This formidable enemy far surpasses the ordinary; restorative origin power is rebuilding the shattered body."
+          }
+        },
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "重创之下神魂震荡、经脉俱损，需潜心调息",
+            "zh-Hant": "重創之下神魂震盪、經脈俱損，需潛心調息",
+            "en-US": "A grave blow has shaken the soul and damaged all meridians; careful meditation is needed to recover."
+          }
+        },
+        {
+          "weight": 5,
+          "reason": {
+            "zh-Hans": "此敌不可轻犯，待修为整备、洞悉其法后再战",
+            "zh-Hant": "此敵不可輕犯，待修為整備、洞悉其法後再戰",
+            "en-US": "This foe must not be challenged lightly. Ready your cultivation and discern its arts before fighting again."
+          }
+        }
+      ],
+      "nonLethalDefeat": false
+    },
+    {
+      "id": 4,
+      "typeName": "搜打撤小怪战斗",
+      "ownerType": 1,
+      "dropItems": false,
+      "reviveSpaceMode": 1,
+      "allowDeathRescue": true,
+      "maxDropCount": 0,
+      "minDropCount": 0,
+      "revivedHpRatio": 0.5,
+      "revivedMpRatio": 0.5,
+      "revivePanelTexts": [
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "撤离未成，群敌仍盘踞其间，宜整备后再入",
+            "zh-Hant": "撤離未成，群敵仍盤踞其間，宜整備後再入",
+            "en-US": "Extraction failed; enemy forces still occupy the area. Regroup before re-entering."
+          }
+        },
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "群敌合围，灵力溃散，归元之力正修复残躯",
+            "zh-Hant": "群敵合圍，靈力潰散，歸元之力正修復殘軀",
+            "en-US": "Foes close in from all sides and Spirit Energy scatters—the power of Origin Return is mending your broken body."
+          }
+        },
+        {
+          "weight": 5,
+          "reason": {
+            "zh-Hans": "此次探索止步于此，待伤势平复后再寻撤离之机",
+            "zh-Hant": "此次探索止步於此，待傷勢平復後再尋撤離之機",
+            "en-US": "This exploration ends here. Wait for your injuries to heal, then seek a chance to withdraw."
+          }
+        }
+      ],
+      "nonLethalDefeat": false
+    },
+    {
+      "id": 5,
+      "typeName": "搜打撤Boss战斗",
+      "ownerType": 1,
+      "dropItems": false,
+      "reviveSpaceMode": 1,
+      "allowDeathRescue": true,
+      "maxDropCount": 0,
+      "minDropCount": 0,
+      "revivedHpRatio": 0.5,
+      "revivedMpRatio": 0.5,
+      "revivePanelTexts": [
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "强敌截断归途，此番撤离未成，宜审势后再入",
+            "zh-Hant": "強敵截斷歸途，此番撤離未成，宜審勢後再入",
+            "en-US": "A powerful enemy has cut off the way home. This withdrawal failed; assess the situation before entering again."
+          }
+        },
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "重压之下神魂震荡、灵力尽散，归元之力正重塑残躯",
+            "zh-Hant": "重壓之下神魂震盪、靈力盡散，歸元之力正重塑殘軀",
+            "en-US": "Under immense pressure, the soul is shaken and spirit power dispersed; the power of Origin Restoration is reshaping the broken body."
+          }
+        },
+        {
+          "weight": 5,
+          "reason": {
+            "zh-Hans": "此次探索止于强敌，待洞悉其法、备妥丹符后再战",
+            "zh-Hant": "此次探索止於強敵，待洞悉其法、備妥丹符後再戰",
+            "en-US": "This exploration ends before a formidable foe. Discern its arts and prepare pills and talismans before fighting again."
+          }
+        }
+      ],
+      "nonLethalDefeat": false
+    },
+    {
+      "id": 6,
+      "typeName": "随机事件战斗",
+      "ownerType": 1,
+      "dropItems": false,
+      "reviveSpaceMode": 2,
+      "allowDeathRescue": false,
+      "maxDropCount": 0,
+      "minDropCount": 0,
+      "revivedHpRatio": 0.5,
+      "revivedMpRatio": 0.5,
+      "revivePanelTexts": [
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "此番遭逢凶险，经脉受创、灵力涣散，需静养调息",
+            "zh-Hant": "此番遭逢兇險，經脈受創、靈力渙散，需靜養調息",
+            "en-US": "This dangerous encounter has damaged your meridians and scattered your spirit power. Rest quietly and regulate your breath."
+          }
+        }
+      ],
+      "nonLethalDefeat": false
+    },
+    {
+      "id": 100,
+      "typeName": "主动NPC切磋",
+      "ownerType": 2,
+      "dropItems": false,
+      "reviveSpaceMode": 2,
+      "allowDeathRescue": false,
+      "maxDropCount": 0,
+      "minDropCount": 0,
+      "revivedHpRatio": -1,
+      "revivedMpRatio": -1,
+      "revivePanelTexts": [
+        {
+          "weight": 20,
+          "reason": {
+            "zh-Hans": "切磋胜负已分，此番技逊一筹，调息后可再请教",
+            "zh-Hant": "切磋勝負已分，此番技遜一籌，調息後可再請教",
+            "en-US": "The spar is decided. Your skill fell short this time; after regulating your breath, you may study again."
+          }
+        },
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "一时失手无损道途，复盘招式、稳固气息后再战",
+            "zh-Hant": "一時失手無損道途，覆盤招式、穩固氣息後再戰",
+            "en-US": "A moment's misstep does not mar the Immortal Path. Review your arts, steady your breath, then fight again."
+          }
+        },
+        {
+          "weight": 55,
+          "reason": {
+            "zh-Hans": "承让此局，胜负皆为磨砺，来日再证所学",
+            "zh-Hant": "承讓此局，勝負皆為磨礪，來日再證所學",
+            "en-US": "I accept this round. Victory or defeat is but tempering; we shall test what we have learned another day."
+          }
+        }
+      ],
+      "nonLethalDefeat": true
+    },
+    {
+      "id": 101,
+      "typeName": "主动NPC袭击",
+      "ownerType": 2,
+      "dropItems": true,
+      "reviveSpaceMode": 1,
+      "allowDeathRescue": false,
+      "abnormalBuffId": 501,
+      "abnormalBuffDays": 30,
+      "maxDropCount": 3,
+      "minDropCount": 3,
+      "revivedHpRatio": 0.5,
+      "revivedMpRatio": 0.5,
+      "revivePanelTexts": [
+        {
+          "weight": 20,
+          "reason": {
+            "zh-Hans": "此番交锋已成死斗，重伤之下物资散失，需先行休养",
+            "zh-Hant": "此番交鋒已成死鬥，重傷之下物資散失，需先行休養",
+            "en-US": "This encounter became a fight to the death. Severely injured, your supplies have been scattered; rest and recuperate first."
+          }
+        },
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "对手反击凌厉，神魂震荡、经脉受创，归元之力正修复",
+            "zh-Hant": "對手反擊凌厲，神魂震盪、經脈受創，歸元之力正修復",
+            "en-US": "Your opponent's counter is fierce, shaking your Primordial Spirit and wounding your meridians—the power of Origin Return is mending them."
+          }
+        },
+        {
+          "weight": 55,
+          "reason": {
+            "zh-Hans": "强行出手反受其制，待伤势平复后再定进退",
+            "zh-Hant": "強行出手反受其制，待傷勢平復後再定進退",
+            "en-US": "Forcing an attack only leaves you restrained in return; wait for your injuries to settle before deciding whether to advance or retreat."
+          }
+        }
+      ],
+      "nonLethalDefeat": false
+    },
+    {
+      "id": 102,
+      "typeName": "被NPC追杀",
+      "ownerType": 2,
+      "dropItems": true,
+      "reviveSpaceMode": 1,
+      "allowDeathRescue": false,
+      "abnormalBuffId": 501,
+      "abnormalBuffDays": 30,
+      "maxDropCount": 3,
+      "minDropCount": 3,
+      "revivedHpRatio": 0.5,
+      "revivedMpRatio": 0.5,
+      "revivePanelTexts": [
+        {
+          "weight": 20,
+          "reason": {
+            "zh-Hans": "追兵杀意已决，此番未能脱身，所携物品随败退散失",
+            "zh-Hant": "追兵殺意已決，此番未能脫身，所攜物品隨敗退散失",
+            "en-US": "The pursuers are bent on killing you. Should you fail to escape this time, the items you carry will be lost as you retreat in defeat."
+          }
+        },
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "逃生途中身受重创，归元之力正重塑残躯",
+            "zh-Hant": "逃生途中身受重創，歸元之力正重塑殘軀",
+            "en-US": "Gravely wounded while escaping, its ruined body is being remade by the power of Origin Restoration."
+          }
+        },
+        {
+          "weight": 55,
+          "reason": {
+            "zh-Hans": "来敌穷追不舍，待神魂归定、伤势平复后另寻生路",
+            "zh-Hant": "來敵窮追不捨，待神魂歸定、傷勢平復後另尋生路",
+            "en-US": "The enemy pursues relentlessly. Once your Primordial Spirit is settled and your injuries recover, seek another way out."
+          }
+        }
+      ],
+      "nonLethalDefeat": false
+    },
+    {
+      "id": 110,
+      "typeName": "比武大会切磋",
+      "ownerType": 2,
+      "dropItems": false,
+      "reviveSpaceMode": 2,
+      "allowDeathRescue": false,
+      "maxDropCount": 0,
+      "minDropCount": 0,
+      "revivedHpRatio": -1,
+      "revivedMpRatio": -1,
+      "revivePanelTexts": [
+        {
+          "weight": 20,
+          "reason": {
+            "zh-Hans": "此轮胜负已定，整饬招式、调匀气息后再赴擂台",
+            "zh-Hant": "此輪勝負已定，整飭招式、調勻氣息後再赴擂臺",
+            "en-US": "The outcome of this round is decided. Regroup your arts and regulate your breath before returning to the arena."
+          }
+        },
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "擂台争锋重在证道，一局之失亦可照见不足",
+            "zh-Hant": "擂臺爭鋒重在證道，一局之失亦可照見不足",
+            "en-US": "In arena contests, the point is to seek the Dao; even a lost bout can reveal one's shortcomings."
+          }
+        },
+        {
+          "weight": 55,
+          "reason": {
+            "zh-Hans": "此战虽负，道途未止，来日再以所学争胜",
+            "zh-Hant": "此戰雖負，道途未止，來日再以所學爭勝",
+            "en-US": "Though this battle was lost, the Dao path continues. Another day, contend for victory with what you have learned."
+          }
+        }
+      ],
+      "nonLethalDefeat": true
+    },
+    {
+      "id": 111,
+      "typeName": "世界Boss切磋",
+      "ownerType": 2,
+      "dropItems": false,
+      "reviveSpaceMode": 2,
+      "allowDeathRescue": false,
+      "maxDropCount": 0,
+      "minDropCount": 0,
+      "revivedHpRatio": -1,
+      "revivedMpRatio": -1,
+      "revivePanelTexts": [
+        {
+          "weight": 20,
+          "reason": {
+            "zh-Hans": "巨兽威势难当，此番挑战未成，待整备周全后再战",
+            "zh-Hant": "巨獸威勢難當，此番挑戰未成，待整備周全後再戰",
+            "en-US": "The giant beast's might is overwhelming. This challenge has failed; regroup fully before fighting again."
+          }
+        },
+        {
+          "weight": 10,
+          "reason": {
+            "zh-Hans": "强敌一击震散护体灵力，调息稳气后可再试锋芒",
+            "zh-Hant": "強敵一擊震散護體靈力，調息穩氣後可再試鋒芒",
+            "en-US": "A powerful enemy's strike has scattered your protective Spirit Energy. Regain your breath and stabilize your qi before testing your edge again."
+          }
+        },
+        {
+          "weight": 55,
+          "reason": {
+            "zh-Hans": "此等大敌非一人之力可轻撄，宜审势合力再战",
+            "zh-Hant": "此等大敵非一人之力可輕攖，宜審勢合力再戰",
+            "en-US": "Such a formidable foe cannot be faced by one person alone. Assess the situation and join forces before challenging it again."
+          }
+        }
+      ],
+      "nonLethalDefeat": true
+    }
+  ]
+}

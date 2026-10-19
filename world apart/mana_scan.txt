@@ -1,0 +1,6 @@
+--- 1001002 灵府盈溢 | src 1 1001 unlock 10
+    灵力上限<color=#FFD71E>+100</color>
+    expr parse fail: 'index'
+--- 1001004 灵渊深蓄 | src 1 1001 unlock 20
+    灵力上限<color=#FFD71E>+100</color>
+    expr parse fail: 'index'

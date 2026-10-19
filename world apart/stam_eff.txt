@@ -1,0 +1,19 @@
+rows: 183
+--- 4001001 神意初生 | sourceType: 4 sourceId: 1001 unlockValue: 1
+   desc: 精力上限+10
+   exprs: [{"func": ["call", {"location": {"script": "TbExploreLevelOutGameEffect.4001001", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["index", {"location": {"script": "TbExploreLevelOutGameEffect.4001001", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["variable", {"location": {"script": "TbExploreLevelOutGameEffect.4001001", "line": 1, "column": 1, "position": 0, "length": 5}, "name": "玩家属性"}], "index": ["string", {"value": "精力上限固定加成"}]}], "arguments": [["int", {"lo
+--- 4001006 精元充盈 | sourceType: 4 sourceId: 1006 unlockValue: 1
+   desc: 精力上限+10
+   exprs: [{"func": ["call", {"location": {"script": "TbExploreLevelOutGameEffect.4001006", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["index", {"location": {"script": "TbExploreLevelOutGameEffect.4001006", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["variable", {"location": {"script": "TbExploreLevelOutGameEffect.4001006", "line": 1, "column": 1, "position": 0, "length": 5}, "name": "玩家属性"}], "index": ["string", {"value": "精力上限固定加成"}]}], "arguments": [["int", {"lo
+--- 4001009 神魂壮大 | sourceType: 4 sourceId: 1009 unlockValue: 1
+   desc: 精力上限+15
+   exprs: [{"func": ["call", {"location": {"script": "TbExploreLevelOutGameEffect.4001009", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["index", {"location": {"script": "TbExploreLevelOutGameEffect.4001009", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["variable", {"location": {"script": "TbExploreLevelOutGameEffect.4001009", "line": 1, "column": 1, "position": 0, "length": 5}, "name": "玩家属性"}], "index": ["string", {"value": "精力上限固定加成"}]}], "arguments": [["int", {"lo
+--- 4001011 元神凝练 | sourceType: 4 sourceId: 1011 unlockValue: 1
+   desc: 精力上限+15
+   exprs: [{"func": ["call", {"location": {"script": "TbExploreLevelOutGameEffect.4001011", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["index", {"location": {"script": "TbExploreLevelOutGameEffect.4001011", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["variable", {"location": {"script": "TbExploreLevelOutGameEffect.4001011", "line": 1, "column": 1, "position": 0, "length": 5}, "name": "玩家属性"}], "index": ["string", {"value": "精力上限固定加成"}]}], "arguments": [["int", {"lo
+--- 1005005 培元固本 | sourceType: 1 sourceId: 1005 unlockValue: 10
+   desc: 精力上限<color=#FFD71E>+15</color>
+   exprs: [{"func": ["call", {"location": {"script": "TbExploreLevelOutGameEffect.1005005", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["index", {"location": {"script": "TbExploreLevelOutGameEffect.1005005", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["variable", {"location": {"script": "TbExploreLevelOutGameEffect.1005005", "line": 1, "column": 1, "position": 0, "length": 5}, "name": "玩家属性"}], "index": ["string", {"value": "精力上限固定加成"}]}], "arguments": [["int", {"lo
+--- 1005007 摄生养锐 | sourceType: 1 sourceId: 1005 unlockValue: 20
+   desc: 精力上限<color=#FFD71E>+15</color>
+   exprs: [{"func": ["call", {"location": {"script": "TbExploreLevelOutGameEffect.1005007", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["index", {"location": {"script": "TbExploreLevelOutGameEffect.1005007", "line": 1, "column": 1, "position": 0, "length": 5}, "target": ["variable", {"location": {"script": "TbExploreLevelOutGameEffect.1005007", "line": 1, "column": 1, "position": 0, "length": 5}, "name": "玩家属性"}], "index": ["string", {"value": "精力上限固定加成"}]}], "arguments": [["int", {"lo

@@ -1,0 +1,184 @@
+{
+  "table": "tbpillrecipe",
+  "keyFields": [
+    "id"
+  ],
+  "upsert": [
+    {
+      "id": 1000003,
+      "name": {
+        "zh-Hans": "金砂散",
+        "zh-Hant": "金砂散",
+        "en-US": "Golden Sand Powder"
+      },
+      "tier": 1,
+      "element": 1,
+      "item_id": 180001,
+      "scope": 2,
+      "apply_scope": 3,
+      "max_use": 0,
+      "main_effects": [
+        {
+          "type": 2,
+          "values": [
+            80,
+            1
+          ]
+        }
+      ],
+      "main_effects_enhanced": [
+        {
+          "type": 2,
+          "values": [
+            80,
+            1
+          ]
+        }
+      ],
+      "main_effects_shen": [
+        {
+          "type": 2,
+          "values": [
+            80,
+            1
+          ]
+        }
+      ],
+      "main_duration": 0,
+      "main_duration_enhanced": 0,
+      "main_duration_shen": 0,
+      "CoolDown": 2,
+      "TimeType": 0,
+      "property": 1,
+      "total_time": 15,
+      "spirit_progress": 50,
+      "fan_threshold": 600,
+      "xian_threshold": 850,
+      "shen_threshold": 950,
+      "max_craft_count": 0,
+      "stages": [
+        {
+          "name": {
+            "zh-Hans": "文火温养",
+            "zh-Hant": "文火溫養",
+            "en-US": "Gently Warmed over Low Heat"
+          },
+          "time_ratio": 1,
+          "cursor_up": 0.42,
+          "cursor_down": 0.28,
+          "zone_w": 0.35,
+          "perfect_w": 0.15,
+          "zone_speed": 0.6,
+          "spirit_count": 3,
+          "spirit_time_min": 3,
+          "spirit_time_max": 13
+        }
+      ],
+      "desc": {
+        "zh-Hans": "清冽之气直上眉心，令神识聚而不散、出手更为精准。使用后回复最大生命值的30%。",
+        "zh-Hant": "清冽之氣直上眉心，使神識凝聚不散，出手更為精準。使用後回復30%最大生命。",
+        "en-US": "A pure chill rises straight to the brow, keeping the Divine Sense focused and steadying one's strikes. Restores 30% of maximum Health when used."
+      },
+      "collect_exp": 10,
+      "condense_fan_exp": 62,
+      "condense_xian_exp": 70,
+      "condense_shen_exp": 78,
+      "condense_fail_exp": 31,
+      "batch_exp_per": 35,
+      "map_icon": "Assets/Res/GUI/Atlas/RefiningPills/DanfangIcons/icon-danfang-jinsha.png",
+      "poi_scale_min": 0.5,
+      "poi_scale_max": 1.2,
+      "toxin_max": 100,
+      "pill_category": 1,
+      "is_enabled": true
+    },
+    {
+      "id": 1000004,
+      "name": {
+        "zh-Hans": "回春散",
+        "zh-Hant": "回春散",
+        "en-US": "Spring-Returning Powder"
+      },
+      "tier": 1,
+      "element": 2,
+      "item_id": 180002,
+      "scope": 2,
+      "apply_scope": 3,
+      "max_use": 0,
+      "main_effects": [
+        {
+          "type": 2,
+          "values": [
+            80,
+            2
+          ]
+        }
+      ],
+      "main_effects_enhanced": [
+        {
+          "type": 2,
+          "values": [
+            80,
+            2
+          ]
+        }
+      ],
+      "main_effects_shen": [
+        {
+          "type": 2,
+          "values": [
+            80,
+            2
+          ]
+        }
+      ],
+      "main_duration": 0,
+      "main_duration_enhanced": 0,
+      "main_duration_shen": 0,
+      "CoolDown": 2,
+      "TimeType": 0,
+      "property": 2,
+      "total_time": 15,
+      "spirit_progress": 50,
+      "fan_threshold": 600,
+      "xian_threshold": 850,
+      "shen_threshold": 950,
+      "max_craft_count": 0,
+      "stages": [
+        {
+          "name": {
+            "zh-Hans": "文火温养",
+            "zh-Hant": "文火溫養",
+            "en-US": "Gently Warmed over Low Heat"
+          },
+          "time_ratio": 1,
+          "cursor_up": 0.42,
+          "cursor_down": 0.28,
+          "zone_w": 0.35,
+          "perfect_w": 0.15,
+          "zone_speed": 0.6,
+          "spirit_count": 3,
+          "spirit_time_min": 3,
+          "spirit_time_max": 13
+        }
+      ],
+      "desc": {
+        "zh-Hans": "蕴含草木生生不息之气，药效温和绵长。使用后回复最大灵力值的50%。",
+        "zh-Hant": "蘊含草木生生不息之氣，藥效溫和綿長。使用後回復最大靈力值的50%。",
+        "en-US": "Contains the unending vitality of plants, with a gentle medicinal effect that endures. Restores 50% of Max Spirit Energy."
+      },
+      "collect_exp": 10,
+      "condense_fan_exp": 62,
+      "condense_xian_exp": 70,
+      "condense_shen_exp": 78,
+      "condense_fail_exp": 31,
+      "batch_exp_per": 35,
+      "map_icon": "Assets/Res/GUI/Atlas/RefiningPills/DanfangIcons/icon-danfang-huichun.png",
+      "poi_scale_min": 0.5,
+      "poi_scale_max": 1.2,
+      "toxin_max": 100,
+      "pill_category": 1,
+      "is_enabled": true
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+===== ModTablePatcher..cctor =====
+0x180d81906 cmp       byte ptr [rip + 0x77d9408], 0            
+0x180d8190d jne       0x180d81946                              
+0x180d8193f mov       byte ptr [rip + 0x77d93cf], 1            
+0x180d81946 mov       rcx, qword ptr [rip + 0x7469053]         
+0x180d81954 mov       rcx, rax                                 
+0x180d81957 mov       rbx, rax                                 
+0x180d8195a call      0x1855fc820                              => Newtonsoft.Json.Linq.JsonMergeSettings$$.ctor
+0x180d8195f test      rbx, rbx                                 
+0x180d81962 je        0x180d81a03                              
+0x180d8196b mov       edx, 2                                   
+0x180d81970 mov       rcx, rbx                                 
+0x180d81973 call      0x1855fc840                              => Newtonsoft.Json.Linq.JsonMergeSettings$$set_MergeArrayHandling
+0x180d81978 mov       rcx, qword ptr [rip + 0x74a96d9]         
+0x180d8197f mov       rdx, qword ptr [rcx + 0xb8]              
+0x180d81986 mov       qword ptr [rdx], rbx                     
+0x180d81989 mov       rdx, rbx                                 
+0x180d8198c mov       rcx, qword ptr [rip + 0x74a96c5]         
+0x180d81993 mov       rcx, qword ptr [rcx + 0xb8]              
+0x180d8199f mov       rcx, qword ptr [rip + 0x74c94b2]         
+0x180d819a6 mov       edx, 1                                   
+0x180d819b0 mov       rbx, rax                                 
+0x180d819b3 test      rax, rax                                 
+0x180d819b6 je        0x180d81a03                              
+0x180d819b8 cmp       dword ptr [rax + 0x18], 0                
+0x180d819bc jbe       0x180d81a09                              
+0x180d819be mov       rdx, qword ptr [rip + 0x74c572b]         STR 'id'
+0x180d819c9 mov       qword ptr [rax + 0x20], rdx              
+0x180d819d2 mov       rax, qword ptr [rip + 0x74a967f]         
+0x180d819d9 mov       rdx, rbx                                 
+0x180d819dc mov       rcx, qword ptr [rax + 0xb8]              
+0x180d819e3 mov       qword ptr [rcx + 8], rbx                 
+0x180d819e7 mov       rax, qword ptr [rip + 0x74a966a]         
+0x180d819ee mov       rcx, qword ptr [rax + 0xb8]              
+0x180d819fe jmp       0x1805dd660                              
+0x180d81a10 mov       qword ptr [rsp + 0x10], rbx              
+0x180d81a1a mov       rbx, rcx                                 
+0x180d81a1d cmp       byte ptr [rip + 0x77d92f4], 0            
+0x180d81a24 jne       0x180d81a69                              
+0x180d81a62 mov       byte ptr [rip + 0x77d92af], 1            
+0x180d81a6b mov       qword ptr [rsp + 0x50], rdi              
+0x180d81a70 test      rbx, rbx                                 
+0x180d81a73 je        0x180d81b65                              
+0x180d81a7b mov       r8, rbx                                  
+0x180d81a7e mov       rdx, qword ptr [rip + 0x74ca6bb]         
+0x180d81a8a mov       qword ptr [rsp + 0x50], rax              
+0x180d81a8f mov       qword ptr [rsp + 0x28], rdi              
+0x180d81a99 mov       qword ptr [rsp + 0x30], rbx              
+0x180d81aa0 mov       r8, qword ptr [rsp + 0x50]               
+0x180d81aa5 test      r8, r8                                   
+0x180d81aa8 je        0x180d81b78                              
+0x180d81ab0 mov       rdx, qword ptr [rip + 0x7419219]         
+0x180d81abc test      al, al                                   
+0x180d81abe je        0x180d81b26                              
+0x180d81ac0 mov       r8, qword ptr [rsp + 0x50]               
+0x180d81ac5 test      r8, r8                                   
+0x180d81ac8 je        0x180d81b72                              
+0x180d81ad0 mov       rdx, qword ptr [rip + 0x73d88a1]         
+0x180d81adc mov       rdi, rax                                 
+0x180d81adf mov       rcx, qword ptr [rip + 0x74a971a]         
+0x180d81ae6 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d81aed jne       0x180d81af4                              
+0x180d81af6 mov       rcx, rdi                                 
+0x180d81af9 call      0x180d81b90                              => Game.Mod.ModTableTiers$$IsHot
+0x180d81afe test      al, al                                   
+0x180d81b00 jne       0x180d81aa0                              
+0x180d81b02 cmp       qword ptr [rbx], 0                       
+0x180d81b06 je        0x180d81b19                              
+0x180d81b0a mov       r8, qword ptr [rbx]                      
+0x180d81b0d mov       rdx, qword ptr [rip + 0x741622c]         
+0x180d81b1b mov       rbx, qword ptr [rsp + 0x58]              
+0x180d81b25 ret                                                

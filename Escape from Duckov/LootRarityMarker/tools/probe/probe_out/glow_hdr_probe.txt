@@ -1,0 +1,24 @@
+TypeTreeGenerator 载入 201 个 dll
+  globalgamemanagers.assets  命中新组 1 个
+
+==============================================================================
+Q1) URP Render Pipeline Asset —— HDR 开关
+==============================================================================
+  文件 globalgamemanagers.assets  pathID 5150  该脚本共 1 个实例
+     m_SupportsHDR              = 1
+     m_ColorGradingMode         = 0
+     m_MSAA                     = 1
+     m_RenderScale              = 1.0
+     m_ShadowDistance           = 90.0
+     m_MainLightRenderingMode   = 1
+     全部键: k_AssetPreviousVersion, k_AssetVersion, m_AdditionalLightShadowsSupported, m_AdditionalLightsCookieFormat, m_AdditionalLightsCookieResolution, m_AdditionalLightsPerObjectLimit, m_AdditionalLightsRenderingMode, m_AdditionalLightsShadowResolutionTierHigh, m_AdditionalLightsShadowResolutionTierLow, m_AdditionalLightsShadowResolutionTierMedium, m_AdditionalLightsShadowmapResolution, m_Cascade2Split, m_Cascade3Split, m_Cascade4Split, m_CascadeBorder, m_ColorGradingLutSize, m_ColorGradingMode, m_ConservativeEnclosingSphere, m_DebugLevel, m_DefaultRendererIndex, m_EnableLODCrossFade, m_EnableRenderGraph, m_Enabled, m_FsrOverrideSharpness, m_FsrSharpness, m_GameObject, m_HDRColorBufferPrecision, m_LODCrossFadeDitheringType, m_LocalShadowsAtlasResolution, m_LocalShadowsSupported, m_MSAA, m_MainLightRenderingMode, m_MainLightShadowmapResolution, m_MainLightShadowsSupported, m_MaxPixelLights, m_MixedLightingSupported, m_Name, m_NumIterationsEnclosingSphere, m_OpaqueDownsampling, m_ReflectionProbeBlending, m_ReflectionProbeBoxProjection, m_RenderScale, m_RendererData, m_RendererDataList, m_RendererType, m_RequireDepthTexture, m_RequireOpaqueTexture, m_Script, m_ShEvalMode, m_ShaderVariantLogLevel, m_ShadowAtlasResolution, m_ShadowCascadeCount, m_ShadowCascades, m_ShadowDepthBias, m_ShadowDistance, m_ShadowNormalBias, m_ShadowType, m_SoftShadowQuality, m_SoftShadowsSupported, m_StoreActionsOptimization, m_SupportDataDrivenLensFlare, m_SupportsDynamicBatching, m_SupportsHDR, m_SupportsLightCookies, m_SupportsLightLayers, m_SupportsTerrainHoles, m_Textures, m_UpscalingFilter, m_UseAdaptivePerformance, m_UseFastSRGBLinearConversion, m_UseSRPBatcher, m_VolumeFrameworkUpdateMode
+
+==============================================================================
+Q2/Q3) Bloom 组件
+==============================================================================
+  ！没找到 Bloom 组件（说明游戏没有启用 URP Bloom 后处理）
+
+==============================================================================
+附带) Volume 组件
+==============================================================================
+  ！没找到 Volume 组件

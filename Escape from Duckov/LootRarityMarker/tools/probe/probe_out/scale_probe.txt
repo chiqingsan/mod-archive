@@ -1,0 +1,209 @@
+资源容器数量 = 129
+
+TagManager 来源 = globalgamemanagers
+  layer[ 0] = Default
+  layer[ 1] = TransparentFX
+  layer[ 2] = Ignore Raycast
+  layer[ 3] = DamageReceiver
+  layer[ 4] = Water
+  layer[ 5] = UI
+  layer[ 6] = Wall
+  layer[ 7] = Ground
+  layer[ 8] = Interactable
+  layer[ 9] = Character
+  layer[10] = VisualOcclusion
+  layer[11] = Acoustics
+  layer[12] = AiBlocker
+  layer[13] = Door
+  layer[14] = HalfObsticle
+  layer[15] = SodaLight
+  layer[16] = Trigger
+  layer[17] = Projectile
+  layer[18] = FowBlock
+  layer[19] = Wall_FowBlock
+  layer[20] = HeadCollider
+  layer[21] = FowDontBlockThermal
+  layer[22] = FullScreenFx
+  layer[23] = BlockBullet
+  layer[30] = MiniGame
+  layer[31] = SpecialCamera
+
+==============================================================================
+第一步：识别 InteractableBase 家族的脚本 pathID（扫 resources.assets）
+==============================================================================
+resources.assets 的脚本组数 = 850
+
+InteractableBase 家族脚本数 = 0，其中 Lootbox = 0
+!! 注意：预期 lootbox 脚本 pathID=268 不在识别结果里，识别可能不准
+
+==============================================================================
+第二步：逐容器统计
+==============================================================================
+容器                                 字节  MonoBeh  GameObj Collider        可交互 Interact层碰撞体
+globalgamemanagers            5818180        0        0        0          0          0
+globalgamemanagers.assets     1853628       51        0        0          0          0
+level0                         755220     2700     1011        1          0          0
+level1                        1496324     4245     2441      336          0          0
+level10                      39631420     7579    84471    43696          0       1008
+level11                         99868       53      101       46          0          0
+level12                       3646336     1505     5457     2831          0        575
+level13                         69604       50       49        0          0          0
+level14                       6933828     2498    13141     6362          0        302
+level15                        717696      531     1344      726          0        227
+level16                         67748       50       48        0          0          0
+level17                        428956     1308      661       57          0          7
+level18                         97860       52      100       46          0          0
+level19                       7024592     2118    16582     8380          0        221
+level2                          29936       52       24        0          0          0
+level20                        127916        9      205        2          0          0
+level21                        130608      432      179        0          0          0
+level22                       1213804      342     2054      658          0         16
+level23                       2479252      923     3764     2320          0        270
+level24                       2546884     1068     3293     1313          0        253
+level25                        126900       85       81        0          0          0
+level26                        195600      624      330        0          0          0
+level27                        129388       15      207        2          0          0
+level28                        127620        9      205        1          0          0
+level29                        111932        9      203        1          0          0
+level3                         126396       84      199       57          0          4
+level30                         97524       53      104       46          0          0
+level31                      14116656     2071    25611    12806          0        304
+level32                       8049884     1555    16956     8504          0        280
+level33                         95796       51       99       46          0          0
+level34                      18199924     2879    44378    22835          0        308
+level35                          2540        2        3        0          0          0
+level36                       1866724      769     2020     1011          0        239
+level37                         95908       54      104       46          0          0
+level38                         93516       53       99       46          0          0
+level39                       4796700     1375    11211     5688          0         49
+level4                        1110524      283     1253      458          0         28
+level40                         75716       50       55        0          0          0
+level41                       9771360     1887    20031     8970          0        252
+level42                       7191384      976    13836     6501          0        119
+level43                       2390124      662     5020     2172          0        114
+level44                       2600136      807     4605     2139          0        185
+level45                       3498340     1049     5272     2546          0        180
+level46                       2740864      806     4730     2107          0        105
+level47                        700656      168     1681      774          0         32
+level48                      24416140     5893    58840    33969          0        716
+level49                         95268       52       99       46          0          0
+level5                        1239292      506     1667      610          0         30
+level50                       2996248     1121     6764     2940          0         77
+level51                         93900       52       98       46          0          0
+level52                        135500        8      206        1          0          0
+level53                        129396       15      207        2          0          0
+level54                        100260       74       65        0          0          0
+level55                       4547876     1471     8807     4344          0         12
+level56                         95100       54      102       46          0          0
+level57                       1683896      714     1537      751          0        239
+level58                         69116       50       48        0          0          0
+level59                       9623936     1831    19629     8754          0        251
+level6                        1409008      445     2019      607          0         41
+level60                       8145860     3619    18931    10538          0        376
+level61                        120836      122      136       47          0          0
+level62                        112516        9      204        2          0          0
+level7                           2812        2        2        0          0          0
+level8                          31788        8       54        1          0          0
+level9                         101852        9      156        2          0          0
+resources.assets             81926752    38606    26266      811          0        107
+sharedassets0.assets         53952992      114        0        0          0          0
+sharedassets1.assets         13585356       54       12        1          0          0
+sharedassets10.assets        28097304       13      175       90          0          0
+sharedassets11.assets         9461076       20        0        0          0          0
+sharedassets12.assets         4676164       41        0        0          0          0
+sharedassets13.assets         4313424        0        0        0          0          0
+sharedassets14.assets         2964716       37       11        4          0          0
+sharedassets15.assets          724116       15        0        0          0          0
+sharedassets16.assets           19844        7        0        0          0          0
+sharedassets17.assets          193992       11        0        0          0          0
+sharedassets18.assets         6005700        0        0        0          0          0
+sharedassets19.assets         4722464        0        7        2          0          0
+sharedassets2.assets            12976       12        0        0          0          0
+sharedassets20.assets           10228       12        0        0          0          0
+sharedassets21.assets           17024       11        0        0          0          0
+sharedassets22.assets         2798248        5        6        2          0          0
+sharedassets23.assets           87008        8        0        0          0          0
+sharedassets24.assets         2050828       17        0        0          0          0
+sharedassets25.assets          469804        0        0        0          0          0
+sharedassets26.assets            1845        0        0        0          0          0
+sharedassets27.assets            4492       12        0        0          0          0
+sharedassets28.assets            3184        0        0        0          0          0
+sharedassets29.assets            2125        0        0        0          0          0
+sharedassets3.assets           417152       41        0        0          0          0
+sharedassets30.assets         1298808       15        0        0          0          0
+sharedassets31.assets         2302836        0       69       44          0          0
+sharedassets32.assets          607368        7       20       17          0          0
+sharedassets33.assets         2116908        0        0        0          0          0
+sharedassets34.assets         9118772        2       81       20          0          0
+sharedassets35.assets             361        0        0        0          0          0
+sharedassets36.assets         2868836        1        0        0          0          0
+sharedassets37.assets          321568        5        0        0          0          0
+sharedassets38.assets         2245740       35        0        0          0          0
+sharedassets39.assets         2355744        1       40       15          0          0
+sharedassets4.assets           131120        0        0        0          0          0
+sharedassets40.assets         2248956        6        0        0          0          0
+sharedassets41.assets         6960908        7       21        7          0          0
+sharedassets42.assets          589672        8       13        6          0          0
+sharedassets43.assets          126768        8        0        0          0          0
+sharedassets44.assets          112024        0        0        0          0          0
+sharedassets45.assets          131540        0        3        2          0          0
+sharedassets46.assets          107896        0        0        0          0          0
+sharedassets47.assets           50832        7        0        0          0          0
+sharedassets48.assets         4965908       11       46       21          0          0
+sharedassets49.assets         4177068        0        0        0          0          0
+sharedassets5.assets          1825836       32       33        5          0          1
+sharedassets50.assets          209152        0        0        0          0          0
+sharedassets51.assets          121584       14        0        0          0          0
+sharedassets52.assets            7356       12        0        0          0          0
+sharedassets53.assets            2209        0        0        0          0          0
+sharedassets54.assets          528632       65        0        0          0          0
+sharedassets55.assets         3807528       94        0        0          0          0
+sharedassets56.assets           76308        0        0        0          0          0
+sharedassets57.assets         2007948        0        0        0          0          0
+sharedassets58.assets            3184        0        0        0          0          0
+sharedassets59.assets           44673        0        0        0          0          0
+sharedassets6.assets           453212        9        1        0          0          0
+sharedassets60.assets         3385120        2       44       18          0          0
+sharedassets61.assets         3942060       21        2        0          0          0
+sharedassets62.assets         2461520        0        0        0          0          0
+sharedassets7.assets              949        0        0        0          0          0
+sharedassets8.assets             8116       12        0        0          0          0
+sharedassets9.assets            53268       18        0        0          0          0
+
+==============================================================================
+第三步：按「可交互对象数」排序（这就是每个关卡里能被本 mod 碰到的东西）
+==============================================================================
+容器                              可交互  Lootbox  GameObj Collider Interact层碰撞体
+globalgamemanagers                0        0        0        0          0
+globalgamemanagers.assets         0        0        0        0          0
+level0                            0        0     1011        1          0
+level1                            0        0     2441      336          0
+level10                           0        0    84471    43696       1008
+level11                           0        0      101       46          0
+level12                           0        0     5457     2831        575
+level13                           0        0       49        0          0
+level14                           0        0    13141     6362        302
+level15                           0        0     1344      726        227
+level16                           0        0       48        0          0
+level17                           0        0      661       57          7
+level18                           0        0      100       46          0
+level19                           0        0    16582     8380        221
+level2                            0        0       24        0          0
+level20                           0        0      205        2          0
+level21                           0        0      179        0          0
+level22                           0        0     2054      658         16
+level23                           0        0     3764     2320        270
+level24                           0        0     3293     1313        253
+level25                           0        0       81        0          0
+level26                           0        0      330        0          0
+level27                           0        0      207        2          0
+level28                           0        0      205        1          0
+level29                           0        0      203        1          0
+
+最大值汇总：
+  可交互对象最多 : globalgamemanagers       0 个
+  GameObject 最多: level10                  84471 个
+  碰撞体最多     : level10                  43696 个
+  Interact层碰撞体最多: level10           1008 个
+
+总耗时 26.0 秒

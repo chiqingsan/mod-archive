@@ -1,0 +1,5 @@
+===== ModTableTiers..cctor (HotTables members) =====
+0x180d82072 mov       STR 'tbnpcbasecfg'
+0x180d82088 mov       STR 'tbnpcaipersona'
+0x180d8209e mov       STR 'tbstrconfig'
+0x180d821c4 mov       STR 'npc_avatar'

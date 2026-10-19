@@ -1,0 +1,16 @@
+TypeTreeGenerator 载入 201 个 dll
+resources.assets: MonoBehaviour 38606 个，分成 850 个脚本组
+   script(0x1,1350) -> 4208 个实例
+   script(0x1,1020) -> 3306 个实例
+   script(0x1,5091) -> 2981 个实例
+   script(0x1,1674) -> 2613 个实例
+   script(0x1,2685) -> 2555 个实例
+   script(0x1,4865) -> 1900 个实例
+   script(0x1,1018) -> 1731 个实例
+   script(0x1,644) -> 1581 个实例
+   script(0x1,1015) -> 1488 个实例
+   script(0x1,3468) -> 752 个实例
+   script(0x1,1819) -> 651 个实例
+   script(0x1,1048) -> 489 个实例
+
+命中: 

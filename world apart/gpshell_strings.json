@@ -1,0 +1,119 @@
+{
+ "gpShell.dll": {
+  "size": 502024,
+  "ascii_count": 1860,
+  "unicode_count": 388,
+  "hits": {
+   "block": [
+    "operation would block"
+   ],
+   "clr": [
+    "__clrcall"
+   ],
+   "detour": [
+    "@.detourc",
+    "@.detourd"
+   ],
+   "filter": [
+    "UnhandledExceptionFilter",
+    "SetUnhandledExceptionFilter"
+   ],
+   "loadlibrary": [
+    "LoadLibraryW",
+    "LoadLibraryA",
+    "LoadLibraryExW"
+   ],
+   "mod": [
+    "!This program cannot be run in DOS mode.",
+    "GetModuleHandleW",
+    "GetModuleFileNameW",
+    "GetModuleHandleExW",
+    "GetModuleFileNameA",
+    "GetConsoleMode",
+    "ChainingModeECB",
+    "ChainingMode",
+    "api-ms-win-appmodel-runtime-l1-1-2"
+   ],
+   "unknown": [
+    "Unknown exception",
+    "unknown error",
+    "unknown error"
+   ]
+  }
+ },
+ "gpHackerProc.dll": {
+  "size": 3793368,
+  "ascii_count": 18451,
+  "unicode_count": 499,
+  "hits": {
+   "block": [
+    "Call would block",
+    "Blocking call in progress",
+    "invalid blocksize value in OACK packet",
+    "Received last DATA packet block %d again.",
+    "Received unexpected DATA packet block %d, expecting block %d",
+    "Timeout waiting for block %d ACK.  Retries = %d",
+    "Received ACK for block %d, expecting %d",
+    "tftp_tx: giving up waiting for block %d ack",
+    "SOCKS4 non-blocking resolve of %s",
+    "crypto\\err\\err_blocks.c"
+   ],
+   "clr": [
+    "__clrcall"
+   ],
+   "filter": [
+    "recv: no filter connected",
+    "send: no filter connected",
+    "installing subfilter for HTTP/1.1",
+    "BIO to Core filter",
+    "UnhandledExceptionFilter",
+    "SetUnhandledExceptionFilter"
+   ],
+   "inject": [
+    "Cronet_Engine_SetInitModeWithInject"
+   ],
+   "loadlibrary": [
+    "LoadLibraryExA",
+    "LoadLibraryExW",
+    "LoadLibraryW",
+    "LoadLibraryExA",
+    "LoadLibraryA"
+   ],
+   "mod": [
+    "!This program cannot be run in DOS mode.",
+    "modnarodH",
+    "Cronet_Engine_SetEnableModifyMode",
+    "Cronet_EngineParams_enable_modify_mode_set",
+    "Cronet_Engine_SetInitModeWithInject",
+    "If-Modified-Since",
+    "If-Unmodified-Since",
+    "Last-Modified",
+    "Last-Modified:",
+    "LINEMODE"
+   ],
+   "unknown": [
+    "Unknown exception",
+    "unknown error",
+    "unknown",
+    "FTP: unknown PASS reply",
+    "FTP: unknown PASV reply",
+    "FTP: unknown 227 response format",
+    "An unknown option was passed in to libcurl",
+    "TFTP: Unknown transfer ID",
+    "Unknown error",
+    "An unknown part ID was passed to a URL API function"
+   ],
+   "untrusted": [
+    "SEC_E_ISSUING_CA_UNTRUSTED",
+    "SEC_E_ISSUING_CA_UNTRUSTED_KDC",
+    "SEC_E_UNTRUSTED_ROOT",
+    "schannel: CertGetCertificateChain trust error CERT_TRUST_IS_UNTRUSTED_ROOT",
+    "tsa untrusted"
+   ],
+   "winhttp": [
+    "WinHttpGetIEProxyConfigForCurrentUser",
+    "WINHTTP.dll"
+   ]
+  }
+ }
+}

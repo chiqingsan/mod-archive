@@ -1,0 +1,15 @@
+=== tbsceneharvest row0 FULL:
+{
+ "id": 210101,
+ "group": 21010,
+ "items": [
+  60026
+ ],
+ "harvest_template_id": 2015,
+ "refresh_units": 360,
+ "staminaCost": 5
+}
+
+=== tbinteractaction rows: 694 | keys: ['ageConditionExpr', 'hover_tips_text', 'id', 'interactExpr', 'intimacyRequirement', 'limitExhaustText', 'onCondFail', 'openConditionExpr', 'resetCycleType', 'resetCycleValue', 'selfManagedLimitGate', 'textInteract', 'useLimit']
+--- 622
+{"id": 622, "textInteract": {"zh-Hans": "双修", "zh-Hant": "雙修", "en-US": "Dual Cultivation"}, "interactExpr": {"func": ["variable", {"location": {"script": "TbInteractAction.622", "line": 1, "column": 1, "position": 0, "length": 5}, "name": "开始双修"}], "args": [["index", {"location": {"script": "TbInteractAction.622", "line": 1, "column": 1, "position": 0, "length": 8}, "target": ["variable", {"location": {"script": "TbInteractAction.622", "line": 1, "column": 1, "position": 0, "length": 8}, "name": "当前场景NPC"}], "index": ["string", {"value": "编号"}]}]]}, "openConditionExpr": {"func": ["variable", {"location": {"script": "TbInteractAction.622", "line": 1, "column": 1, "position": 0, "length": 2}, "name": "且"}], "args": [["call", {"location": {"script": "TbInteractAction.622", "line": 1, "column": 1, "position": 0, "length": 11}, "name": "当前场景NPC性别为", "arguments": [["int", {"location": {"scrip

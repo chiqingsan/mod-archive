@@ -1,0 +1,4 @@
+412368:public static class AssetOverlay // TypeDefIndex: 6604
+412466:public sealed class ModAssetApplier.OverrideEntry // TypeDefIndex: 6605
+412481:public static class ModAssetApplier // TypeDefIndex: 6606
+412539:public static class ModOverlayCoordinator // TypeDefIndex: 6608

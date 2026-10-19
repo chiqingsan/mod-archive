@@ -1,0 +1,1082 @@
+[
+  {
+    "level_id": 1001,
+    "level_seed": 2026052901,
+    "board_rows": 6,
+    "board_cols": 7,
+    "start_pos": "0,2",
+    "end_pos": "6,2",
+    "path_count": 2,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "气海",
+      "zh-Hant": "氣海",
+      "en-US": "Qihai"
+    },
+    "end_point_name": {
+      "zh-Hans": "关元",
+      "zh-Hant": "關元",
+      "en-US": "Guanyuan"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 10,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 5,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 90,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 1002,
+    "level_seed": 2026052902,
+    "board_rows": 6,
+    "board_cols": 7,
+    "start_pos": "0,2",
+    "end_pos": "6,2",
+    "path_count": 2,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "中脘",
+      "zh-Hant": "中脘",
+      "en-US": "Zhongwan"
+    },
+    "end_point_name": {
+      "zh-Hans": "神阙",
+      "zh-Hant": "神闕",
+      "en-US": "Shenque"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 10,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 5,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 90,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 1003,
+    "level_seed": 2026052903,
+    "board_rows": 6,
+    "board_cols": 7,
+    "start_pos": "0,2",
+    "end_pos": "6,2",
+    "path_count": 2,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "膻中",
+      "zh-Hant": "膻中",
+      "en-US": "Shanzhong"
+    },
+    "end_point_name": {
+      "zh-Hans": "天突",
+      "zh-Hant": "天突",
+      "en-US": "Tiantu"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 10,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 5,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 90,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 1004,
+    "level_seed": 2026052901,
+    "board_rows": 7,
+    "board_cols": 8,
+    "start_pos": "0,3",
+    "end_pos": "7,3",
+    "path_count": 2,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "气海",
+      "zh-Hant": "氣海",
+      "en-US": "Qihai"
+    },
+    "end_point_name": {
+      "zh-Hans": "关元",
+      "zh-Hant": "關元",
+      "en-US": "Guanyuan"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 10,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 5,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 90,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 1005,
+    "level_seed": 2026052902,
+    "board_rows": 7,
+    "board_cols": 8,
+    "start_pos": "0,3",
+    "end_pos": "7,3",
+    "path_count": 2,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "中脘",
+      "zh-Hant": "中脘",
+      "en-US": "Zhongwan"
+    },
+    "end_point_name": {
+      "zh-Hans": "神阙",
+      "zh-Hant": "神闕",
+      "en-US": "Shenque"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 10,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 5,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 90,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 1006,
+    "level_seed": 2026052903,
+    "board_rows": 7,
+    "board_cols": 8,
+    "start_pos": "0,3",
+    "end_pos": "7,3",
+    "path_count": 2,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "膻中",
+      "zh-Hant": "膻中",
+      "en-US": "Shanzhong"
+    },
+    "end_point_name": {
+      "zh-Hans": "天突",
+      "zh-Hant": "天突",
+      "en-US": "Tiantu"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 10,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 5,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 90,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 1007,
+    "level_seed": 2026052901,
+    "board_rows": 8,
+    "board_cols": 10,
+    "start_pos": "0,4",
+    "end_pos": "9,4",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "气海",
+      "zh-Hant": "氣海",
+      "en-US": "Qihai"
+    },
+    "end_point_name": {
+      "zh-Hans": "关元",
+      "zh-Hant": "關元",
+      "en-US": "Guanyuan"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 8,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 4,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 1008,
+    "level_seed": 2026052902,
+    "board_rows": 8,
+    "board_cols": 10,
+    "start_pos": "0,4",
+    "end_pos": "9,4",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "中脘",
+      "zh-Hant": "中脘",
+      "en-US": "Zhongwan"
+    },
+    "end_point_name": {
+      "zh-Hans": "神阙",
+      "zh-Hant": "神闕",
+      "en-US": "Shenque"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 8,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 4,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 1009,
+    "level_seed": 2026052903,
+    "board_rows": 8,
+    "board_cols": 10,
+    "start_pos": "0,4",
+    "end_pos": "9,4",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "膻中",
+      "zh-Hant": "膻中",
+      "en-US": "Shanzhong"
+    },
+    "end_point_name": {
+      "zh-Hans": "天突",
+      "zh-Hant": "天突",
+      "en-US": "Tiantu"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 8,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 4,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 2001,
+    "level_seed": 2026052904,
+    "board_rows": 7,
+    "board_cols": 8,
+    "start_pos": "0,3",
+    "end_pos": "7,3",
+    "path_count": 2,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "足三里",
+      "zh-Hant": "足三里",
+      "en-US": "Zusanli"
+    },
+    "end_point_name": {
+      "zh-Hans": "三阴交",
+      "zh-Hant": "三陰交",
+      "en-US": "Sanyinjiao"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 8,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 4,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 2002,
+    "level_seed": 2026052905,
+    "board_rows": 7,
+    "board_cols": 8,
+    "start_pos": "0,3",
+    "end_pos": "7,3",
+    "path_count": 2,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "合谷",
+      "zh-Hant": "合谷",
+      "en-US": "Hegu"
+    },
+    "end_point_name": {
+      "zh-Hans": "曲池",
+      "zh-Hant": "曲池",
+      "en-US": "Quchi"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 8,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 4,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 2003,
+    "level_seed": 2026052906,
+    "board_rows": 7,
+    "board_cols": 8,
+    "start_pos": "0,3",
+    "end_pos": "7,3",
+    "path_count": 2,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "内关",
+      "zh-Hant": "內關",
+      "en-US": "Neiguan"
+    },
+    "end_point_name": {
+      "zh-Hans": "神门",
+      "zh-Hant": "神門",
+      "en-US": "Shenmen"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 8,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 4,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 2004,
+    "level_seed": 2026052904,
+    "board_rows": 8,
+    "board_cols": 9,
+    "start_pos": "0,3",
+    "end_pos": "8,3",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "足三里",
+      "zh-Hant": "足三里",
+      "en-US": "Zusanli"
+    },
+    "end_point_name": {
+      "zh-Hans": "三阴交",
+      "zh-Hant": "三陰交",
+      "en-US": "Sanyinjiao"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 8,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 4,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 2005,
+    "level_seed": 2026052905,
+    "board_rows": 8,
+    "board_cols": 9,
+    "start_pos": "0,3",
+    "end_pos": "8,3",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "合谷",
+      "zh-Hant": "合谷",
+      "en-US": "Hegu"
+    },
+    "end_point_name": {
+      "zh-Hans": "曲池",
+      "zh-Hant": "曲池",
+      "en-US": "Quchi"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 8,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 4,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 2006,
+    "level_seed": 2026052906,
+    "board_rows": 8,
+    "board_cols": 9,
+    "start_pos": "0,3",
+    "end_pos": "8,3",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "内关",
+      "zh-Hant": "內關",
+      "en-US": "Neiguan"
+    },
+    "end_point_name": {
+      "zh-Hans": "神门",
+      "zh-Hant": "神門",
+      "en-US": "Shenmen"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 8,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 4,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 2007,
+    "level_seed": 2026052904,
+    "board_rows": 9,
+    "board_cols": 11,
+    "start_pos": "0,4",
+    "end_pos": "10,4",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "足三里",
+      "zh-Hant": "足三里",
+      "en-US": "Zusanli"
+    },
+    "end_point_name": {
+      "zh-Hans": "三阴交",
+      "zh-Hant": "三陰交",
+      "en-US": "Sanyinjiao"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 2008,
+    "level_seed": 2026052905,
+    "board_rows": 9,
+    "board_cols": 11,
+    "start_pos": "0,4",
+    "end_pos": "10,4",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "合谷",
+      "zh-Hant": "合谷",
+      "en-US": "Hegu"
+    },
+    "end_point_name": {
+      "zh-Hans": "曲池",
+      "zh-Hant": "曲池",
+      "en-US": "Quchi"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 2009,
+    "level_seed": 2026052906,
+    "board_rows": 9,
+    "board_cols": 11,
+    "start_pos": "0,4",
+    "end_pos": "10,4",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "内关",
+      "zh-Hant": "內關",
+      "en-US": "Neiguan"
+    },
+    "end_point_name": {
+      "zh-Hans": "神门",
+      "zh-Hant": "神門",
+      "en-US": "Shenmen"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 5,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 3001,
+    "level_seed": 2026052907,
+    "board_rows": 8,
+    "board_cols": 9,
+    "start_pos": "0,4",
+    "end_pos": "8,4",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "命门",
+      "zh-Hant": "命門",
+      "en-US": "Life Gate"
+    },
+    "end_point_name": {
+      "zh-Hans": "肾俞",
+      "zh-Hant": "腎俞",
+      "en-US": "Shenshu"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 3002,
+    "level_seed": 2026052908,
+    "board_rows": 8,
+    "board_cols": 9,
+    "start_pos": "0,4",
+    "end_pos": "8,4",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "阳陵泉",
+      "zh-Hant": "陽陵泉",
+      "en-US": "Yanglingquan"
+    },
+    "end_point_name": {
+      "zh-Hans": "太冲",
+      "zh-Hant": "太沖",
+      "en-US": "Taichong"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 3003,
+    "level_seed": 2026052909,
+    "board_rows": 8,
+    "board_cols": 9,
+    "start_pos": "0,4",
+    "end_pos": "8,4",
+    "path_count": 1,
+    "time_limit": -1,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "大椎",
+      "zh-Hant": "大椎",
+      "en-US": "Ojo"
+    },
+    "end_point_name": {
+      "zh-Hans": "风池",
+      "zh-Hant": "風池",
+      "en-US": "Fengchi"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 95,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 3004,
+    "level_seed": 2026052907,
+    "board_rows": 9,
+    "board_cols": 10,
+    "start_pos": "0,4",
+    "end_pos": "9,4",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "命门",
+      "zh-Hant": "命門",
+      "en-US": "Life Gate"
+    },
+    "end_point_name": {
+      "zh-Hans": "肾俞",
+      "zh-Hant": "腎俞",
+      "en-US": "Shenshu"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 3005,
+    "level_seed": 2026052908,
+    "board_rows": 9,
+    "board_cols": 10,
+    "start_pos": "0,4",
+    "end_pos": "9,4",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "阳陵泉",
+      "zh-Hant": "陽陵泉",
+      "en-US": "Yanglingquan"
+    },
+    "end_point_name": {
+      "zh-Hans": "太冲",
+      "zh-Hant": "太沖",
+      "en-US": "Taichong"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 3006,
+    "level_seed": 2026052909,
+    "board_rows": 9,
+    "board_cols": 10,
+    "start_pos": "0,4",
+    "end_pos": "9,4",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "大椎",
+      "zh-Hant": "大椎",
+      "en-US": "Ojo"
+    },
+    "end_point_name": {
+      "zh-Hans": "风池",
+      "zh-Hant": "風池",
+      "en-US": "Fengchi"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 3007,
+    "level_seed": 2026052907,
+    "board_rows": 10,
+    "board_cols": 12,
+    "start_pos": "0,5",
+    "end_pos": "11,5",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "命门",
+      "zh-Hant": "命門",
+      "en-US": "Life Gate"
+    },
+    "end_point_name": {
+      "zh-Hans": "肾俞",
+      "zh-Hant": "腎俞",
+      "en-US": "Shenshu"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 4,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 2,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 3008,
+    "level_seed": 2026052908,
+    "board_rows": 10,
+    "board_cols": 12,
+    "start_pos": "0,5",
+    "end_pos": "11,5",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "阳陵泉",
+      "zh-Hant": "陽陵泉",
+      "en-US": "Yanglingquan"
+    },
+    "end_point_name": {
+      "zh-Hans": "太冲",
+      "zh-Hant": "太沖",
+      "en-US": "Taichong"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 4,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 2,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 3009,
+    "level_seed": 2026052909,
+    "board_rows": 10,
+    "board_cols": 12,
+    "start_pos": "0,5",
+    "end_pos": "11,5",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "大椎",
+      "zh-Hant": "大椎",
+      "en-US": "Ojo"
+    },
+    "end_point_name": {
+      "zh-Hans": "风池",
+      "zh-Hant": "風池",
+      "en-US": "Fengchi"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 4,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 2,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 4001,
+    "level_seed": 2026052910,
+    "board_rows": 9,
+    "board_cols": 10,
+    "start_pos": "0,4",
+    "end_pos": "9,4",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "涌泉",
+      "zh-Hant": "湧泉",
+      "en-US": "Yongquan"
+    },
+    "end_point_name": {
+      "zh-Hans": "劳宫",
+      "zh-Hant": "勞宮",
+      "en-US": "Laogong"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 4002,
+    "level_seed": 2026052911,
+    "board_rows": 9,
+    "board_cols": 10,
+    "start_pos": "0,4",
+    "end_pos": "9,4",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "玉枕",
+      "zh-Hant": "玉枕",
+      "en-US": "Yuzhen"
+    },
+    "end_point_name": {
+      "zh-Hans": "百会",
+      "zh-Hant": "百會",
+      "en-US": "Baihui"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 4003,
+    "level_seed": 2026052912,
+    "board_rows": 9,
+    "board_cols": 10,
+    "start_pos": "0,4",
+    "end_pos": "9,4",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "会阴",
+      "zh-Hant": "會陰",
+      "en-US": "Perineum"
+    },
+    "end_point_name": {
+      "zh-Hans": "百会",
+      "zh-Hant": "百會",
+      "en-US": "Baihui"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 4004,
+    "level_seed": 2026052910,
+    "board_rows": 10,
+    "board_cols": 11,
+    "start_pos": "0,4",
+    "end_pos": "10,4",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "涌泉",
+      "zh-Hant": "湧泉",
+      "en-US": "Yongquan"
+    },
+    "end_point_name": {
+      "zh-Hans": "劳宫",
+      "zh-Hant": "勞宮",
+      "en-US": "Laogong"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 4005,
+    "level_seed": 2026052911,
+    "board_rows": 10,
+    "board_cols": 11,
+    "start_pos": "0,4",
+    "end_pos": "10,4",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "玉枕",
+      "zh-Hant": "玉枕",
+      "en-US": "Yuzhen"
+    },
+    "end_point_name": {
+      "zh-Hans": "百会",
+      "zh-Hant": "百會",
+      "en-US": "Baihui"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 4006,
+    "level_seed": 2026052912,
+    "board_rows": 10,
+    "board_cols": 11,
+    "start_pos": "0,4",
+    "end_pos": "10,4",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "会阴",
+      "zh-Hant": "會陰",
+      "en-US": "Perineum"
+    },
+    "end_point_name": {
+      "zh-Hans": "百会",
+      "zh-Hant": "百會",
+      "en-US": "Baihui"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 6,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 3,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 4007,
+    "level_seed": 2026052910,
+    "board_rows": 11,
+    "board_cols": 13,
+    "start_pos": "0,5",
+    "end_pos": "11,5",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "涌泉",
+      "zh-Hant": "湧泉",
+      "en-US": "Yongquan"
+    },
+    "end_point_name": {
+      "zh-Hans": "劳宫",
+      "zh-Hant": "勞宮",
+      "en-US": "Laogong"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 4,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 2,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 4008,
+    "level_seed": 2026052911,
+    "board_rows": 11,
+    "board_cols": 13,
+    "start_pos": "0,5",
+    "end_pos": "11,5",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "玉枕",
+      "zh-Hant": "玉枕",
+      "en-US": "Yuzhen"
+    },
+    "end_point_name": {
+      "zh-Hans": "百会",
+      "zh-Hant": "百會",
+      "en-US": "Baihui"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 4,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 2,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  },
+  {
+    "level_id": 4009,
+    "level_seed": 2026052912,
+    "board_rows": 11,
+    "board_cols": 13,
+    "start_pos": "0,5",
+    "end_pos": "11,5",
+    "path_count": 1,
+    "time_limit": 60,
+    "rotation_limit": 60,
+    "start_point_name": {
+      "zh-Hans": "会阴",
+      "zh-Hant": "會陰",
+      "en-US": "Perineum"
+    },
+    "end_point_name": {
+      "zh-Hans": "百会",
+      "zh-Hant": "百會",
+      "en-US": "Baihui"
+    },
+    "blocker_replace_pct": 5,
+    "stuck_replace_pct": 5,
+    "bonus_type1_pct": 4,
+    "bonus_type1_value": 5,
+    "bonus_type2_pct": 2,
+    "bonus_type2_value": 10,
+    "mask_pct": 10,
+    "connected_shuffle_pct": 100,
+    "disconnected_shuffle_pct": 100
+  }
+]

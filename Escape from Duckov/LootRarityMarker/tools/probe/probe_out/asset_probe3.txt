@@ -1,0 +1,49 @@
+TypeTreeGenerator 载入 201 个 dll
+==============================================================================
+探测 A：InteractMarker 预制体（用 Transform 层级）
+==============================================================================
+  resources.assets: 114875 对象
+  根 GameObject 数: 2903
+- InteractMarker (pathID=6907) active=True
+    .MeshFilter
+    .MeshRenderer enabled=False  mats=[InteractMarkerRing]
+    .MonoBehaviour
+  - Shadow (pathID=26596) active=True
+      .MeshFilter
+      .MeshRenderer enabled=True  mats=[InteractMarkerShadow]
+  - HideIfUsed (pathID=17349) active=True
+    - Quad_1 (pathID=28283) active=True
+        .MeshFilter
+        .MeshRenderer enabled=True  mats=[InteractMarkerDot]
+    - Ring (pathID=26431) active=True
+        .MeshFilter
+        .MeshRenderer enabled=True  mats=[InteractMarkerRing]
+  - ShowIfUsed (pathID=17575) active=False
+    - Quad_1 (pathID=21584) active=True
+        .MeshFilter
+        .MeshRenderer enabled=True  mats=[InteractMarkerUsed]
+    - Ring_1 (pathID=20591) active=True
+        .MeshFilter
+        .MeshRenderer enabled=True  mats=[InteractMarkerStatic]
+
+  --- showIfUsedObject = 17575 ---
+- ShowIfUsed (pathID=17575) active=False
+  - Quad_1 (pathID=21584) active=True
+      .MeshFilter
+      .MeshRenderer enabled=True  mats=[InteractMarkerUsed]
+  - Ring_1 (pathID=20591) active=True
+      .MeshFilter
+      .MeshRenderer enabled=True  mats=[InteractMarkerStatic]
+
+  --- hideIfUsedObject = 17349 ---
+- HideIfUsed (pathID=17349) active=True
+  - Quad_1 (pathID=28283) active=True
+      .MeshFilter
+      .MeshRenderer enabled=True  mats=[InteractMarkerDot]
+  - Ring (pathID=26431) active=True
+      .MeshFilter
+      .MeshRenderer enabled=True  mats=[InteractMarkerRing]
+
+==============================================================================
+探测 B：MonoBehaviour（按 m_Name 找 ScriptableObject）
+==============================================================================

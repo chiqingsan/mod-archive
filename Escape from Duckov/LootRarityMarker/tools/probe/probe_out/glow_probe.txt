@@ -1,0 +1,20 @@
+
+==============================================================================
+1) shader BillBoardOverlay_Markers
+==============================================================================
+SubShader 数 = 1
+
+  SubShader[0] 键: ['m_LOD', 'm_Passes', 'm_Tags']
+  SubShader 标签: {'tags': [('QUEUE', 'Transparent'), ('RenderPipeline', 'UniversalPipeline'), ('RenderType', 'Transparent'), ('UniversalMaterialType', 'Unlit')]}
+  Pass 数 = 1
+    Pass[0] 键: ['m_EditorDataHash', 'm_HasInstancingVariant', 'm_HasProceduralInstancingVariant', 'm_Name', 'm_NameIndices', 'm_Platforms', 'm_ProgramMask', 'm_State', 'm_Tags', 'm_TextureName', 'm_Type', 'm_UseName', 'progDomain', 'progFragment', 'progGeometry', 'progHull', 'progRayTracing', 'progVertex']
+      m_Name        = 
+      m_Tags        = {'tags': []}
+      m_ProgramMask = 6
+      m_State       = {'alphaToMask': {'val': 0.0, 'name': '<noninit>'}, 'culling': {'val': 0.0, 'name': '<noninit>'}, 'rtBlend0': {'srcBlend': {'val': 5.0, 'name': '<noninit>'}, 'destBlend': {'val': 10.0, 'name': '<noninit>'}, 'srcBlendAlpha': {'val': 1.0, 'name': '<noninit>'}, 'destBlendAlpha': {'val': 10.0, 'name': '<noninit>'}, 'blendOp': {'val': 0.0, 'name': '<noninit>'}, 'blendOpAlpha': {'val': 0.0, 'name': '<noninit>'}, 'colMask': {'val': 15.0, 'name': '<noninit>'}}, 'rtBlend1': {'srcBlend': {'val': 1.0, 'name': '<noninit>'}, 'destBlend': {'val': 0.0, 'name': '<noninit>'}, 'srcBlendAlpha': {'val': 1.0, 'name': '<noninit>'}, 'destBlendAlpha': {'val': 0.0, 'name': '<noninit>'}, 'blendOp': {'val': 0.0, 'name': '<noninit>'}, 'blendOpAlpha': {'val': 0.0, 'name': '<noninit>'}, 'colMask': {'val': 15.0, 'name': '<noninit>'}}, 'rtSeparateBlend': False, 'zTest': {'val': 8.0, 'name': '<noninit>'}, 'zWrite': {'val': 0.0, 'name': '<noninit>'}}
+
+m_Platforms 数 = 0
+m_ShaderIsBaked = None
+parsed 其它键 = ['m_CustomEditorForRenderPipelines', 'm_CustomEditorName', 'm_Dependencies', 'm_DisableNoSubshadersMessage', 'm_FallbackName', 'm_KeywordFlags', 'm_KeywordNames', 'm_Name']
+
+汇总：shader=True urp=False bloom命中=0

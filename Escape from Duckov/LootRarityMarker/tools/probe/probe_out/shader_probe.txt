@@ -1,0 +1,37 @@
+扫描 160 个资产文件，找 shader 'BillBoardOverlay_Markers'
+
+==============================================================================
+命中：resources.assets  pathID=4762  shader=BillBoardOverlay_Markers
+==============================================================================
+m_PropInfo 属性数 = 18
+   _AlphaCutoff                 type=3   flags=1
+   _EmissionColor               type=0   flags=1
+   _Scale                       type=2   flags=0
+   _Scale2                      type=2   flags=0
+   _Tint                        type=0   flags=16
+   _Tint2                       type=0   flags=16
+   _MainTex                     type=4   flags=0
+   _ScaleChangeSpeed            type=2   flags=0
+   _IsInteractMarker            type=2   flags=0
+   _Near                        type=2   flags=0
+   _Far                         type=2   flags=0
+   _texcoord                    type=4   flags=1
+   _QueueOffset                 type=2   flags=1
+   _QueueControl                type=2   flags=1
+   unity_Lightmaps              type=4   flags=5
+   unity_LightmapsInd           type=4   flags=5
+   unity_ShadowMasks            type=4   flags=5
+   _ReceiveShadows              type=2   flags=1
+   [有] _Tint
+   [有] _Tint2
+   [无] _Color
+   [无] _BaseColor
+   [有] _EmissionColor
+   [无] _EdgeColor
+
+m_SubShaders 数量 = 1
+m_ShaderIsBaked = None
+  parsed.m_Name             = BillBoardOverlay_Markers
+  parsed.m_Dependencies     = []
+
+m_PropInfo.m_DefValue 长度 = 0 (每项 8 个 float?)

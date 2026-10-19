@@ -1,0 +1,766 @@
+
+===== ModPackage.LoadFromModJson @ 0x180d788c0 (end 0x180d790a0) =====
+0x180d788d1 cmp       byte ptr [rip + 0x77e246a], 0            
+0x180d788e1 jne       0x180d78a0e                              
+0x180d78a3c test      rsi, rsi                                 
+0x180d78a3f je        0x180d79088                              
+0x180d78a45 cmp       dword ptr [rsi + 0x10], 5                
+0x180d78a49 jg        0x180d79001                              
+0x180d78a4f cmp       byte ptr [rip + 0x77e22f5], dil          
+0x180d78a5a jne       0x180d78a6f                              
+0x180d78a74 call      0x1852d06a0                              => System.String$$IsNullOrWhiteSpace
+0x180d78a79 test      al, al                                   
+0x180d78a7b jne       0x180d78fe5                              
+0x180d78a81 test      rbx, rbx                                 
+0x180d78a84 je        0x180d79088                              
+0x180d78a8f call      0x1852d6930                              => System.String$$Trim
+0x180d78a9b test      rax, rax                                 
+0x180d78a9e je        0x180d79088                              
+0x180d78aa4 cmp       ecx, dword ptr [rbp + 0x10]              
+0x180d78aa7 jge       0x180d78af5                              
+0x180d78ab1 call      0x1852d6aa0                              => System.String$$get_Chars
+0x180d78ab6 mov       rcx, qword ptr [rip + 0x74426bb]         META char_TypeInfo
+0x180d78ac0 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d78ac7 jne       0x180d78ace                              
+0x180d78ad3 call      0x1853e3550                              => System.Char$$IsLetterOrDigit
+0x180d78ad8 test      al, al                                   
+0x180d78ada jne       0x180d78aef                              
+0x180d78adf cmp       ax, 1                                    
+0x180d78ae3 jbe       0x180d78aef                              
+0x180d78ae5 cmp       di, 0x5f                                 
+0x180d78ae9 jne       0x180d78fe5                              
+0x180d78af3 jmp       0x180d78aa4                              
+0x180d78af9 test      rcx, rcx                                 
+0x180d78afc je        0x180d79088                              
+0x180d78b04 call      0x1852d6930                              => System.String$$Trim
+0x180d78b21 call      0x180d791c0                              => Game.Mod.ModPackage$$NewPackage
+0x180d78b2f call      0x1852d0690                              => System.String$$IsNullOrEmpty
+0x180d78b34 test      r14, r14                                 
+0x180d78b37 je        0x180d79088                              
+0x180d78b54 cmp       qword ptr [rsi + 0x28], rdi              
+0x180d78b5c jne       0x180d78b6c                              
+0x180d78b5e mov       rax, qword ptr [rip + 0x7499b9b]         META string_TypeInfo
+0x180d78b7c cmp       qword ptr [rsi + 0x30], rdi              
+0x180d78b84 jne       0x180d78b94                              
+0x180d78b86 mov       rax, qword ptr [rip + 0x7499b73]         META string_TypeInfo
+0x180d78bab test      r12d, r12d                               
+0x180d78bae jne       0x180d78bbe                              
+0x180d78bb0 cmp       qword ptr [rsi + 0x40], rdi              
+0x180d78bb4 jbe       0x180d78bbe                              
+0x180d78bbe mov       rcx, qword ptr [rip + 0x749a893]         META System.StringComparer_TypeInfo
+0x180d78bc5 cmp       dword ptr [rcx + 0xe0], edi              
+0x180d78bcb jne       0x180d78bd2                              
+0x180d78bd2 cmp       byte ptr [rip + 0x77d94e7], dil          
+0x180d78bd9 jne       0x180d78bee                              
+0x180d78bee mov       rcx, qword ptr [rip + 0x749a863]         META System.StringComparer_TypeInfo
+0x180d78bf5 cmp       dword ptr [rcx + 0xe0], edi              
+0x180d78bfb jne       0x180d78c02                              
+0x180d78c02 mov       rax, qword ptr [rip + 0x749a84f]         META System.StringComparer_TypeInfo
+0x180d78c14 mov       rcx, qword ptr [rip + 0x749dfed]         META System.Collections.Generic.HashSet<string>_TypeInfo
+0x180d78c30 call      0x183492020                              => System.Collections.Generic.HashSet<object>$$.ctor
+0x180d78c39 test      r12, r12                                 
+0x180d78c3c jne       0x180d78c56                              
+0x180d78c45 call      0x180658140                              => Antlr4.Runtime.Sharpen.Collections$$EmptyMap<__Il2CppFullySharedGenericType, __Il2CppFullySharedGene
+0x180d78c4d test      rax, rax                                 
+0x180d78c50 je        0x180d79088                              
+0x180d78c60 cmp       eax, dword ptr [r12 + 0x18]              
+0x180d78c65 jge       0x180d78f6a                              
+0x180d78c6b cmp       ebp, dword ptr [r12 + 0x18]              
+0x180d78c70 jae       0x180d7908e                              
+0x180d78c7e test      rdi, rdi                                 
+0x180d78c81 je        0x180d78dc6                              
+0x180d78c8d call      0x180d78340                              => Game.Mod.ModPackage$$IsValidUnitId
+0x180d78c96 test      al, al                                   
+0x180d78c98 je        0x180d78f4c                              
+0x180d78c9e test      rcx, rcx                                 
+0x180d78ca1 je        0x180d79088                              
+0x180d78ca9 call      0x1852d6930                              => System.String$$Trim
+0x180d78cb1 test      r13, r13                                 
+0x180d78cb4 je        0x180d79088                              
+0x180d78cc7 call      0x18347c0e0                              => System.Collections.Generic.HashSet<object>$$Add
+0x180d78ccc test      al, al                                   
+0x180d78cce je        0x180d78f2e                              
+0x180d78cd9 call      0x180d82180                              => Game.Mod.ModUnitDeclaration$$get_TypeEnum
+0x180d78cde test      eax, eax                                 
+0x180d78ce0 je        0x180d78e73                              
+0x180d78cfa call      0x180d79b40                              => Game.Mod.ModPackage$$TryResolveInsideRoot
+0x180d78cff test      al, al                                   
+0x180d78d01 je        0x180d78dcf                              
+0x180d78d07 mov       rcx, qword ptr [rip + 0x74b26a2]         META Game.Mod.ModUnit_TypeInfo
+0x180d78d1b call      0x180d822d0                              => Game.Mod.ModUnit$$.ctor
+0x180d78d20 test      rbx, rbx                                 
+0x180d78d23 je        0x180d79088                              
+0x180d78d3e call      0x180d82180                              => Game.Mod.ModUnitDeclaration$$get_TypeEnum
+0x180d78d69 cmp       dword ptr [rbx + 0x18], 1                
+0x180d78d6d jne       0x180d78d88                              
+0x180d78d7b call      0x180d77f20                              => Game.Mod.ModPackage$$FillAvatarUnit
+0x180d78d80 test      al, al                                   
+0x180d78d82 je        0x180d79081                              
+0x180d78d8e call      0x1852d0690                              => System.String$$IsNullOrEmpty
+0x180d78d93 test      al, al                                   
+0x180d78d95 je        0x180d78da7                              
+0x180d78dab test      rcx, rcx                                 
+0x180d78dae je        0x180d79088                              
+0x180d78dca jmp       0x180d78c60                              
+0x180d78dcf mov       rcx, qword ptr [rip + 0x74d2082]         META string[]_TypeInfo
+0x180d78de3 test      rax, rax                                 
+0x180d78de6 je        0x180d79088                              
+0x180d78dec cmp       dword ptr [rax + 0x18], 0                
+0x180d78df0 jbe       0x180d7908e                              
+0x180d78df6 mov       rdx, qword ptr [rip + 0x741d34b]         STR '单元 "'
+0x180d78e0a cmp       dword ptr [rbx + 0x18], 1                
+0x180d78e0e jbe       0x180d7908e                              
+0x180d78e24 cmp       dword ptr [rbx + 0x18], 2                
+0x180d78e28 jbe       0x180d7908e                              
+0x180d78e2e mov       rdx, qword ptr [rip + 0x74a38eb]         STR '" 的 root="'
+0x180d78e42 cmp       dword ptr [rbx + 0x18], 3                
+0x180d78e46 jbe       0x180d7908e                              
+0x180d78e5d cmp       dword ptr [rbx + 0x18], 4                
+0x180d78e61 jbe       0x180d7908e                              
+0x180d78e67 mov       rdx, qword ptr [rip + 0x74a2eb2]         STR '" 不在 mod 目录内或不存在'
+0x180d78e6e jmp       0x180d78f12                              
+0x180d78e73 mov       rcx, qword ptr [rip + 0x74d1fde]         META string[]_TypeInfo
+0x180d78e87 test      rax, rax                                 
+0x180d78e8a je        0x180d79088                              
+0x180d78e90 cmp       dword ptr [rax + 0x18], 0                
+0x180d78e94 jbe       0x180d7908e                              
+0x180d78e9a mov       rdx, qword ptr [rip + 0x741d2a7]         STR '单元 "'
+0x180d78eae cmp       dword ptr [rbx + 0x18], 1                
+0x180d78eb2 jbe       0x180d7908e                              
+0x180d78ec8 cmp       dword ptr [rbx + 0x18], 2                
+0x180d78ecc jbe       0x180d7908e                              
+0x180d78ed2 mov       rdx, qword ptr [rip + 0x74a39f7]         STR '" 的 type="'
+0x180d78ee6 cmp       dword ptr [rbx + 0x18], 3                
+0x180d78eea jbe       0x180d7908e                              
+0x180d78f01 cmp       dword ptr [rbx + 0x18], 4                
+0x180d78f05 jbe       0x180d7908e                              
+0x180d78f0b mov       rdx, qword ptr [rip + 0x74a34b6]         STR '" 无法识别'
+0x180d78f24 call      0x1852cad10                              => System.String$$Concat
+0x180d78f29 jmp       0x180d79073                              
+0x180d78f2e mov       r8, qword ptr [rip + 0x74a16a3]          STR '"'
+0x180d78f38 mov       rcx, qword ptr [rip + 0x743a5f9]         STR 'unitId 重复: "'
+0x180d78f42 call      0x1852cb070                              => System.String$$Concat
+0x180d78f47 jmp       0x180d79073                              
+0x180d78f4c mov       r8, qword ptr [rip + 0x74a1685]          STR '"'
+0x180d78f56 mov       rcx, qword ptr [rip + 0x743a783]         STR 'unitId 非法: "'
+0x180d78f60 call      0x1852cb070                              => System.String$$Concat
+0x180d78f65 jmp       0x180d79073                              
+0x180d78f6e test      rax, rax                                 
+0x180d78f71 je        0x180d79088                              
+0x180d78f77 cmp       dword ptr [rax + 0x18], 0                
+0x180d78f7b jne       0x180d78f93                              
+0x180d78f8e call      0x180d794c0                              => Game.Mod.ModPackage$$SynthesizeConventionUnits
+0x180d78f97 test      rax, rax                                 
+0x180d78f9a je        0x180d79088                              
+0x180d78fa0 cmp       dword ptr [rax + 0x18], 0                
+0x180d78fa4 je        0x180d78fc8                              
+0x180d78fc7 ret                                                
+0x180d78fc8 mov       rax, qword ptr [rip + 0x746e789]         STR 'mod 不含任何有效单元（需要 spaces/ 下的 npc_* 文件夹、assets/ 或 tables/ 目录）'
+0x180d78fd5 mov       rdx, qword ptr [rip + 0x746e77c]         STR 'mod 不含任何有效单元（需要 spaces/ 下的 npc_* 文件夹、assets/ 或 tables/ 目录）'
+0x180d78fe3 jmp       0x180d78fa9                              
+0x180d78fec mov       r8, qword ptr [rip + 0x74a71b5]          STR '"（只允许字母数字点下划线短横，且不含冒号）'
+0x180d78ff3 mov       rcx, qword ptr [rip + 0x746ee0e]         STR 'modId 非法: "'
+0x180d78ffa call      0x1852cb070                              => System.String$$Concat
+0x180d78fff jmp       0x180d79073                              
+0x180d7900c mov       rcx, qword ptr [rip + 0x745e29d]         META int_TypeInfo
+0x180d7901f mov       rcx, qword ptr [rip + 0x746ea8a]         STR 'mod.json schemaVersion={0} 高于本版本支持的 '
+0x180d7902c call      0x1852ceb40                              => System.String$$Format
+0x180d79031 mov       rcx, qword ptr [rip + 0x745e278]         META int_TypeInfo
+0x180d79053 mov       rcx, qword ptr [rip + 0x74cb6d6]         STR '{0}，请更新游戏'
+0x180d79060 call      0x1852ceb40                              => System.String$$Format
+0x180d7906e call      0x1852cb3e0                              => System.String$$Concat
+0x180d79083 jmp       0x180d78fa9                              
+
+===== ModPackage.SynthesizeConventionUnits @ 0x180d794c0 (end 0x180d79b40) =====
+0x180d794e7 cmp       byte ptr [rip + 0x77e1857], 0            
+0x180d794ee jne       0x180d7958b                              
+0x180d795a2 call      0x180d77b00                              => Game.Mod.ModPackage$$EnumerateNpcAvatarDirs
+0x180d795a7 test      rax, rax                                 
+0x180d795aa je        0x180d79b02                              
+0x180d795b5 mov       rdx, qword ptr [rip + 0x74d2b84]         META System.Collections.Generic.IEnumerable<string>_TypeInfo
+0x180d795e5 test      r8, r8                                   
+0x180d795e8 je        0x180d79b2c                              
+0x180d795f0 mov       rdx, qword ptr [rip + 0x74216d9]         META System.Collections.IEnumerator_TypeInfo
+0x180d795fc test      al, al                                   
+0x180d795fe je        0x180d79850                              
+0x180d79609 test      rdi, rdi                                 
+0x180d7960c je        0x180d79b27                              
+0x180d79612 mov       r9, qword ptr [rip + 0x73e0d5f]          META System.Collections.Generic.IEnumerator<string>_TypeInfo
+0x180d79626 cmp       ax, dx                                   
+0x180d79629 jae       0x180d79658                              
+0x180d79646 cmp       qword ptr [r8 + rax*8], r9               
+0x180d7964a je        0x180d79833                              
+0x180d79653 cmp       cx, dx                                   
+0x180d79656 jb        0x180d79640                              
+0x180d79672 mov       rcx, qword ptr [rip + 0x73e6137]         META System.IO.Path_TypeInfo
+0x180d79679 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d79680 jne       0x180d79687                              
+0x180d79690 call      0x185470210                              => System.IO.Path$$GetRelativePath
+0x180d79695 test      rax, rax                                 
+0x180d79698 je        0x180d79b22                              
+0x180d796af call      0x1852d36f0                              => System.String$$Replace
+0x180d796b4 test      rax, rax                                 
+0x180d796b7 je        0x180d79b1d                              
+0x180d796ce call      0x1852d36f0                              => System.String$$Replace
+0x180d796db call      0x180d78340                              => Game.Mod.ModPackage$$IsValidUnitId
+0x180d796e0 test      al, al                                   
+0x180d796e2 je        0x180d795e0                              
+0x180d796e8 test      rsi, rsi                                 
+0x180d796eb je        0x180d79b18                              
+0x180d796fe call      0x18347c0e0                              => System.Collections.Generic.HashSet<object>$$Add
+0x180d79703 test      al, al                                   
+0x180d79705 je        0x180d795e0                              
+0x180d7970b mov       rcx, qword ptr [rip + 0x73e609e]         META System.IO.Path_TypeInfo
+0x180d79712 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d79719 jne       0x180d79720                              
+0x180d79725 call      0x18546f6f0                              => System.IO.Path$$GetFileName
+0x180d7972d mov       rcx, qword ptr [rip + 0x74135f4]         META Game.Ugc.UgcWorkshopLayout_TypeInfo
+0x180d79734 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d7973b jne       0x180d79742                              
+0x180d7974d call      0x180d17920                              => Game.Ugc.UgcWorkshopLayout$$TryParseNpcDirName
+0x180d79752 test      al, al                                   
+0x180d79754 je        0x180d795e0                              
+0x180d7975a cmp       qword ptr [rsp + 0x28], 0                
+0x180d79760 jle       0x180d795e0                              
+0x180d79766 test      r13, r13                                 
+0x180d79769 je        0x180d79b13                              
+0x180d79773 mov       rcx, qword ptr [rip + 0x74b1c36]         META Game.Mod.ModUnit_TypeInfo
+0x180d79787 call      0x180d822d0                              => Game.Mod.ModUnit$$.ctor
+0x180d7978c test      rdi, rdi                                 
+0x180d7978f je        0x180d79b0e                              
+0x180d797c1 call      0x180d29470                              => Game.Ugc.UgcNpcProfile$$Read
+0x180d797c6 test      rax, rax                                 
+0x180d797c9 je        0x180d797d5                              
+0x180d797cf cmp       qword ptr [rdx], 0                       
+0x180d797d3 jne       0x180d797e3                              
+0x180d797d5 mov       rax, qword ptr [rip + 0x7498f24]         META string_TypeInfo
+0x180d7980b test      rsi, rsi                                 
+0x180d7980e je        0x180d79b08                              
+0x180d7982e jmp       0x180d795e0                              
+0x180d7984b jmp       0x180d79666                              
+0x180d79850 cmp       qword ptr [rbx], 0                       
+0x180d79854 je        0x180d79867                              
+0x180d7985b mov       rdx, qword ptr [rip + 0x741e4de]         META System.IDisposable_TypeInfo
+0x180d79867 jmp       0x180d798a3                              
+0x180d7986e cmp       qword ptr [r8], 0                        
+0x180d79872 je        0x180d79885                              
+0x180d79879 mov       rdx, qword ptr [rip + 0x741e4c0]         META System.IDisposable_TypeInfo
+0x180d7988a test      rcx, rcx                                 
+0x180d7988d jne       0x180d79b32                              
+0x180d798a3 mov       rcx, qword ptr [rip + 0x73e5f06]         META System.IO.Path_TypeInfo
+0x180d798aa cmp       dword ptr [rcx + 0xe0], 0                
+0x180d798b1 jne       0x180d798b8                              
+0x180d798bb mov       rdx, qword ptr [rip + 0x744e2f6]         STR 'assets'
+0x180d798c5 call      0x18546e3e0                              => System.IO.Path$$Combine
+0x180d798d2 call      0x18544ba50                              => System.IO.Directory$$Exists
+0x180d798d7 test      al, al                                   
+0x180d798d9 je        0x180d799cb                              
+0x180d798df test      r13, r13                                 
+0x180d798e2 je        0x180d79b02                              
+0x180d798ec mov       rcx, qword ptr [rip + 0x74b1abd]         META Game.Mod.ModUnit_TypeInfo
+0x180d79900 call      0x180d822d0                              => Game.Mod.ModUnit$$.ctor
+0x180d79905 test      rbx, rbx                                 
+0x180d79908 je        0x180d79b02                              
+0x180d7990e mov       rcx, qword ptr [rip + 0x744e2a3]         STR 'assets'
+0x180d7991d mov       rdx, qword ptr [rip + 0x744e294]         STR 'assets'
+0x180d79962 test      rdi, rdi                                 
+0x180d79965 je        0x180d79b02                              
+0x180d79979 test      rcx, rcx                                 
+0x180d7997c je        0x180d79b02                              
+0x180d79986 cmp       edx, dword ptr [rcx + 0x18]              
+0x180d79989 jb        0x180d799a7                              
+0x180d799a0 call      0x18385eeb0                              => System.Collections.Generic.List<object>$$AddWithResize
+0x180d799a5 jmp       0x180d799cb                              
+0x180d799ad cmp       edx, dword ptr [rcx + 0x18]              
+0x180d799b0 jae       0x180d79b38                              
+0x180d799cb mov       rcx, qword ptr [rip + 0x73e5dde]         META System.IO.Path_TypeInfo
+0x180d799d2 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d799d9 jne       0x180d799e0                              
+0x180d799e3 mov       rdx, qword ptr [rip + 0x74d341e]         STR 'tables'
+0x180d799ed call      0x18546e3e0                              => System.IO.Path$$Combine
+0x180d799f7 call      0x18544ba50                              => System.IO.Directory$$Exists
+0x180d799fc test      al, al                                   
+0x180d799fe je        0x180d79ac2                              
+0x180d79a04 test      r13, r13                                 
+0x180d79a07 je        0x180d79b02                              
+0x180d79a11 mov       rcx, qword ptr [rip + 0x74b1998]         META Game.Mod.ModUnit_TypeInfo
+0x180d79a25 call      0x180d822d0                              => Game.Mod.ModUnit$$.ctor
+0x180d79a2a test      rbx, rbx                                 
+0x180d79a2d je        0x180d79b02                              
+0x180d79a33 mov       rcx, qword ptr [rip + 0x74d33ce]         STR 'tables'
+0x180d79a42 mov       rdx, qword ptr [rip + 0x74d33bf]         STR 'tables'
+0x180d79a87 test      rdi, rdi                                 
+0x180d79a8a je        0x180d79b02                              
+0x180d79a9a test      rcx, rcx                                 
+0x180d79a9d je        0x180d79b02                              
+0x180d79aa3 cmp       edx, dword ptr [rcx + 0x18]              
+0x180d79aa6 jb        0x180d79ad2                              
+0x180d79abd call      0x18385eeb0                              => System.Collections.Generic.List<object>$$AddWithResize
+0x180d79ad1 ret                                                
+0x180d79ad8 cmp       edx, dword ptr [rcx + 0x18]              
+0x180d79adb jae       0x180d79b38                              
+0x180d79b01 ret                                                
+
+===== ModTablePatch.EnumerateIn @ 0x180d7ee50 (end 0x180d7f0f0) =====
+0x180d7ee6e cmp       byte ptr [rip + 0x77dbe95], 0            
+0x180d7ee75 jne       0x180d7eef6                              
+0x180d7ef05 mov       rcx, qword ptr [rip + 0x74cbebc]         META System.Collections.Generic.List<ModTablePatch>_TypeInfo
+0x180d7ef1e call      0x1836e3db0                              => System.Collections.Generic.LowLevelList<__Il2CppFullySharedGenericType>$$.ctor
+0x180d7ef23 test      rbx, rbx                                 
+0x180d7ef26 jne       0x180d7ef39                              
+0x180d7ef28 mov       rax, qword ptr [rip + 0x74937d1]         META string_TypeInfo
+0x180d7ef39 mov       rcx, qword ptr [rip + 0x73e0870]         META System.IO.Path_TypeInfo
+0x180d7ef40 cmp       dword ptr [rcx + 0xe0], esi              
+0x180d7ef46 jne       0x180d7ef4d                              
+0x180d7ef50 mov       rdx, qword ptr [rip + 0x74cdeb1]         STR 'tables'
+0x180d7ef5a call      0x18546e3e0                              => System.IO.Path$$Combine
+0x180d7ef6c call      0x18544ba50                              => System.IO.Directory$$Exists
+0x180d7ef71 test      al, al                                   
+0x180d7ef73 je        0x180d7f0cb                              
+0x180d7ef7c mov       rdx, qword ptr [rip + 0x73f0f7d]         STR '*.patch.json'
+0x180d7ef86 call      0x18544c020                              => System.IO.Directory$$GetFiles
+0x180d7ef8e mov       rcx, qword ptr [rip + 0x74944c3]         META System.StringComparer_TypeInfo
+0x180d7ef95 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d7ef9c jne       0x180d7efa3                              
+0x180d7efa3 cmp       byte ptr [rip + 0x77d3116], 0            
+0x180d7efaa jne       0x180d7efbf                              
+0x180d7efbf mov       rcx, qword ptr [rip + 0x7494492]         META System.StringComparer_TypeInfo
+0x180d7efc6 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d7efcd jne       0x180d7efd4                              
+0x180d7efd4 mov       rax, qword ptr [rip + 0x749447d]         META System.StringComparer_TypeInfo
+0x180d7eff0 call      0x181f93de0                              => System.Array$$Sort<object>
+0x180d7eff5 test      rbx, rbx                                 
+0x180d7eff8 je        0x180d7f0ea                              
+0x180d7f000 cmp       eax, dword ptr [rbx + 0x18]              
+0x180d7f003 jge       0x180d7f0cb                              
+0x180d7f009 cmp       esi, dword ptr [rbx + 0x18]              
+0x180d7f00c jae       0x180d7f0e4                              
+0x180d7f01a mov       rcx, qword ptr [rip + 0x74abe8f]         META Game.Mod.ModTablePatch_TypeInfo
+0x180d7f021 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d7f028 jne       0x180d7f02f                              
+0x180d7f038 call      0x180d7f170                              => Game.Mod.ModTablePatch$$Read
+0x180d7f03d test      rax, rax                                 
+0x180d7f040 je        0x180d7f0c7                              
+0x180d7f046 test      rdi, rdi                                 
+0x180d7f049 je        0x180d7f0ea                              
+0x180d7f063 jmp       0x180d7effe                              
+0x180d7f06a test      rcx, rcx                                 
+0x180d7f06d je        0x180d7f0ea                              
+0x180d7f0b2 call      0x1852caa70                              => System.String$$Concat
+0x180d7f0c9 jmp       0x180d7f0ce                              
+0x180d7f0e3 ret                                                
+
+===== ModTablePatch.TableNameFromFile @ 0x180d80010 (end 0x180d800e0) =====
+0x180d80016 cmp       byte ptr [rip + 0x77dacee], 0            
+0x180d80020 jne       0x180d80041                              
+0x180d80041 mov       rcx, qword ptr [rip + 0x73df768]         META System.IO.Path_TypeInfo
+0x180d80048 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d8004f jne       0x180d80056                              
+0x180d8005b call      0x18546f6f0                              => System.IO.Path$$GetFileName
+0x180d80063 test      rax, rax                                 
+0x180d80066 je        0x180d800ce                              
+0x180d80068 mov       rdx, qword ptr [rip + 0x73c8a89]         STR '.patch.json'
+0x180d8007b call      0x1852cd580                              => System.String$$EndsWith
+0x180d80080 test      al, al                                   
+0x180d80082 je        0x180d800aa                              
+0x180d80084 mov       rax, qword ptr [rip + 0x73c8a6d]         STR '.patch.json'
+0x180d8008b test      rax, rax                                 
+0x180d8008e je        0x180d800ce                              
+0x180d800a5 jmp       0x1852d55a0                              => System.String$$Substring
+0x180d800aa mov       rcx, qword ptr [rip + 0x73df6ff]         META System.IO.Path_TypeInfo
+0x180d800b1 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d800b8 jne       0x180d800bf                              
+0x180d800c9 jmp       0x18546f510                              => System.IO.Path$$GetFileNameWithoutExtension
+
+===== ModTablePatch.Read @ 0x180d7f170 (end 0x180d80010) =====
+0x180d7f192 cmp       byte ptr [rip + 0x77dbb70], 0            
+0x180d7f199 jne       0x180d7f37a                              
+0x180d7f3b0 call      0x1852d0690                              => System.String$$IsNullOrEmpty
+0x180d7f3b5 test      al, al                                   
+0x180d7f3b7 jne       0x180d7ff3f                              
+0x180d7f3c2 call      0x18544ee90                              => System.IO.File$$Exists
+0x180d7f3c7 test      al, al                                   
+0x180d7f3c9 je        0x180d7ff3f                              
+0x180d7f3d4 call      0x185450750                              => System.IO.File$$ReadAllText
+0x180d7f3de call      0x1855eb380                              => Newtonsoft.Json.Linq.JObject$$Parse
+0x180d7f3f0 test      rdi, rdi                                 
+0x180d7f3f3 je        0x180d80000                              
+0x180d7f3f9 mov       rbx, qword ptr [rip + 0x74cd1b0]         STR 'table'
+0x180d7f432 call      0x1852d0690                              => System.String$$IsNullOrEmpty
+0x180d7f437 test      al, al                                   
+0x180d7f439 je        0x180d7f50c                              
+0x180d7f43f mov       rcx, qword ptr [rip + 0x74aba6a]         META Game.Mod.ModTablePatch_TypeInfo
+0x180d7f446 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d7f44d jne       0x180d7f454                              
+0x180d7f454 cmp       byte ptr [rip + 0x77db8b0], 0            
+0x180d7f45b jne       0x180d7f47c                              
+0x180d7f47c mov       rcx, qword ptr [rip + 0x73e032d]         META System.IO.Path_TypeInfo
+0x180d7f483 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d7f48a jne       0x180d7f491                              
+0x180d7f496 call      0x18546f6f0                              => System.IO.Path$$GetFileName
+0x180d7f49e test      rax, rax                                 
+0x180d7f4a1 je        0x180d80000                              
+0x180d7f4b0 mov       rdx, qword ptr [rip + 0x73c9641]         STR '.patch.json'
+0x180d7f4ba call      0x1852cd580                              => System.String$$EndsWith
+0x180d7f4bf test      al, al                                   
+0x180d7f4c1 je        0x180d7f4ea                              
+0x180d7f4c3 mov       rax, qword ptr [rip + 0x73c962e]         STR '.patch.json'
+0x180d7f4ca test      rax, rax                                 
+0x180d7f4cd je        0x180d80000                              
+0x180d7f4e3 call      0x1852d55a0                              => System.String$$Substring
+0x180d7f4e8 jmp       0x180d7f509                              
+0x180d7f4ea mov       rcx, qword ptr [rip + 0x73e02bf]         META System.IO.Path_TypeInfo
+0x180d7f4f1 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d7f4f8 jne       0x180d7f4ff                              
+0x180d7f504 call      0x18546f510                              => System.IO.Path$$GetFileNameWithoutExtension
+0x180d7f50c mov       rcx, qword ptr [rip + 0x74ab99d]         META Game.Mod.ModTablePatch_TypeInfo
+0x180d7f513 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d7f51a jne       0x180d7f521                              
+0x180d7f526 call      0x180d7f0f0                              => Game.Mod.ModTablePatch$$IsValidTableName
+0x180d7f52b test      al, al                                   
+0x180d7f52d je        0x180d7fecf                              
+0x180d7f533 mov       rcx, qword ptr [rip + 0x74ab976]         META Game.Mod.ModTablePatch_TypeInfo
+0x180d7f547 call      0x180d80170                              => Game.Mod.ModTablePatch$$.ctor
+0x180d7f54c test      r14, r14                                 
+0x180d7f54f je        0x180d80000                              
+0x180d7f582 mov       rdx, qword ptr [rip + 0x73f20ff]         STR 'keyFields'
+0x180d7f58c call      0x1855ec5f0                              => Newtonsoft.Json.Linq.JObject$$TryGetValue
+0x180d7f591 test      al, al                                   
+0x180d7f593 je        0x180d7f7be                              
+0x180d7f59e test      rdi, rdi                                 
+0x180d7f5a1 je        0x180d7f95d                              
+0x180d7f5aa mov       rdx, qword ptr [rip + 0x746292f]         META Newtonsoft.Json.Linq.JArray_TypeInfo
+0x180d7f5b8 cmp       byte ptr [r8 + 0x130], al                
+0x180d7f5bf jb        0x180d7f95d                              
+0x180d7f5cf cmp       qword ptr [rax + rcx*8 - 8], rdx         
+0x180d7f5d4 jne       0x180d7f95d                              
+0x180d7f5df call      0x1855e9a60                              => Newtonsoft.Json.Linq.JContainer$$get_Count
+0x180d7f5e4 test      eax, eax                                 
+0x180d7f5e6 je        0x180d7f95d                              
+0x180d7f5f1 call      0x1855e9a60                              => Newtonsoft.Json.Linq.JContainer$$get_Count
+0x180d7f5f8 mov       rcx, qword ptr [rip + 0x73ce071]         META System.Collections.Generic.List<string>_TypeInfo
+0x180d7f613 call      0x1836e3e40                              => System.Collections.Generic.List<TimelinePlaybackPlayer.RegionTrackMuteScope.Entry>$$.ctor
+0x180d7f625 call      0x1855c9d00                              => Newtonsoft.Json.Linq.JArray$$GetEnumerator
+0x180d7f64c test      r8, r8                                   
+0x180d7f64f je        0x180d7ff85                              
+0x180d7f657 mov       rdx, qword ptr [rip + 0x741b672]         META System.Collections.IEnumerator_TypeInfo
+0x180d7f663 test      al, al                                   
+0x180d7f665 je        0x180d7f725                              
+0x180d7f673 test      r8, r8                                   
+0x180d7f676 je        0x180d7ff80                              
+0x180d7f67e mov       rdx, qword ptr [rip + 0x73d00bb]         META System.Collections.Generic.IEnumerator<JToken>_TypeInfo
+0x180d7f68a test      rax, rax                                 
+0x180d7f68d je        0x180d7f6a3                              
+0x180d7f699 call      0x182086830                              => Newtonsoft.Json.Linq.Extensions$$Value<object>
+0x180d7f6a1 jmp       0x180d7f6a6                              
+0x180d7f6ab call      0x1852d06a0                              => System.String$$IsNullOrWhiteSpace
+0x180d7f6b0 test      al, al                                   
+0x180d7f6b2 jne       0x180d7f6e7                              
+0x180d7f6b4 test      rdi, rdi                                 
+0x180d7f6b7 je        0x180d7ff7b                              
+0x180d7f6c2 call      0x1852d6930                              => System.String$$Trim
+0x180d7f6c7 test      r15, r15                                 
+0x180d7f6ca je        0x180d7ff75                              
+0x180d7f6e2 jmp       0x180d7f644                              
+0x180d7f6ea mov       rdx, qword ptr [rip + 0x74960cf]         STR ' 的 keyFields 里有空项'
+0x180d7f6f4 call      0x1852cb3e0                              => System.String$$Concat
+0x180d7f709 cmp       qword ptr [rbx], 0                       
+0x180d7f70d je        0x180d7f720                              
+0x180d7f714 mov       rdx, qword ptr [rip + 0x7418625]         META System.IDisposable_TypeInfo
+0x180d7f720 jmp       0x180d7ff60                              
+0x180d7f725 cmp       qword ptr [rbx], 0                       
+0x180d7f729 je        0x180d7f73c                              
+0x180d7f730 mov       rdx, qword ptr [rip + 0x7418609]         META System.IDisposable_TypeInfo
+0x180d7f741 jmp       0x180d7f796                              
+0x180d7f748 cmp       qword ptr [r8], 0                        
+0x180d7f74c je        0x180d7f75f                              
+0x180d7f753 mov       rdx, qword ptr [rip + 0x74185e6]         META System.IDisposable_TypeInfo
+0x180d7f764 test      rcx, rcx                                 
+0x180d7f767 jne       0x180d7ff8b                              
+0x180d7f796 test      r15, r15                                 
+0x180d7f799 je        0x180d80000                              
+0x180d7f7a9 call      0x1836e3910                              => System.Collections.Generic.List<TimelinePlaybackPlayer.RegionTrackMuteScope.Entry>$$ToArray
+0x180d7f7c6 mov       rdx, qword ptr [rip + 0x7402773]         STR 'refFields'
+0x180d7f7d0 call      0x1855ec5f0                              => Newtonsoft.Json.Linq.JObject$$TryGetValue
+0x180d7f7d5 test      al, al                                   
+0x180d7f7d7 je        0x180d7fb31                              
+0x180d7f7e2 test      r15, r15                                 
+0x180d7f7e5 je        0x180d7fc4b                              
+0x180d7f7ee mov       rdx, qword ptr [rip + 0x74635fb]         META Newtonsoft.Json.Linq.JObject_TypeInfo
+0x180d7f7fc cmp       byte ptr [r8 + 0x130], al                
+0x180d7f803 jb        0x180d7fc4b                              
+0x180d7f813 cmp       qword ptr [rax + rcx*8 - 8], rdx         
+0x180d7f818 jne       0x180d7fc4b                              
+0x180d7f81e mov       rcx, qword ptr [rip + 0x7493c33]         META System.StringComparer_TypeInfo
+0x180d7f825 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d7f82c jne       0x180d7f833                              
+0x180d7f83d mov       rcx, qword ptr [rip + 0x74c6e24]         META System.Collections.Generic.Dictionary<string, string>_TypeIn
+0x180d7f859 call      0x1822d5470                              => System.Collections.Generic.Dictionary<object, GameItemInlineText.GameItemInteractionHandler.HoverSes
+0x180d7f873 call      0x1855eb4e0                              => Newtonsoft.Json.Linq.JObject$$Properties
+0x180d7f878 test      rax, rax                                 
+0x180d7f87b je        0x180d80000                              
+0x180d7f886 mov       rdx, qword ptr [rip + 0x74c1e4b]         META System.Collections.Generic.IEnumerable<JProperty>_TypeInfo
+0x180d7f8b5 test      r8, r8                                   
+0x180d7f8b8 je        0x180d7ffc3                              
+0x180d7f8c0 mov       rdx, qword ptr [rip + 0x741b409]         META System.Collections.IEnumerator_TypeInfo
+0x180d7f8cc test      al, al                                   
+0x180d7f8ce je        0x180d7fad5                              
+0x180d7f8d9 test      rdi, rdi                                 
+0x180d7f8dc je        0x180d7ffbe                              
+0x180d7f8e2 mov       r9, qword ptr [rip + 0x73cfaff]          META System.Collections.Generic.IEnumerator<JProperty>_TypeInfo
+0x180d7f8f4 cmp       si, dx                                   
+0x180d7f8f7 jae       0x180d7f917                              
+0x180d7f909 cmp       qword ptr [r8 + rax*8], r9               
+0x180d7f90d je        0x180d7f96c                              
+0x180d7f912 cmp       cx, dx                                   
+0x180d7f915 jb        0x180d7f903                              
+0x180d7f931 test      rax, rax                                 
+0x180d7f934 je        0x180d7ffb9                              
+0x180d7f93f call      0x1855f0420                              => Newtonsoft.Json.Linq.JProperty$$get_Value
+0x180d7f944 test      rax, rax                                 
+0x180d7f947 je        0x180d7f986                              
+0x180d7f953 call      0x182086830                              => Newtonsoft.Json.Linq.Extensions$$Value<object>
+0x180d7f95b jmp       0x180d7f989                              
+0x180d7f95d mov       rdx, qword ptr [rip + 0x7495cac]         STR ' 的 keyFields 必须是非空字符串数组'
+0x180d7f967 jmp       0x180d7ff49                              
+0x180d7f984 jmp       0x180d7f925                              
+0x180d7f989 mov       rcx, qword ptr [rip + 0x74ab520]         META Game.Mod.ModTablePatch_TypeInfo
+0x180d7f990 cmp       dword ptr [rcx + 0xe0], 0                
+0x180d7f997 jne       0x180d7f99e                              
+0x180d7f9a3 call      0x180d7f0f0                              => Game.Mod.ModTablePatch$$IsValidTableName
+0x180d7f9a8 test      al, al                                   
+0x180d7f9aa je        0x180d7f9d1                              
+0x180d7f9b0 test      rcx, rcx                                 
+0x180d7f9b3 je        0x180d7ff91                              
+0x180d7f9c7 call      0x1822d7ec0                              => System.Collections.Generic.Dictionary<object, object>$$set_Item
+0x180d7f9cc jmp       0x180d7f8b0                              
+0x180d7f9d6 mov       rcx, qword ptr [rip + 0x74cb47b]         META string[]_TypeInfo
+0x180d7f9e5 test      rax, rax                                 
+0x180d7f9e8 je        0x180d7ffb4                              
+0x180d7f9ee cmp       dword ptr [rax + 0x18], 0                
+0x180d7f9f2 jbe       0x180d7ff96                              
+0x180d7fa10 cmp       dword ptr [rdi + 0x18], 1                
+0x180d7fa14 jbe       0x180d7ff9b                              
+0x180d7fa1a mov       rdx, qword ptr [rip + 0x74960f7]         STR ' 的 refFields["'
+0x180d7fa2e cmp       dword ptr [rdi + 0x18], 2                
+0x180d7fa32 jbe       0x180d7ffa0                              
+0x180d7fa49 cmp       dword ptr [rdi + 0x18], 3                
+0x180d7fa4d jbe       0x180d7ffa5                              
+0x180d7fa53 mov       rdx, qword ptr [rip + 0x749f83e]         STR '"] 表名非法: "'
+0x180d7fa67 cmp       dword ptr [rdi + 0x18], 4                
+0x180d7fa6b jbe       0x180d7ffaa                              
+0x180d7fa81 cmp       dword ptr [rdi + 0x18], 5                
+0x180d7fa85 jbe       0x180d7ffaf                              
+0x180d7fa8b mov       rdx, qword ptr [rip + 0x749ab46]         STR '"'
+0x180d7faa4 call      0x1852cad10                              => System.String$$Concat
+0x180d7fab9 cmp       qword ptr [rbx], 0                       
+0x180d7fabd je        0x180d7fad0                              
+0x180d7fac4 mov       rdx, qword ptr [rip + 0x7418275]         META System.IDisposable_TypeInfo
+0x180d7fad0 jmp       0x180d7ff60                              
+0x180d7fad5 cmp       qword ptr [rbx], 0                       
+0x180d7fad9 je        0x180d7faec                              
+0x180d7fae0 mov       rdx, qword ptr [rip + 0x7418259]         META System.IDisposable_TypeInfo
+0x180d7faf1 jmp       0x180d7fb31                              
+0x180d7faf8 cmp       qword ptr [r8], 0                        
+0x180d7fafc je        0x180d7fb0f                              
+0x180d7fb03 mov       rdx, qword ptr [rip + 0x7418236]         META System.IDisposable_TypeInfo
+0x180d7fb14 test      rcx, rcx                                 
+0x180d7fb17 jne       0x180d7ffc9                              
+0x180d7fb39 mov       rdx, qword ptr [rip + 0x7446eb0]         STR 'upsert'
+0x180d7fb43 call      0x1855ec5f0                              => Newtonsoft.Json.Linq.JObject$$TryGetValue
+0x180d7fb48 test      al, al                                   
+0x180d7fb4a je        0x180d7fcf7                              
+0x180d7fb55 test      rcx, rcx                                 
+0x180d7fb58 je        0x180d7fe11                              
+0x180d7fb61 mov       r8, qword ptr [rip + 0x7462378]          META Newtonsoft.Json.Linq.JArray_TypeInfo
+0x180d7fb70 cmp       byte ptr [r9 + 0x130], al                
+0x180d7fb77 jb        0x180d7fe11                              
+0x180d7fb87 cmp       qword ptr [rax + rdx*8 - 8], r8          
+0x180d7fb8c jne       0x180d7fe11                              
+0x180d7fb94 call      0x1855c9d00                              => Newtonsoft.Json.Linq.JArray$$GetEnumerator
+0x180d7fbbb test      r8, r8                                   
+0x180d7fbbe je        0x180d7ffd9                              
+0x180d7fbc6 mov       rdx, qword ptr [rip + 0x741b103]         META System.Collections.IEnumerator_TypeInfo
+0x180d7fbd2 test      al, al                                   
+0x180d7fbd4 je        0x180d7fca0                              
+0x180d7fbe2 test      r8, r8                                   
+0x180d7fbe5 je        0x180d7ffd4                              
+0x180d7fbed mov       rdx, qword ptr [rip + 0x73cfb4c]         META System.Collections.Generic.IEnumerator<JToken>_TypeInfo
+0x180d7fbf9 test      rax, rax                                 
+0x180d7fbfc je        0x180d7fc5a                              
+0x180d7fc01 mov       r8, qword ptr [rip + 0x74631e8]          META Newtonsoft.Json.Linq.JObject_TypeInfo
+0x180d7fc10 cmp       byte ptr [r9 + 0x130], cl                
+0x180d7fc17 jb        0x180d7fc5a                              
+0x180d7fc23 cmp       qword ptr [rcx + rdx*8 - 8], r8          
+0x180d7fc28 jne       0x180d7fc5a                              
+0x180d7fc2e test      rcx, rcx                                 
+0x180d7fc31 je        0x180d7ffcf                              
+0x180d7fc46 jmp       0x180d7fbb3                              
+0x180d7fc4b mov       rdx, qword ptr [rip + 0x7495d16]         STR ' 的 refFields 必须是 字段名->表名 的对象'
+0x180d7fc55 jmp       0x180d7ff49                              
+0x180d7fc68 mov       rcx, qword ptr [rip + 0x74aea69]         STR '{0} 的 upsert 里有一项不是对象: {1}'
+0x180d7fc6f call      0x1852cedf0                              => System.String$$Format
+0x180d7fc84 cmp       qword ptr [rbx], 0                       
+0x180d7fc88 je        0x180d7fc9b                              
+0x180d7fc8f mov       rdx, qword ptr [rip + 0x74180aa]         META System.IDisposable_TypeInfo
+0x180d7fc9b jmp       0x180d7ff60                              
+0x180d7fca0 cmp       qword ptr [rbx], 0                       
+0x180d7fca4 je        0x180d7fcb7                              
+0x180d7fcab mov       rdx, qword ptr [rip + 0x741808e]         META System.IDisposable_TypeInfo
+0x180d7fcb7 jmp       0x180d7fcf7                              
+0x180d7fcbe cmp       qword ptr [r8], 0                        
+0x180d7fcc2 je        0x180d7fcd5                              
+0x180d7fcc9 mov       rdx, qword ptr [rip + 0x7418070]         META System.IDisposable_TypeInfo
+0x180d7fcda test      rcx, rcx                                 
+0x180d7fcdd jne       0x180d7ffdf                              
+0x180d7fcff mov       rdx, qword ptr [rip + 0x740b39a]         STR 'remove'
+0x180d7fd09 call      0x1855ec5f0                              => Newtonsoft.Json.Linq.JObject$$TryGetValue
+0x180d7fd0e test      al, al                                   
+0x180d7fd10 je        0x180d7feb3                              
+0x180d7fd1b test      rcx, rcx                                 
+0x180d7fd1e je        0x180d7febb                              
+0x180d7fd27 mov       r8, qword ptr [rip + 0x74621b2]          META Newtonsoft.Json.Linq.JArray_TypeInfo
+0x180d7fd36 cmp       byte ptr [r9 + 0x130], al                
+0x180d7fd3d jb        0x180d7febb                              
+0x180d7fd4d cmp       qword ptr [rax + rdx*8 - 8], r8          
+0x180d7fd52 jne       0x180d7febb                              
+0x180d7fd5a call      0x1855c9d00                              => Newtonsoft.Json.Linq.JArray$$GetEnumerator
+0x180d7fd88 test      r8, r8                                   
+0x180d7fd8b je        0x180d7fff4                              
+0x180d7fd93 mov       rdx, qword ptr [rip + 0x741af36]         META System.Collections.IEnumerator_TypeInfo
+0x180d7fd9f test      al, al                                   
+0x180d7fda1 je        0x180d7fe6b                              
+0x180d7fdaf test      r8, r8                                   
+0x180d7fdb2 je        0x180d7ffef                              
+0x180d7fdba mov       rdx, qword ptr [rip + 0x73cf97f]         META System.Collections.Generic.IEnumerator<JToken>_TypeInfo
+0x180d7fdc9 test      rax, rax                                 
+0x180d7fdcc je        0x180d7ffea                              
+0x180d7fde6 cmp       eax, 1                                   
+0x180d7fde9 je        0x180d7fe25                              
+0x180d7fdeb cmp       eax, 2                                   
+0x180d7fdee je        0x180d7fe25                              
+0x180d7fdf4 test      rcx, rcx                                 
+0x180d7fdf7 je        0x180d7ffe5                              
+0x180d7fe0c jmp       0x180d7fd80                              
+0x180d7fe11 mov       rdx, qword ptr [rip + 0x7496200]         STR ' 的 upsert 必须是数组'
+0x180d7fe20 jmp       0x180d7ff49                              
+0x180d7fe33 mov       rcx, qword ptr [rip + 0x74ae6f6]         STR '{0} 的 remove 里有一项不是主键值: {1}'
+0x180d7fe3a call      0x1852cedf0                              => System.String$$Format
+0x180d7fe4f cmp       qword ptr [rbx], 0                       
+0x180d7fe53 je        0x180d7fe66                              
+0x180d7fe5a mov       rdx, qword ptr [rip + 0x7417edf]         META System.IDisposable_TypeInfo
+0x180d7fe66 jmp       0x180d7ff60                              
+0x180d7fe6b cmp       qword ptr [rbx], 0                       
+0x180d7fe6f je        0x180d7fe82                              
+0x180d7fe76 mov       rdx, qword ptr [rip + 0x7417ec3]         META System.IDisposable_TypeInfo
+0x180d7fe82 jmp       0x180d7feb3                              
+0x180d7fe89 cmp       qword ptr [r8], 0                        
+0x180d7fe8d je        0x180d7fea0                              
+0x180d7fe94 mov       rdx, qword ptr [rip + 0x7417ea5]         META System.IDisposable_TypeInfo
+0x180d7fea5 test      rcx, rcx                                 
+0x180d7fea8 jne       0x180d7fffa                              
+0x180d7feb6 jmp       0x180d7ff62                              
+0x180d7febb mov       rdx, qword ptr [rip + 0x7495dfe]         STR ' 的 remove 必须是数组'
+0x180d7feca jmp       0x180d7ff49                              
+0x180d7fed4 mov       r9, qword ptr [rip + 0x74a0475]          STR '"（只允许小写字母、数字、下划线）'
+0x180d7fede mov       rdx, qword ptr [rip + 0x7495f8b]         STR ' 的 table 名非法: "'
+0x180d7fee8 call      0x1852caa70                              => System.String$$Concat
+0x180d7feed jmp       0x180d7ff51                              
+0x180d7fef4 test      rcx, rcx                                 
+0x180d7fef7 je        0x180d80000                              
+0x180d7ff2d call      0x1852cb070                              => System.String$$Concat
+0x180d7ff3d jmp       0x180d7ff58                              
+0x180d7ff42 mov       rcx, qword ptr [rip + 0x74cc5d7]         STR 'patch 文件不存在: '
+0x180d7ff4c call      0x1852cb3e0                              => System.String$$Concat
+0x180d7ff74 ret                                                
+
+===== ModRegistry.IsEntryEnabled @ 0x180d7cc40 (end 0x180d7ccd0) =====
+0x180d7cc49 cmp       byte ptr [rip + 0x77de108], 0            
+0x180d7cc5c jne       0x180d7cc71                              
+0x180d7cc76 call      0x1852d0690                              => System.String$$IsNullOrEmpty
+0x180d7cc7b test      al, al                                   
+0x180d7cc7d je        0x180d7cc8a                              
+0x180d7cc89 ret                                                
+0x180d7cc9a call      0x180d77a20                              => Game.Mod.ModPackage$$EntryKey
+0x180d7cc9f test      rdi, rdi                                 
+0x180d7cca2 je        0x180d7ccbe                              
+0x180d7ccb9 jmp       0x18347f120                              => System.Collections.Generic.HashSet<object>$$Contains
+
+===== ModRegistry.ActiveUnits @ 0x180d7b670 (end 0x180d7b990) =====
+0x180d7b691 cmp       byte ptr [rip + 0x77df6c8], 0            
+0x180d7b698 jne       0x180d7b735                              
+0x180d7b754 mov       rcx, qword ptr [rip + 0x7494a4d]         META System.Collections.Generic.List<ValueTuple<ModPackage, ModUn
+0x180d7b76d call      0x1836e3db0                              => System.Collections.Generic.LowLevelList<__Il2CppFullySharedGenericType>$$.ctor
+0x180d7b776 test      rdx, rdx                                 
+0x180d7b779 je        0x180d7b966                              
+0x180d7b793 call      0x1836dd950                              => System.Collections.Generic.List<UPFMeshPathGraphic.DashInterval>$$GetEnumerator
+0x180d7b7cc call      0x1828dd320                              => System.Collections.Generic.List.Enumerator<object>$$MoveNext
+0x180d7b7d1 test      al, al                                   
+0x180d7b7d3 je        0x180d7b91a                              
+0x180d7b7de test      r14, r14                                 
+0x180d7b7e1 je        0x180d7b982                              
+0x180d7b7eb test      rdx, rdx                                 
+0x180d7b7ee je        0x180d7b97d                              
+0x180d7b800 call      0x1836dd950                              => System.Collections.Generic.List<UPFMeshPathGraphic.DashInterval>$$GetEnumerator
+0x180d7b83c call      0x1828dd320                              => System.Collections.Generic.List.Enumerator<object>$$MoveNext
+0x180d7b841 test      al, al                                   
+0x180d7b843 je        0x180d7b8cb                              
+0x180d7b851 test      rdi, rdi                                 
+0x180d7b854 je        0x180d7b972                              
+0x180d7b85a cmp       dword ptr [rdi + 0x18], r15d             
+0x180d7b85e jne       0x180d7b830                              
+0x180d7b86d call      0x180d7ba90                              => Game.Mod.ModRegistry$$AnyEntryEnabled
+0x180d7b872 test      al, al                                   
+0x180d7b874 je        0x180d7b830                              
+0x180d7b896 call      0x1806ad2c0                              => SFB.ExtensionFilter$$.ctor
+0x180d7b89b test      rsi, rsi                                 
+0x180d7b89e je        0x180d7b96c                              
+0x180d7b8c6 jmp       0x180d7b830                              
+0x180d7b8d5 call      0x18067d180                              => System.Configuration.ConfigurationCollectionAttribute$$.ctor
+0x180d7b8da jmp       0x180d7b7c0                              
+0x180d7b8eb call      0x18067d180                              => System.Configuration.ConfigurationCollectionAttribute$$.ctor
+0x180d7b8f5 test      rcx, rcx                                 
+0x180d7b8f8 jne       0x180d7b978                              
+0x180d7b915 jmp       0x180d7b7c0                              
+0x180d7b926 call      0x18067d180                              => System.Configuration.ConfigurationCollectionAttribute$$.ctor
+0x180d7b92b jmp       0x180d7b950                              
+0x180d7b939 call      0x18067d180                              => System.Configuration.ConfigurationCollectionAttribute$$.ctor
+0x180d7b943 test      rcx, rcx                                 
+0x180d7b946 jne       0x180d7b988                              
+0x180d7b965 ret                                                
+
+===== ModRegistry.HasEnabledPatch @ 0x180d7cab0 (end 0x180d7cc10) =====
+0x180d7cac5 cmp       byte ptr [rip + 0x77de297], 0            
+0x180d7cacc jne       0x180d7cb05                              
+0x180d7cb14 test      rdi, rdi                                 
+0x180d7cb17 je        0x180d7cbea                              
+0x180d7cb21 test      rdx, rdx                                 
+0x180d7cb24 je        0x180d7cc08                              
+0x180d7cb36 call      0x1836dd950                              => System.Collections.Generic.List<UPFMeshPathGraphic.DashInterval>$$GetEnumerator
+0x180d7cb70 call      0x1828dd320                              => System.Collections.Generic.List.Enumerator<object>$$MoveNext
+0x180d7cb75 test      al, al                                   
+0x180d7cb77 je        0x180d7cbbe                              
+0x180d7cb7e test      r8, r8                                   
+0x180d7cb81 je        0x180d7cbfc                              
+0x180d7cb83 cmp       dword ptr [r8 + 0x18], 2                 
+0x180d7cb88 jne       0x180d7cb64                              
+0x180d7cb94 call      0x180d7ba90                              => Game.Mod.ModRegistry$$AnyEntryEnabled
+0x180d7cb99 test      al, al                                   
+0x180d7cb9b je        0x180d7cb64                              
+0x180d7cba7 call      0x18067d180                              => System.Configuration.ConfigurationCollectionAttribute$$.ctor
+0x180d7cbbd ret                                                
+0x180d7cbc8 call      0x18067d180                              => System.Configuration.ConfigurationCollectionAttribute$$.ctor
+0x180d7cbcd jmp       0x180d7cbea                              
+0x180d7cbdb call      0x18067d180                              => System.Configuration.ConfigurationCollectionAttribute$$.ctor
+0x180d7cbe5 test      rcx, rcx                                 
+0x180d7cbe8 jne       0x180d7cc02                              
+0x180d7cbfb ret                                                
+
+===== ModRegistry.EnsureInitialized @ 0x180d7c7b0 (end 0x180d7c7f0) =====
+0x180d7c7b6 cmp       byte ptr [rcx + 0x48], 0                 
+0x180d7c7bd jne       0x180d7c7ea                              
+0x180d7c7c5 call      0x180d6de70                              => Game.Mod.LocalModSource$$EnsureRoot
+0x180d7c7cc call      0x180d75ce0                              => Game.Mod.ModMigration$$MigrateLegacyGeneratedPacks
+0x180d7c7d6 call      0x180d7ccd0                              => Game.Mod.ModRegistry$$LoadPrefs
+0x180d7c7e5 jmp       0x180d7d2b0                              => Game.Mod.ModRegistry$$Rescan
+0x180d7c7ef ret                                                

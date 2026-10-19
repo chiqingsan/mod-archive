@@ -1,0 +1,68 @@
+MonoBehaviour 总数 = 38606，组数 = 850
+
+扫了 838 组；匹配 Item 特征字段的组：1 个
+  pathID=644      实例=1581  字段=['agentUtilities', 'constants', 'displayName', 'displayQuality', 'effectActiveInInventory', 'effects', 'icon', 'inventory', 'itemGraphic', 'm_Enabled', 'm_GameObject', 'm_Name', 'm_Script', 'maxStackCount']
+
+==============================================================================
+脚本 pathID=644，实例 1581 个
+  displayQuality 分布: {'None': 1310, 'Purple': 74, 'Orange': 75, 'Red': 13, 'Blue': 85, 'Green': 14, 'White': 10}
+  quality(int)   分布: {0: 16, 1: 112, 2: 181, 3: 232, 4: 148, 5: 103, 6: 55, 7: 47, 9: 259, 91: 1, 92: 4, 93: 8, 94: 9, 95: 22, 96: 6, 99: 40, 991: 9, 992: 14, 993: 17, 994: 21, 995: 14, 996: 1, 999: 261, 9999: 1}
+
+  quality × displayQuality 交叉表:
+      quality=9   displayQuality=None     → 241 个
+      quality=3   displayQuality=None     → 189 个
+      quality=999 displayQuality=None     → 170 个
+      quality=2   displayQuality=None     → 158 个
+      quality=4   displayQuality=None     → 113 个
+      quality=1   displayQuality=None     → 103 个
+      quality=5   displayQuality=None     → 75 个
+      quality=7   displayQuality=None     → 44 个
+      quality=3   displayQuality=Blue     → 42 个
+      quality=6   displayQuality=None     → 39 个
+      quality=99  displayQuality=None     → 36 个
+      quality=4   displayQuality=Purple   → 34 个
+      quality=999 displayQuality=Blue     → 31 个
+      quality=999 displayQuality=Purple   → 30 个
+      quality=999 displayQuality=Orange   → 30 个
+      quality=5   displayQuality=Orange   → 27 个
+      quality=95  displayQuality=None     → 22 个
+      quality=994 displayQuality=None     → 21 个
+      quality=993 displayQuality=None     → 17 个
+      quality=0   displayQuality=None     → 16 个
+
+  按 displayQuality 分组的 value 分布:
+      None     n=1310 min=0 p25=50 中位=470 p75=1893 p90=6480 max=21593218
+      White    n=10 min=350 p25=350 中位=350 p75=350 p90=6755 max=6755
+      Green    n=14 min=1000 p25=1000 中位=1000 p75=1000 p90=1000 max=15000
+      Blue     n=85 min=1 p25=200 中位=900 p75=2000 p90=2000 max=6842
+      Purple   n=74 min=1 p25=350 中位=2100 p75=3250 p90=3500 max=50000
+      Orange   n=75 min=1 p25=500 中位=2000 p75=5000 p90=6000 max=95000
+      Red      n=13 min=1 p25=5000 中位=5000 p75=5000 p90=5000 max=80000
+
+  按 quality(int) 分组的 value 分布:
+      quality=0   n=16 min=0 p25=0 中位=0 p75=50 p90=66 max=80
+      quality=1   n=112 min=1 p25=50 中位=149 p75=350 p90=780 max=8645
+      quality=2   n=181 min=1 p25=172 中位=500 p75=768 p90=1570 max=6480
+      quality=3   n=232 min=1 p25=320 中位=826 p75=1369 p90=2185 max=5086
+      quality=4   n=148 min=4 p25=774 中位=2270 p75=3500 p90=5000 max=25678
+      quality=5   n=103 min=1 p25=350 中位=3787 p75=6636 p90=13909 max=66666
+      quality=6   n=55 min=1 p25=50 中位=5000 p75=10358 p90=38900 max=253228
+      quality=7   n=47 min=444 p25=1500 中位=5150 p75=15000 p90=135800 max=21593218
+      quality=9   n=259 min=1 p25=50 中位=229 p75=2311 p90=7654 max=104748
+      quality=91  n=1 min=377 p25=377 中位=377 p75=377 p90=377 max=377
+      quality=92  n=4 min=83 p25=194 中位=678 p75=685 p90=685 max=685
+      quality=93  n=8 min=83 p25=212 中位=1775 p75=3396 p90=4013 max=4013
+      quality=94  n=9 min=83 p25=2551 中位=4308 p75=5411 p90=5866 max=5866
+      quality=95  n=22 min=194 p25=212 中位=7165 p75=7355 p90=7549 max=8899
+      quality=96  n=6 min=1238 p25=1238 中位=1238 p75=1238 p90=39645 max=39645
+      quality=99  n=40 min=0 p25=253 中位=266 p75=768 p90=3000 max=200000
+      quality=991 n=9 min=62 p25=95 中位=114 p75=192 p90=506 max=506
+      quality=992 n=14 min=153 p25=168 中位=362 p75=805 p90=1108 max=1128
+      quality=993 n=17 min=278 p25=343 中位=402 p75=850 p90=1640 max=2057
+      quality=994 n=21 min=533 p25=660 中位=1986 p75=2979 p90=3807 max=4113
+      quality=995 n=14 min=10 p25=965 中位=3471 p75=3892 p90=6084 max=6534
+      quality=996 n=1 min=12300 p25=12300 中位=12300 p75=12300 p90=12300 max=12300
+      quality=999 n=261 min=0 p25=3 中位=155 p75=1100 p90=5000 max=26555
+      quality=9999 n=1 min=50 p25=50 中位=50 p75=50 p90=50 max=50
+
+  最常见的前 15 个物品名: [('<无名>', 1581)]

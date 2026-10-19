@@ -1,0 +1,2432 @@
+{
+  "table": "tbsceneharvest",
+  "keyFields": [
+    "id"
+  ],
+  "upsert": [
+    {
+      "id": 210101,
+      "group": 21010,
+      "items": [
+        60026
+      ],
+      "harvest_template_id": 2015,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 210102,
+      "group": 21010,
+      "items": [
+        60027
+      ],
+      "harvest_template_id": 2005,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 210103,
+      "group": 21010,
+      "items": [
+        60028
+      ],
+      "harvest_template_id": 2010,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 210104,
+      "group": 21010,
+      "items": [
+        60029
+      ],
+      "harvest_template_id": 2020,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 210201,
+      "group": 21020,
+      "items": [
+        60048
+      ],
+      "harvest_template_id": 2015,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 210202,
+      "group": 21020,
+      "items": [
+        60049
+      ],
+      "harvest_template_id": 2010,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 210203,
+      "group": 21020,
+      "items": [
+        60050
+      ],
+      "harvest_template_id": 2020,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 210204,
+      "group": 21020,
+      "items": [
+        60051
+      ],
+      "harvest_template_id": 2006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 210205,
+      "group": 21020,
+      "items": [
+        60052
+      ],
+      "harvest_template_id": 2016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 211101,
+      "group": 21110,
+      "items": [
+        60146
+      ],
+      "harvest_template_id": 1000,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 211102,
+      "group": 21110,
+      "items": [
+        60150
+      ],
+      "harvest_template_id": 1010,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 211103,
+      "group": 21110,
+      "items": [
+        60154
+      ],
+      "harvest_template_id": 1020,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 211104,
+      "group": 21110,
+      "items": [
+        60147
+      ],
+      "harvest_template_id": 1001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 211201,
+      "group": 21120,
+      "items": [
+        60057
+      ],
+      "harvest_template_id": 2000,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 211202,
+      "group": 21120,
+      "items": [
+        60058
+      ],
+      "harvest_template_id": 2010,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 211203,
+      "group": 21120,
+      "items": [
+        60059
+      ],
+      "harvest_template_id": 2005,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 211204,
+      "group": 21120,
+      "items": [
+        60060
+      ],
+      "harvest_template_id": 2001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 708101,
+      "group": 70810,
+      "items": [
+        60061
+      ],
+      "harvest_template_id": 2000,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 708102,
+      "group": 70810,
+      "items": [
+        60062
+      ],
+      "harvest_template_id": 2010,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 708103,
+      "group": 70810,
+      "items": [
+        60063
+      ],
+      "harvest_template_id": 2020,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 708104,
+      "group": 70810,
+      "items": [
+        60064
+      ],
+      "harvest_template_id": 2001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 708201,
+      "group": 70820,
+      "items": [
+        60146
+      ],
+      "harvest_template_id": 1000,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 708202,
+      "group": 70820,
+      "items": [
+        60148
+      ],
+      "harvest_template_id": 1005,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 708203,
+      "group": 70820,
+      "items": [
+        60147
+      ],
+      "harvest_template_id": 1001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 708204,
+      "group": 70820,
+      "items": [
+        60149
+      ],
+      "harvest_template_id": 1006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 709101,
+      "group": 70910,
+      "items": [
+        60148
+      ],
+      "harvest_template_id": 1005,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 709102,
+      "group": 70910,
+      "items": [
+        60154
+      ],
+      "harvest_template_id": 1020,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 709103,
+      "group": 70910,
+      "items": [
+        60152
+      ],
+      "harvest_template_id": 1015,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 709104,
+      "group": 70910,
+      "items": [
+        60149
+      ],
+      "harvest_template_id": 1006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 709105,
+      "group": 70910,
+      "items": [
+        60153
+      ],
+      "harvest_template_id": 1016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 709201,
+      "group": 70920,
+      "items": [
+        60152
+      ],
+      "harvest_template_id": 1015,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 709202,
+      "group": 70920,
+      "items": [
+        60154
+      ],
+      "harvest_template_id": 1020,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 709203,
+      "group": 70920,
+      "items": [
+        60155
+      ],
+      "harvest_template_id": 1021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 709204,
+      "group": 70920,
+      "items": [
+        60151
+      ],
+      "harvest_template_id": 1011,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 212301,
+      "group": 21230,
+      "items": [
+        60149
+      ],
+      "harvest_template_id": 1006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 212302,
+      "group": 21230,
+      "items": [
+        60155
+      ],
+      "harvest_template_id": 1021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 212303,
+      "group": 21230,
+      "items": [
+        60159
+      ],
+      "harvest_template_id": 1007,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 213301,
+      "group": 21330,
+      "items": [
+        60153
+      ],
+      "harvest_template_id": 1016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 213302,
+      "group": 21330,
+      "items": [
+        60155
+      ],
+      "harvest_template_id": 1021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 213303,
+      "group": 21330,
+      "items": [
+        60162
+      ],
+      "harvest_template_id": 1017,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 214301,
+      "group": 21430,
+      "items": [
+        60153
+      ],
+      "harvest_template_id": 1016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 214302,
+      "group": 21430,
+      "items": [
+        60155
+      ],
+      "harvest_template_id": 1021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 214303,
+      "group": 21430,
+      "items": [
+        60162
+      ],
+      "harvest_template_id": 1017,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 215101,
+      "group": 21510,
+      "items": [
+        60147
+      ],
+      "harvest_template_id": 1001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 215102,
+      "group": 21510,
+      "items": [
+        60151
+      ],
+      "harvest_template_id": 1011,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 215103,
+      "group": 21510,
+      "items": [
+        60157
+      ],
+      "harvest_template_id": 1002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 215201,
+      "group": 21520,
+      "items": [
+        60090
+      ],
+      "harvest_template_id": 2001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 215202,
+      "group": 21520,
+      "items": [
+        60091
+      ],
+      "harvest_template_id": 2021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 215203,
+      "group": 21520,
+      "items": [
+        60092
+      ],
+      "harvest_template_id": 2002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 216101,
+      "group": 21610,
+      "items": [
+        60112
+      ],
+      "harvest_template_id": 1006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 216102,
+      "group": 21610,
+      "items": [
+        60113
+      ],
+      "harvest_template_id": 1021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 216103,
+      "group": 21610,
+      "items": [
+        60114
+      ],
+      "harvest_template_id": 1006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 216104,
+      "group": 21610,
+      "items": [
+        60115
+      ],
+      "harvest_template_id": 1022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 216105,
+      "group": 21610,
+      "items": [
+        60116
+      ],
+      "harvest_template_id": 1007,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 216201,
+      "group": 21620,
+      "items": [
+        60117
+      ],
+      "harvest_template_id": 1006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 216202,
+      "group": 21620,
+      "items": [
+        60118
+      ],
+      "harvest_template_id": 1006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 216203,
+      "group": 21620,
+      "items": [
+        60119
+      ],
+      "harvest_template_id": 1006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 216204,
+      "group": 21620,
+      "items": [
+        60120
+      ],
+      "harvest_template_id": 1007,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 216205,
+      "group": 21620,
+      "items": [
+        60121
+      ],
+      "harvest_template_id": 1007,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 217101,
+      "group": 21710,
+      "items": [
+        60122
+      ],
+      "harvest_template_id": 2016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 217102,
+      "group": 21710,
+      "items": [
+        60123
+      ],
+      "harvest_template_id": 2016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 217103,
+      "group": 21710,
+      "items": [
+        60124
+      ],
+      "harvest_template_id": 2016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 217104,
+      "group": 21710,
+      "items": [
+        60125
+      ],
+      "harvest_template_id": 2017,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 217105,
+      "group": 21710,
+      "items": [
+        60126
+      ],
+      "harvest_template_id": 2017,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 217201,
+      "group": 21720,
+      "items": [
+        60127
+      ],
+      "harvest_template_id": 1016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 217202,
+      "group": 21720,
+      "items": [
+        60128
+      ],
+      "harvest_template_id": 1021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 217203,
+      "group": 21720,
+      "items": [
+        60129
+      ],
+      "harvest_template_id": 1016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 217204,
+      "group": 21720,
+      "items": [
+        60130
+      ],
+      "harvest_template_id": 1022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 217205,
+      "group": 21720,
+      "items": [
+        60131
+      ],
+      "harvest_template_id": 1017,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 218101,
+      "group": 21810,
+      "items": [
+        60093
+      ],
+      "harvest_template_id": 2011,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 218102,
+      "group": 21810,
+      "items": [
+        60094
+      ],
+      "harvest_template_id": 2021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 218103,
+      "group": 21810,
+      "items": [
+        60095
+      ],
+      "harvest_template_id": 2022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 218201,
+      "group": 21820,
+      "items": [
+        60096
+      ],
+      "harvest_template_id": 2011,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 218202,
+      "group": 21820,
+      "items": [
+        60097
+      ],
+      "harvest_template_id": 2001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 218203,
+      "group": 21820,
+      "items": [
+        60098
+      ],
+      "harvest_template_id": 2002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 219101,
+      "group": 21910,
+      "items": [
+        60099
+      ],
+      "harvest_template_id": 2011,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 219102,
+      "group": 21910,
+      "items": [
+        60101
+      ],
+      "harvest_template_id": 2006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 219103,
+      "group": 21910,
+      "items": [
+        60102
+      ],
+      "harvest_template_id": 2012,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 219201,
+      "name": "石髓菇",
+      "group": 21920,
+      "items": [
+        60103
+      ],
+      "harvest_template_id": 2021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 219202,
+      "name": "龙血枝",
+      "group": 21920,
+      "items": [
+        60104
+      ],
+      "harvest_template_id": 2011,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 219203,
+      "name": "地龙麟",
+      "group": 21920,
+      "items": [
+        60105
+      ],
+      "harvest_template_id": 2022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 220101,
+      "group": 22010,
+      "items": [
+        60132
+      ],
+      "harvest_template_id": 2001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 220102,
+      "group": 22010,
+      "items": [
+        60133
+      ],
+      "harvest_template_id": 2021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 220103,
+      "group": 22010,
+      "items": [
+        60134
+      ],
+      "harvest_template_id": 2001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 220104,
+      "group": 22010,
+      "items": [
+        60135
+      ],
+      "harvest_template_id": 2022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 220105,
+      "group": 22010,
+      "items": [
+        60136
+      ],
+      "harvest_template_id": 2002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 220201,
+      "group": 22020,
+      "items": [
+        60137
+      ],
+      "harvest_template_id": 1016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 220202,
+      "group": 22020,
+      "items": [
+        60138
+      ],
+      "harvest_template_id": 1021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 220203,
+      "group": 22020,
+      "items": [
+        60139
+      ],
+      "harvest_template_id": 1016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 220204,
+      "group": 22020,
+      "items": [
+        60140
+      ],
+      "harvest_template_id": 1022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 220205,
+      "group": 22020,
+      "items": [
+        60141
+      ],
+      "harvest_template_id": 1017,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 710101,
+      "group": 71010,
+      "items": [
+        60106
+      ],
+      "harvest_template_id": 2016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 710102,
+      "group": 71010,
+      "items": [
+        60107
+      ],
+      "harvest_template_id": 2021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 710103,
+      "group": 71010,
+      "items": [
+        60108
+      ],
+      "harvest_template_id": 2017,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 710201,
+      "group": 71020,
+      "items": [
+        60109
+      ],
+      "harvest_template_id": 2016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 710202,
+      "group": 71020,
+      "items": [
+        60110
+      ],
+      "harvest_template_id": 2011,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 710203,
+      "group": 71020,
+      "items": [
+        60111
+      ],
+      "harvest_template_id": 2017,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 222201,
+      "group": 22220,
+      "items": [
+        70012
+      ],
+      "harvest_template_id": 1012,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 222202,
+      "group": 22220,
+      "items": [
+        60157
+      ],
+      "harvest_template_id": 1002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 222203,
+      "group": 22220,
+      "items": [
+        60164
+      ],
+      "harvest_template_id": 1022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 222204,
+      "group": 22220,
+      "items": [
+        70013
+      ],
+      "harvest_template_id": 1013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 222205,
+      "group": 22220,
+      "items": [
+        70023
+      ],
+      "harvest_template_id": 1023,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 223201,
+      "group": 22320,
+      "items": [
+        60102
+      ],
+      "harvest_template_id": 2012,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 223202,
+      "group": 22320,
+      "items": [
+        60092
+      ],
+      "harvest_template_id": 2002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 223203,
+      "group": 22320,
+      "items": [
+        60095
+      ],
+      "harvest_template_id": 2022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 223204,
+      "group": 22320,
+      "items": [
+        71013
+      ],
+      "harvest_template_id": 2013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 223205,
+      "group": 22320,
+      "items": [
+        71003
+      ],
+      "harvest_template_id": 2003,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 224201,
+      "group": 22420,
+      "items": [
+        60092
+      ],
+      "harvest_template_id": 2002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 224202,
+      "group": 22420,
+      "items": [
+        60102
+      ],
+      "harvest_template_id": 2012,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 224203,
+      "group": 22420,
+      "items": [
+        60095
+      ],
+      "harvest_template_id": 2022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 224204,
+      "group": 22420,
+      "items": [
+        71003
+      ],
+      "harvest_template_id": 2003,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 224205,
+      "group": 22420,
+      "items": [
+        71013
+      ],
+      "harvest_template_id": 2013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 228201,
+      "group": 22820,
+      "items": [
+        60164
+      ],
+      "harvest_template_id": 1022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 228202,
+      "group": 22820,
+      "items": [
+        60159
+      ],
+      "harvest_template_id": 1007,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 228203,
+      "group": 22820,
+      "items": [
+        60157
+      ],
+      "harvest_template_id": 1002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 228204,
+      "group": 22820,
+      "items": [
+        70023
+      ],
+      "harvest_template_id": 1023,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 228205,
+      "group": 22820,
+      "items": [
+        70018
+      ],
+      "harvest_template_id": 1018,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 229201,
+      "group": 22920,
+      "items": [
+        60092
+      ],
+      "harvest_template_id": 2002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 229202,
+      "group": 22920,
+      "items": [
+        60102
+      ],
+      "harvest_template_id": 2012,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 229203,
+      "group": 22920,
+      "items": [
+        60095
+      ],
+      "harvest_template_id": 2022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 229204,
+      "group": 22920,
+      "items": [
+        71003
+      ],
+      "harvest_template_id": 2003,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 229205,
+      "group": 22920,
+      "items": [
+        71013
+      ],
+      "harvest_template_id": 2013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 230201,
+      "group": 23020,
+      "items": [
+        60157
+      ],
+      "harvest_template_id": 1002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 230202,
+      "group": 23020,
+      "items": [
+        60159
+      ],
+      "harvest_template_id": 1007,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 230203,
+      "group": 23020,
+      "items": [
+        60162
+      ],
+      "harvest_template_id": 1017,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 230204,
+      "group": 23020,
+      "items": [
+        70003
+      ],
+      "harvest_template_id": 1003,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 230205,
+      "group": 23020,
+      "items": [
+        70008
+      ],
+      "harvest_template_id": 1008,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 233201,
+      "group": 23320,
+      "items": [
+        60159
+      ],
+      "harvest_template_id": 1007,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 233202,
+      "group": 23320,
+      "items": [
+        60164
+      ],
+      "harvest_template_id": 1022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 233203,
+      "group": 23320,
+      "items": [
+        70012
+      ],
+      "harvest_template_id": 1012,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 233204,
+      "group": 23320,
+      "items": [
+        70023
+      ],
+      "harvest_template_id": 1023,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 233205,
+      "group": 23320,
+      "items": [
+        70013
+      ],
+      "harvest_template_id": 1013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 235101,
+      "group": 23510,
+      "items": [
+        60102
+      ],
+      "harvest_template_id": 2012,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 235102,
+      "group": 23510,
+      "items": [
+        60092
+      ],
+      "harvest_template_id": 2002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 235103,
+      "group": 23510,
+      "items": [
+        60095
+      ],
+      "harvest_template_id": 2022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 235104,
+      "group": 23510,
+      "items": [
+        71013
+      ],
+      "harvest_template_id": 2013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 235105,
+      "group": 23510,
+      "items": [
+        71003
+      ],
+      "harvest_template_id": 2003,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 235201,
+      "group": 23520,
+      "items": [
+        70012
+      ],
+      "harvest_template_id": 1012,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 235202,
+      "group": 23520,
+      "items": [
+        60157
+      ],
+      "harvest_template_id": 1002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 235203,
+      "group": 23520,
+      "items": [
+        60164
+      ],
+      "harvest_template_id": 1022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 235204,
+      "group": 23520,
+      "items": [
+        70013
+      ],
+      "harvest_template_id": 1013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 235205,
+      "group": 23520,
+      "items": [
+        70023
+      ],
+      "harvest_template_id": 1023,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 239101,
+      "group": 23910,
+      "items": [
+        60164
+      ],
+      "harvest_template_id": 1022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 239102,
+      "group": 23910,
+      "items": [
+        60159
+      ],
+      "harvest_template_id": 1007,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 239103,
+      "group": 23910,
+      "items": [
+        60157
+      ],
+      "harvest_template_id": 1002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 239104,
+      "group": 23910,
+      "items": [
+        70023
+      ],
+      "harvest_template_id": 1023,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 239105,
+      "group": 23910,
+      "items": [
+        70018
+      ],
+      "harvest_template_id": 1018,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 239201,
+      "group": 23920,
+      "items": [
+        60095
+      ],
+      "harvest_template_id": 2022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 239202,
+      "group": 23920,
+      "items": [
+        71007
+      ],
+      "harvest_template_id": 2007,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 239203,
+      "group": 23920,
+      "items": [
+        60108
+      ],
+      "harvest_template_id": 2017,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 239204,
+      "group": 23920,
+      "items": [
+        71023
+      ],
+      "harvest_template_id": 2023,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 239205,
+      "group": 23920,
+      "items": [
+        71008
+      ],
+      "harvest_template_id": 2008,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 240101,
+      "group": 24010,
+      "items": [
+        60102
+      ],
+      "harvest_template_id": 2012,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 240102,
+      "group": 24010,
+      "items": [
+        60108
+      ],
+      "harvest_template_id": 2017,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 240103,
+      "group": 24010,
+      "items": [
+        60092
+      ],
+      "harvest_template_id": 2002,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 240104,
+      "group": 24010,
+      "items": [
+        71013
+      ],
+      "harvest_template_id": 2013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 240105,
+      "group": 24010,
+      "items": [
+        71018
+      ],
+      "harvest_template_id": 2018,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 240201,
+      "group": 24020,
+      "items": [
+        60102
+      ],
+      "harvest_template_id": 2012,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 240202,
+      "group": 24020,
+      "items": [
+        71007
+      ],
+      "harvest_template_id": 2007,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 240203,
+      "group": 24020,
+      "items": [
+        60095
+      ],
+      "harvest_template_id": 2022,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 240204,
+      "group": 24020,
+      "items": [
+        71008
+      ],
+      "harvest_template_id": 2008,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 240205,
+      "group": 24020,
+      "items": [
+        71003
+      ],
+      "harvest_template_id": 2003,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 242101,
+      "group": 24210,
+      "items": [
+        70003
+      ],
+      "harvest_template_id": 1003,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 242102,
+      "group": 24210,
+      "items": [
+        70008
+      ],
+      "harvest_template_id": 1008,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 242103,
+      "group": 24210,
+      "items": [
+        70024
+      ],
+      "harvest_template_id": 1024,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 242104,
+      "group": 24210,
+      "items": [
+        70014
+      ],
+      "harvest_template_id": 1014,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 242105,
+      "group": 24210,
+      "items": [
+        70009
+      ],
+      "harvest_template_id": 1009,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 242201,
+      "group": 24220,
+      "items": [
+        71023
+      ],
+      "harvest_template_id": 2023,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 242202,
+      "group": 24220,
+      "items": [
+        71013
+      ],
+      "harvest_template_id": 2013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 242203,
+      "group": 24220,
+      "items": [
+        71024
+      ],
+      "harvest_template_id": 2024,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 242204,
+      "group": 24220,
+      "items": [
+        71014
+      ],
+      "harvest_template_id": 2014,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 242205,
+      "group": 24220,
+      "items": [
+        71009
+      ],
+      "harvest_template_id": 2009,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 244101,
+      "group": 24410,
+      "items": [
+        70023
+      ],
+      "harvest_template_id": 1023,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 244102,
+      "group": 24410,
+      "items": [
+        70013
+      ],
+      "harvest_template_id": 1013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 244103,
+      "group": 24410,
+      "items": [
+        70004
+      ],
+      "harvest_template_id": 1004,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 244104,
+      "group": 24410,
+      "items": [
+        70024
+      ],
+      "harvest_template_id": 1024,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 244105,
+      "group": 24410,
+      "items": [
+        70019
+      ],
+      "harvest_template_id": 1019,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 244201,
+      "group": 24420,
+      "items": [
+        71003
+      ],
+      "harvest_template_id": 2003,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 244202,
+      "group": 24420,
+      "items": [
+        71008
+      ],
+      "harvest_template_id": 2008,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 244203,
+      "group": 24420,
+      "items": [
+        71004
+      ],
+      "harvest_template_id": 2004,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 244204,
+      "group": 24420,
+      "items": [
+        71014
+      ],
+      "harvest_template_id": 2014,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 244205,
+      "group": 24420,
+      "items": [
+        71024
+      ],
+      "harvest_template_id": 2024,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 247101,
+      "group": 24710,
+      "items": [
+        70018
+      ],
+      "harvest_template_id": 1018,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 247102,
+      "group": 24710,
+      "items": [
+        70023
+      ],
+      "harvest_template_id": 1023,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 247103,
+      "group": 24710,
+      "items": [
+        70019
+      ],
+      "harvest_template_id": 1019,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 247104,
+      "group": 24710,
+      "items": [
+        70024
+      ],
+      "harvest_template_id": 1024,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 247105,
+      "group": 24710,
+      "items": [
+        70014
+      ],
+      "harvest_template_id": 1014,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 247201,
+      "group": 24720,
+      "items": [
+        71018
+      ],
+      "harvest_template_id": 2018,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 247202,
+      "group": 24720,
+      "items": [
+        71023
+      ],
+      "harvest_template_id": 2023,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 247203,
+      "group": 24720,
+      "items": [
+        71019
+      ],
+      "harvest_template_id": 2019,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 247204,
+      "group": 24720,
+      "items": [
+        71014
+      ],
+      "harvest_template_id": 2014,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 247205,
+      "group": 24720,
+      "items": [
+        71004
+      ],
+      "harvest_template_id": 2004,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 248101,
+      "group": 24810,
+      "items": [
+        70018
+      ],
+      "harvest_template_id": 1018,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 248102,
+      "group": 24810,
+      "items": [
+        70013
+      ],
+      "harvest_template_id": 1013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 248103,
+      "group": 24810,
+      "items": [
+        70004
+      ],
+      "harvest_template_id": 1004,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 248104,
+      "group": 24810,
+      "items": [
+        70009
+      ],
+      "harvest_template_id": 1009,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 248105,
+      "group": 24810,
+      "items": [
+        70019
+      ],
+      "harvest_template_id": 1019,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 248201,
+      "group": 24820,
+      "items": [
+        71003
+      ],
+      "harvest_template_id": 2003,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 248202,
+      "group": 24820,
+      "items": [
+        71013
+      ],
+      "harvest_template_id": 2013,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 248203,
+      "group": 24820,
+      "items": [
+        71004
+      ],
+      "harvest_template_id": 2004,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 248204,
+      "group": 24820,
+      "items": [
+        71009
+      ],
+      "harvest_template_id": 2009,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 248205,
+      "group": 24820,
+      "items": [
+        71019
+      ],
+      "harvest_template_id": 2019,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 249101,
+      "group": 24910,
+      "items": [
+        70008
+      ],
+      "harvest_template_id": 1008,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 249102,
+      "group": 24910,
+      "items": [
+        70003
+      ],
+      "harvest_template_id": 1003,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 249103,
+      "group": 24910,
+      "items": [
+        70009
+      ],
+      "harvest_template_id": 1009,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 249104,
+      "group": 24910,
+      "items": [
+        70004
+      ],
+      "harvest_template_id": 1004,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 249105,
+      "group": 24910,
+      "items": [
+        70014
+      ],
+      "harvest_template_id": 1014,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 250101,
+      "group": 25010,
+      "items": [
+        71018
+      ],
+      "harvest_template_id": 2018,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 250102,
+      "group": 25010,
+      "items": [
+        71008
+      ],
+      "harvest_template_id": 2008,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 250103,
+      "group": 25010,
+      "items": [
+        71019
+      ],
+      "harvest_template_id": 2019,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 250104,
+      "group": 25010,
+      "items": [
+        71009
+      ],
+      "harvest_template_id": 2009,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 250105,
+      "group": 25010,
+      "items": [
+        71024
+      ],
+      "harvest_template_id": 2024,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 208301,
+      "group": 20830,
+      "items": [
+        60039
+      ],
+      "harvest_template_id": 2005,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 208302,
+      "group": 20830,
+      "items": [
+        60040
+      ],
+      "harvest_template_id": 2015,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 208303,
+      "group": 20830,
+      "items": [
+        60041
+      ],
+      "harvest_template_id": 2000,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 208304,
+      "group": 20830,
+      "items": [
+        60042
+      ],
+      "harvest_template_id": 2006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 208305,
+      "group": 20830,
+      "items": [
+        60043
+      ],
+      "harvest_template_id": 2016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 206301,
+      "group": 20630,
+      "items": [
+        60146
+      ],
+      "harvest_template_id": 1000,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 206302,
+      "group": 20630,
+      "items": [
+        60150
+      ],
+      "harvest_template_id": 1010,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 206303,
+      "group": 20630,
+      "items": [
+        60154
+      ],
+      "harvest_template_id": 1020,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 206305,
+      "group": 20630,
+      "items": [
+        60147
+      ],
+      "harvest_template_id": 1001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 207301,
+      "group": 20730,
+      "items": [
+        60148
+      ],
+      "harvest_template_id": 1005,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 207302,
+      "group": 20730,
+      "items": [
+        60150
+      ],
+      "harvest_template_id": 1010,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 207303,
+      "group": 20730,
+      "items": [
+        60152
+      ],
+      "harvest_template_id": 1015,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 207304,
+      "group": 20730,
+      "items": [
+        60149
+      ],
+      "harvest_template_id": 1006,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 209301,
+      "group": 20930,
+      "items": [
+        60146
+      ],
+      "harvest_template_id": 1000,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 209302,
+      "group": 20930,
+      "items": [
+        60148
+      ],
+      "harvest_template_id": 1005,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 209303,
+      "group": 20930,
+      "items": [
+        60150
+      ],
+      "harvest_template_id": 1010,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 209304,
+      "group": 20930,
+      "items": [
+        60147
+      ],
+      "harvest_template_id": 1001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 192901,
+      "group": 19290,
+      "items": [
+        60152
+      ],
+      "harvest_template_id": 1015,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 192902,
+      "group": 19290,
+      "items": [
+        60154
+      ],
+      "harvest_template_id": 1020,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 192903,
+      "group": 19290,
+      "items": [
+        60155
+      ],
+      "harvest_template_id": 1021,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 192904,
+      "group": 19290,
+      "items": [
+        60153
+      ],
+      "harvest_template_id": 1016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 192905,
+      "group": 19290,
+      "items": [
+        60151
+      ],
+      "harvest_template_id": 1011,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 193901,
+      "group": 19390,
+      "items": [
+        60041
+      ],
+      "harvest_template_id": 2000,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 193902,
+      "group": 19390,
+      "items": [
+        60026
+      ],
+      "harvest_template_id": 2015,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 193903,
+      "group": 19390,
+      "items": [
+        60027
+      ],
+      "harvest_template_id": 2005,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 193904,
+      "group": 19390,
+      "items": [
+        60029
+      ],
+      "harvest_template_id": 2020,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 193905,
+      "group": 19390,
+      "items": [
+        60060
+      ],
+      "harvest_template_id": 2001,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 193906,
+      "group": 19390,
+      "items": [
+        60043
+      ],
+      "harvest_template_id": 2016,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 731601,
+      "name": "打开宝箱",
+      "group": 73160,
+      "items": [
+        7316001
+      ],
+      "harvest_template_id": 2000,
+      "refresh_units": 360,
+      "staminaCost": 0
+    },
+    {
+      "id": 206304,
+      "group": 20630,
+      "items": [
+        60151
+      ],
+      "harvest_template_id": 1011,
+      "refresh_units": 360,
+      "staminaCost": 0
+    }
+  ]
+}
