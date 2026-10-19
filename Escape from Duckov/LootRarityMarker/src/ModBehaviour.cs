@@ -95,6 +95,7 @@ namespace LootRarityMarker
             /// <summary>上次着色时容器内所有物品的价值之和。发光强度靠它，所以它变了也要重刷。</summary>
             public int AppliedBestValue = -1;
             public bool AppliedSuppressed;
+            public bool AppliedMarked;
 
             /// <summary>这个容器没有交互点，已经提醒过了（避免每次扫描都刷日志）。</summary>
             public bool NoMarkerLogged;
@@ -120,11 +121,15 @@ namespace LootRarityMarker
 
             /// <summary>已被清理（容器销毁）。队列里遇到它直接跳过，不再复活。</summary>
             public bool Dead;
+
+            /// <summary>最近一次完整扫描命中的序号；用于释放已经离开扫描范围的容器。</summary>
+            public int LastSeenScan;
         }
 
         // ===== 设置 =====
         private static ModSettings _settings = new ModSettings();
         private static string[] _colorProperties = MarkerTint.DefaultColorProperties;
+        private static readonly Color WishlistMarkerColor = new Color(0f, 0.8980392f, 1f, 1f); // #00E5FF
 
         /// <summary>ModConfig 的 UI 项每个进程只注册一次，避免 mod 被重新启用时出现重复条目。</summary>
         private static bool _modConfigEntriesAdded;
@@ -176,6 +181,7 @@ namespace LootRarityMarker
         private bool _draining;
 
         private int _interactableMask = MaskNotResolved;
+        private int _scanSerial;
         private int _appliedSettingsVersion;
         private float _nextScanTime;
         private float _nextFullRescan;
@@ -444,6 +450,9 @@ namespace LootRarityMarker
                                  "，可能有容器没被扫到。把 scanRadius 调小一点即可。");
             }
 
+            int scanSerial = ++_scanSerial;
+            bool scanComplete = count < _hits.Length;
+
             // 兜底：每 10 秒无视脏标记，把所有容器的判定重算一遍。
             // 这样即使某个内容变化事件被漏掉，颜色最多旧 10 秒，不会永远错下去。
             // 注意它被外层挡着：scanOnlyWhenMoving 打开时，站着不动连兜底扫描也不会发生。
@@ -472,6 +481,7 @@ namespace LootRarityMarker
                 }
 
                 Entry entry = GetOrCreateEntry(box);
+                entry.LastSeenScan = scanSerial;
                 if (fullRescan)
                 {
                     entry.Dirty = true; // 兜底全量重算
@@ -483,6 +493,14 @@ namespace LootRarityMarker
                 }
             }
 
+            // 只有缓冲区没有溢出时，才能确定「本轮没命中」就是已经离开范围。
+            // 缓冲区满时可能只是有容器没被枚举到，保留旧条目避免误清理。
+            if (scanComplete)
+            {
+                ReleaseOutOfRangeEntries(scanSerial);
+                // 释放旧描边后立即更新名额，避免新发现的容器要等下一轮扫描才能挂描边。
+                RecountOutlines();
+            }
             PruneDeadEntries();
         }
 
@@ -716,6 +734,7 @@ namespace LootRarityMarker
                 entry.AppliedLevel = -1;
                 entry.AppliedBestValue = -1;
                 entry.AppliedSuppressed = false;
+                entry.AppliedMarked = false;
                 entry.Dirty = true; // 配方是新的，判定必须重算一次
 
                 if (!entry.Tint.HasAnySlot && !_tintWarningLogged)
@@ -812,10 +831,12 @@ namespace LootRarityMarker
             int level;
             int bestValue;
             bool suppressed;
-            ComputeVerdict(inventory, out rank, out level, out bestValue, out suppressed);
+            bool marked;
+            ComputeVerdict(inventory, out rank, out level, out bestValue, out suppressed, out marked);
 
             if (rank == entry.AppliedRank && level == entry.AppliedLevel &&
-                bestValue == entry.AppliedBestValue && suppressed == entry.AppliedSuppressed)
+                bestValue == entry.AppliedBestValue && suppressed == entry.AppliedSuppressed &&
+                marked == entry.AppliedMarked)
             {
                 return;
             }
@@ -823,6 +844,7 @@ namespace LootRarityMarker
             entry.AppliedLevel = level;
             entry.AppliedBestValue = bestValue;
             entry.AppliedSuppressed = suppressed;
+            entry.AppliedMarked = marked;
 
             if (_settings.diagnostics)
             {
@@ -840,7 +862,7 @@ namespace LootRarityMarker
                 return;
             }
 
-            Color color = QualityPalette.Get(level);
+            Color color = marked ? WishlistMarkerColor : QualityPalette.Get(level);
             float intensity = GlowIntensityFor(bestValue);
             entry.Tint.Apply(color, intensity);
 
@@ -955,13 +977,15 @@ namespace LootRarityMarker
         /// </summary>
         /// <param name="bestValue">容器内单件最高价值（不乘堆叠数），只用来算发光强度。</param>
         private static void ComputeVerdict(Inventory inventory, out int rank, out int level,
-                                          out int bestValue, out bool suppressed)
+                                          out int bestValue, out bool suppressed, out bool marked)
         {
             List<Item> content = inventory.Content;
 
             int bestMetric = int.MinValue;
             int bestLevel = -1;
             int maxItemValue = 0;
+            bool containsMarkedItem = false;
+            ItemWishlist wishlist = ItemWishlist.Instance;
 
             if (content != null)
             {
@@ -980,6 +1004,10 @@ namespace LootRarityMarker
                     {
                         maxItemValue = value;
                     }
+                    if (!containsMarkedItem && wishlist != null && wishlist.IsManuallyWishlisted(item.TypeID))
+                    {
+                        containsMarkedItem = true;
+                    }
                     int metric = byValue ? value : lv;
                     if (metric > bestMetric || (metric == bestMetric && lv > bestLevel))
                     {
@@ -990,6 +1018,7 @@ namespace LootRarityMarker
             }
 
             bestValue = maxItemValue;
+            marked = containsMarkedItem;
 
             if (bestLevel < 0)
             {
@@ -1033,6 +1062,53 @@ namespace LootRarityMarker
                     dying.Dead = true;
                     dying.Queued = false;
                 }
+                _entries.Remove(key);
+            }
+        }
+
+        /// <summary>
+        /// 清理本轮完整扫描没有命中的容器。
+        /// Entry 不跨扫描范围保留：这样 scanRadius 同时代表发现范围和生效范围，
+        /// 也能及时释放描边名额，避免走过 16 个容器后后续容器永远没有描边。
+        /// </summary>
+        private void ReleaseOutOfRangeEntries(int scanSerial)
+        {
+            if (_entries.Count == 0)
+            {
+                return;
+            }
+
+            _deadKeys.Clear();
+            foreach (KeyValuePair<int, Entry> pair in _entries)
+            {
+                if (pair.Value.LastSeenScan != scanSerial)
+                {
+                    _deadKeys.Add(pair.Key);
+                }
+            }
+
+            for (int i = 0; i < _deadKeys.Count; i++)
+            {
+                int key = _deadKeys[i];
+                Entry leaving;
+                if (!_entries.TryGetValue(key, out leaving))
+                {
+                    continue;
+                }
+
+                if (leaving.Tint != null && leaving.Tint.IsAlive)
+                {
+                    leaving.Tint.Clear();
+                }
+                if (leaving.Outlinable != null)
+                {
+                    OutlineTint.SetEnabled(leaving.Outlinable, false);
+                    UnityEngine.Object.Destroy(leaving.Outlinable);
+                    leaving.Outlinable = null;
+                }
+                UnbindContentHandler(leaving);
+                leaving.Dead = true;
+                leaving.Queued = false;
                 _entries.Remove(key);
             }
         }
@@ -1087,6 +1163,7 @@ namespace LootRarityMarker
                 entry.AppliedLevel = -1;
                 entry.AppliedBestValue = -1;
                 entry.AppliedSuppressed = false;
+                entry.AppliedMarked = false;
                 entry.Dirty = true;
             }
             _scanRequested = true;
@@ -1138,6 +1215,7 @@ namespace LootRarityMarker
                 entry.AppliedLevel = -1;
                 entry.AppliedBestValue = -1;
                 entry.AppliedSuppressed = false;
+                entry.AppliedMarked = false;
                 entry.Dirty = true;
             }
             _tintWarningLogged = false;
@@ -1160,6 +1238,7 @@ namespace LootRarityMarker
             LevelManager.OnAfterLevelInitialized += RequestScan;
             InteractableLootbox.OnStartLoot += OnLootEvent;
             InteractableLootbox.OnStopLoot += OnLootEvent;
+            ItemWishlist.OnWishlistChanged += OnWishlistChanged;
         }
 
         private void Unsubscribe()
@@ -1174,6 +1253,7 @@ namespace LootRarityMarker
             LevelManager.OnAfterLevelInitialized -= RequestScan;
             InteractableLootbox.OnStartLoot -= OnLootEvent;
             InteractableLootbox.OnStopLoot -= OnLootEvent;
+            ItemWishlist.OnWishlistChanged -= OnWishlistChanged;
         }
 
         /// <summary>
@@ -1216,6 +1296,21 @@ namespace LootRarityMarker
                     entry.Dirty = true;
                     Enqueue(entry); // 精确只重算这一个容器，不用等下一次扫描
                 }
+            }
+            _scanRequested = true;
+        }
+
+        /// <summary>愿望单变更后，标脏所有已跟踪容器；事件很低频，避免为此维护每箱物品索引。</summary>
+        private void OnWishlistChanged(int itemTypeId)
+        {
+            foreach (Entry entry in _entries.Values)
+            {
+                if (entry.Dead)
+                {
+                    continue;
+                }
+                entry.Dirty = true;
+                Enqueue(entry);
             }
             _scanRequested = true;
         }
