@@ -3,7 +3,7 @@
   <ID>chiqingsan.AquaSense</ID>
   <Name>更好的水商操作体验</Name>
   <Author>chiqingsan</Author>
-  <ModVersion>1.3</ModVersion>
+  <ModVersion>1.4</ModVersion>
   <GameVersions><Version>0.46D</Version></GameVersions>
   <Description>增强水系统信息：悬停水容器时显示水质纯度、液体成分、滤芯名称和剩余耐久；倒水或转移液体后更新水质标签；滤芯耗尽时从玩家库存及嵌套容器寻找可用替换品并自动交换。水质扫描、标签更新、滤芯耐久显示和自动换芯均可在模组设置中单独控制。</Description>
   <Assemblies><Assembly>AquaSense.dll</Assembly></Assemblies>

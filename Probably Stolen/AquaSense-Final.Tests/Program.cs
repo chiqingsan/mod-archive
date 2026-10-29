@@ -35,6 +35,44 @@ internal static class Program
     static int Cached() { var f = typeof(Hooks).GetField("FilterCache", BindingFlags.Static | BindingFlags.NonPublic)!; return ((System.Collections.IEnumerable)f.GetValue(null)!).Cast<System.Collections.ICollection>().Sum(x => x.Count); }
     static void Main()
     {
+        Test("filter durability without scanner, empty and filled containers", () => {
+            var (jug, filter) = Jug(37);
+            filter.MaxDurability = 400;
+            Liquid.Liquids = new() { new Liquid() };
+            try {
+                foreach (var filled in new[] { false, true }) {
+                    if (filled) jug.state.Set("water", 1000000);
+                    var builder = new RichTextBuilder();
+                    Hooks.AfterWaterContainerTooltip(builder, jug);
+                    Hooks.AfterWaterFeatureTooltip(builder, jug);
+                    Check(builder.Slices.Count == 1 && builder.Slices[0].text.Contains("37/400"), "missing or duplicate durability");
+                    Check(!builder.Slices.Any(x => x.text.Contains("姘磋川璇︽儏")), "composition exposed without scanner");
+                }
+                Core.ShowFilterDurability!.Value = false;
+                var disabled = new RichTextBuilder(); Hooks.AfterWaterContainerTooltip(disabled, jug);
+                Check(disabled.Slices.Count == 0, "durability setting ignored");
+            } finally { Liquid.Liquids.Clear(); }
+        });
+        Test("patches wait for gameplay and install once per enable", () => {
+            HarmonyLib.Harmony.Patches = HarmonyLib.Harmony.Unpatches = 0;
+            var core = new Core(); core.OnEnable(); core.OnEnable();
+            Check(HarmonyLib.Harmony.Patches == 0, "patched during enable");
+            var store = PlayerStore.Instance; PlayerStore.Instance = null;
+            core.OnUpdate(); Check(HarmonyLib.Harmony.Patches == 0, "patched before store ready");
+            PlayerStore.Instance = store; core.OnUpdate(); core.OnUpdate();
+            Check(HarmonyLib.Harmony.Patches == 9, "duplicate or missing patches");
+            core.OnDisable(); core.OnEnable(); core.OnUpdate();
+            Check(HarmonyLib.Harmony.Patches == 18, "reenable failed"); core.OnDisable();
+        });
+        Test("patch failure rolls back and does not retry every frame", () => {
+            HarmonyLib.Harmony.Patches = HarmonyLib.Harmony.Unpatches = 0;
+            HarmonyLib.Harmony.Fail = true;
+            try {
+                var core = new Core(); core.OnEnable(); core.OnUpdate(); core.OnUpdate();
+                Check(HarmonyLib.Harmony.Patches == 1 && HarmonyLib.Harmony.Unpatches == 1, "partial patches or repeated failure");
+                core.OnDisable();
+            } finally { HarmonyLib.Harmony.Fail = false; }
+        });
         Test("exhausted on load, spare in nested box", () => {
             var (jug, _) = Jug(0); var (_, inner) = Box(); var spare = Item("water_filter", inner);
             Frames(); Check(jug.FilterSlot!.childItem == spare && GraphUtils.Swaps == 1, "nested spare not swapped");

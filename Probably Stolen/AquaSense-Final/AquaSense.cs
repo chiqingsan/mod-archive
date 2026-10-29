@@ -27,12 +27,19 @@ public sealed class Core : IMod
 
     private GameObject? _runner;
     private HarmonyLib.Harmony? _harmony;
+    private bool _patchAttempted;
 
     public void OnEnable()
     {
+        if (_runner != null) return;
+        _patchAttempted = false;
         _runner = new GameObject("AquaSense");
         UnityEngine.Object.DontDestroyOnLoad(_runner);
         _runner.AddComponent<AquaSenseRunner>().Mod = this;
+    }
+
+    private void InstallPatches()
+    {
         try
         {
             var harmony = _harmony = new HarmonyLib.Harmony("chiqingsan.water-scan-tooltip");
@@ -57,18 +64,31 @@ public sealed class Core : IMod
         }
         catch (Exception ex)
         {
-            Log?.Warning($"Patch initialization failed: {ex.Message}");
+            _harmony?.UnpatchAll("chiqingsan.water-scan-tooltip");
+            _harmony = null;
+            Log?.Warning($"Patch initialization failed; AquaSense remains inactive: {ex}");
         }
     }
 
     internal void OnUpdate()
     {
-        Hooks.UpdateMaintenance(AutoReplaceFilters is { Value: true });
+        // Wait until a playable store exists. OnEnable runs inside ModLoader.Awake,
+        // before assets/localization are ready; patching can run target static constructors.
+        if (!_patchAttempted)
+        {
+            if (!PlayerStore.IsInstanceExist() || PlayerStore.Instance == null || EmporiumEntry.Instance == null)
+                return;
+            _patchAttempted = true;
+            InstallPatches();
+        }
+        if (_harmony != null)
+            Hooks.UpdateMaintenance(AutoReplaceFilters is { Value: true });
     }
 
     public void OnDisable()
     {
         _harmony?.UnpatchAll("chiqingsan.water-scan-tooltip");
+        _harmony = null;
         if (_runner != null) UnityEngine.Object.Destroy(_runner);
         _runner = null;
         Hooks.ResetMaintenance();
@@ -89,21 +109,11 @@ public sealed class Core : IMod
         Type[] argumentTypes,
         string postfixName)
     {
-        try
-        {
-            var original = AccessTools.Method(type, methodName, argumentTypes);
-            var postfix = AccessTools.Method(typeof(Hooks), postfixName);
-            if (original == null || postfix == null)
-            {
-                Log?.Warning($"Missing patch method: {type.Name}.{methodName} / {postfixName}");
-                return;
-            }
-            harmony.Patch(original, postfix: new HarmonyMethod(postfix));
-        }
-        catch (Exception ex)
-        {
-            Log?.Warning($"Could not patch {type.Name}.{methodName}: {ex.Message}");
-        }
+        var original = AccessTools.Method(type, methodName, argumentTypes)
+            ?? throw new MissingMethodException(type.FullName, methodName);
+        var postfix = AccessTools.Method(typeof(Hooks), postfixName)
+            ?? throw new MissingMethodException(typeof(Hooks).FullName, postfixName);
+        harmony.Patch(original, postfix: new HarmonyMethod(postfix));
     }
 
 }
@@ -222,7 +232,7 @@ internal static class Hooks
 
         try
         {
-            if (!IsWaterContainer(item) || !HasWaterScanner())
+            if (!IsWaterContainer(item))
                 return;
 
             var frame = Time.frameCount;
@@ -243,7 +253,7 @@ internal static class Hooks
 
             // The water composition section needs actual liquid to describe; the
             // filter durability line does not, so an empty jug still shows it.
-            if (IsFilledWaterContainer(item))
+            if (HasWaterScanner() && IsFilledWaterContainer(item))
             {
                 var purity = WaterHelper.GetWaterPurity(item);
                 var locale = LocHelper.GetCurrentLocaleCode();
@@ -264,8 +274,9 @@ internal static class Hooks
             if (slices != null && firstSlice < slices.Count)
                 TooltipSections[key] = (firstSlice, slices[firstSlice]);
         }
-        catch
+        catch (Exception ex)
         {
+            Core.Log?.Warning($"Water tooltip failed for {item.identifier}: {ex}");
         }
     }
 
@@ -360,8 +371,9 @@ internal static class Hooks
             WaterFeatureHelper.UpdateWaterFeature(container, true);
             WaterFeatureHelper.OnWaterLabelUpdated(container);
         }
-        catch
+        catch (Exception ex)
         {
+            Core.Log?.Warning($"Water label update failed for {container.identifier}: {ex}");
         }
     }
 

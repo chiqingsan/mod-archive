@@ -21,7 +21,7 @@ public class MonoBehaviour : Object {} public class GameObject : Object { public
 }
 namespace HarmonyLib
 {
-    public sealed class Harmony { public Harmony(string id) {} public void Patch(object method, HarmonyMethod? postfix = null) {} public void UnpatchAll(string id) {} }
+    public sealed class Harmony { public static int Patches, Unpatches; public static bool Fail; public Harmony(string id) {} public void Patch(object method, HarmonyMethod? postfix = null) { Patches++; if (Fail) throw new InvalidOperationException("patch fault"); } public void UnpatchAll(string id) { Unpatches++; } }
     public sealed class HarmonyMethod { public HarmonyMethod(object method) {} }
     public static class AccessTools { public static object Method(Type type, string name, params Type[] args) => new object(); }
 }
@@ -208,7 +208,8 @@ namespace Il2Cpp
     public sealed class RichTextBuilder : Il2CppObjectBase
     {
         public sealed class TextSlice : Il2CppObjectBase {public string text="";}
-        public List<TextSlice> slices=new();
+        private List<TextSlice> slices=new();
+        public List<TextSlice> Slices => slices;
         public void Clear()=>slices.Clear();
         public void AddLine(string text,bool ignoreEmpty,RenderHandler.ColorPalette color,bool bold,bool italic,bool underline,bool strikethrough,RenderHandler.ColorPalette background,RenderHandler.ColorPalette uc,RenderHandler.ColorPalette sc)=>slices.Add(new(){text=text});
     }
