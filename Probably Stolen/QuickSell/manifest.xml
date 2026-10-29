@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.QuickSell</ID>
+  <Name>QuickSell</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.1.0</ModVersion>
+  <Description>在顾客平板选择交易区，一键将符合需求和预算的物品摆上柜台。</Description>
+  <Assemblies><Assembly>QuickSell.dll</Assembly></Assemblies>
+  <Capabilities></Capabilities>
+</Mod>

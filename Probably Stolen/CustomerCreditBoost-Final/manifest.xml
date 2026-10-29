@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.CustomerCreditBoost</ID>
+  <Name>CustomerCreditBoost</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.0.0</ModVersion>
+  <Description>根据展示柜中与顾客对应物品的基础价值提高顾客预算：每累计 100 基础价值增加 8% 预算。只计算吸引该物品或物品类型的顾客，其他顾客不会获得加成。加成档位和百分比可在模组设置中调整。</Description>
+  <Assemblies><Assembly>CustomerCreditBoost.dll</Assembly></Assemblies>
+  <Capabilities></Capabilities>
+</Mod>

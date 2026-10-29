@@ -3,15 +3,13 @@ using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 
-[assembly: MelonInfo(typeof(AquaSense.Core), "AquaSense", "1.1.0", "chiqingsan")]
+[assembly: MelonInfo(typeof(AquaSense.Core), "AquaSense", "1.1.2", "chiqingsan")]
 [assembly: MelonGame("Questing Goose Studio", "Probably Stolen")]
 
 namespace AquaSense;
 
 public sealed class Core : MelonMod
 {
-    private float _nextFilterCheckTime;
-
     public override void OnInitializeMelon()
     {
         Log = LoggerInstance;
@@ -32,8 +30,9 @@ public sealed class Core : MelonMod
                 true,
                 "倒水后自动更新水质标签");
         }
-        catch
+        catch (Exception ex)
         {
+            Log.Warning($"Preference initialization failed: {ex.Message}");
         }
     }
 
@@ -50,22 +49,25 @@ public sealed class Core : MelonMod
                 new[] { typeof(GameItem), typeof(GameItem) }, nameof(Hooks.AfterLiquidTransfer));
             Patch(harmony, typeof(WaterFeatureHelper), nameof(WaterFeatureHelper.OnLiquidContainerPourInto),
                 new[] { typeof(GameItem), typeof(GameItem), typeof(bool) }, nameof(Hooks.AfterLiquidPour));
+            Patch(harmony, typeof(GameItemElement), "GetTooltipBasic",
+                Type.EmptyTypes, nameof(Hooks.AfterBasicItemTooltip));
+            Patch(harmony, typeof(PlayerStore), nameof(PlayerStore.LoadGame),
+                Type.EmptyTypes, nameof(Hooks.AfterLoadGame));
         }
-        catch
+        catch (Exception ex)
         {
+            Log?.Warning($"Patch initialization failed: {ex.Message}");
         }
     }
 
     public override void OnUpdate()
     {
-        if (AutoReplaceFilters is not { Value: true })
-            return;
+        Hooks.UpdateMaintenance(AutoReplaceFilters is { Value: true });
+    }
 
-        if (Time.unscaledTime < _nextFilterCheckTime)
-            return;
-
-        _nextFilterCheckTime = Time.unscaledTime + 2f;
-        Hooks.TryReplaceDepletedFilters();
+    public override void OnDeinitializeMelon()
+    {
+        Hooks.ResetMaintenance();
     }
 
     internal static MelonPreferences_Entry<bool>? AutoReplaceFilters { get; private set; }
@@ -83,28 +85,39 @@ public sealed class Core : MelonMod
         Type[] argumentTypes,
         string postfixName)
     {
-        var original = AccessTools.Method(type, methodName, argumentTypes);
-        if (original == null)
-            return;
-
-        var postfix = AccessTools.Method(typeof(Hooks), postfixName);
-        if (postfix == null)
-            return;
-
-        harmony.Patch(original, postfix: new HarmonyMethod(postfix));
+        try
+        {
+            var original = AccessTools.Method(type, methodName, argumentTypes);
+            var postfix = AccessTools.Method(typeof(Hooks), postfixName);
+            if (original == null || postfix == null)
+            {
+                Log?.Warning($"Missing patch method: {type.Name}.{methodName} / {postfixName}");
+                return;
+            }
+            harmony.Patch(original, postfix: new HarmonyMethod(postfix));
+        }
+        catch (Exception ex)
+        {
+            Log?.Warning($"Could not patch {type.Name}.{methodName}: {ex.Message}");
+        }
     }
 
 }
 
 internal static class Hooks
 {
+    private const double MaintenanceBudgetMilliseconds = 2d;
     private static float _scannerCacheExpiresAt = -1f;
     private static bool _scannerCache;
+    private static bool _inventoryRefreshRequested;
+    private static float _nextMaintenanceAt;
+    private static IntPtr _storePointer;
+    private static IEnumerator<object?>? _maintenance;
+    private static Func<bool>? _retryFilterRecovery;
     private static int _lastTooltipFrame = -1;
-    private static IntPtr _lastTooltipItem = IntPtr.Zero;
+    private static readonly Dictionary<(IntPtr Builder, IntPtr Item), (int Index, IntPtr Slice)> TooltipSections = new();
     private static int _lastLabelFrame = -1;
     private static IntPtr _lastLabelItem = IntPtr.Zero;
-    private static bool _filterReplacementRunning;
     private static bool _vanillaFilterIdentityLoaded;
     private static string _vanillaFilterIdentifier = string.Empty;
     private static string _vanillaFilterName = string.Empty;
@@ -122,7 +135,12 @@ internal static class Hooks
         "watertower_tank",
         "water_purifier",
         "portable_water_purifier",
-        "dspf_future_purifier"
+        "dspf_future_purifier",
+        // BrewingExpansion 3.6.2 water containers.
+        "be_xuxu_super_water_bottle",
+        "be_xuxu_small_water_bottle",
+        "be_xuxu_slim_water_bottle",
+        "be_clear_brew_water_bucket"
     };
 
     public static void AfterWaterContainerTooltip(RichTextBuilder __0, GameItem __1)
@@ -133,6 +151,16 @@ internal static class Hooks
     public static void AfterWaterFeatureTooltip(RichTextBuilder __0, GameItem __1)
     {
         AppendScanTooltip(__0, __1);
+    }
+
+    public static void AfterBasicItemTooltip(GameItemElement __instance, RichTextBuilder __result)
+    {
+        AppendScanTooltip(__result, __instance);
+    }
+
+    public static void AfterLoadGame()
+    {
+        ResetMaintenance();
     }
 
     public static void AfterLiquidTransfer(GameItem __0, GameItem __1)
@@ -154,16 +182,24 @@ internal static class Hooks
 
         try
         {
+            if (!IsWaterContainer(item) || !HasWaterScanner())
+                return;
+
             var frame = Time.frameCount;
-            var itemPointer = item.Pointer;
-            if (frame == _lastTooltipFrame && itemPointer == _lastTooltipItem)
+            if (_lastTooltipFrame != frame)
+            {
+                TooltipSections.Clear();
+                _lastTooltipFrame = frame;
+            }
+
+            var key = (builder.Pointer, item.Pointer);
+            var slices = builder.slices;
+            if (TooltipSections.TryGetValue(key, out var section) &&
+                slices != null && section.Index < slices.Count &&
+                slices[section.Index].Pointer == section.Slice)
                 return;
 
-            _lastTooltipFrame = frame;
-            _lastTooltipItem = itemPointer;
-
-            if (!HasWaterScanner() || !IsWaterContainer(item))
-                return;
+            var firstSlice = slices?.Count ?? 0;
 
             // The water composition section needs actual liquid to describe; the
             // filter durability line does not, so an empty jug still shows it.
@@ -184,6 +220,9 @@ internal static class Hooks
             }
 
             AppendFilterDurability(builder, item);
+            slices = builder.slices;
+            if (slices != null && firstSlice < slices.Count)
+                TooltipSections[key] = (firstSlice, slices[firstSlice].Pointer);
         }
         catch
         {
@@ -288,38 +327,8 @@ internal static class Hooks
 
     private static bool HasWaterScanner()
     {
-        var now = Time.unscaledTime;
-        if (now < _scannerCacheExpiresAt)
-            return _scannerCache;
-
-        _scannerCacheExpiresAt = now + 1f;
-        _scannerCache = false;
-
-        try
-        {
-            if (!PlayerStore.IsInstanceExist())
-                return false;
-
-            var store = PlayerStore.Instance;
-            if (store == null)
-                return false;
-
-            var items = CollectOwnedItems(store);
-            if (items.Count == 0)
-                return false;
-
-            foreach (var item in items)
-            {
-                if (IsWaterScanner(item))
-                {
-                    _scannerCache = true;
-                    break;
-                }
-            }
-        }
-        catch
-        {
-        }
+        if (Time.unscaledTime >= _scannerCacheExpiresAt)
+            _inventoryRefreshRequested = true;
 
         return _scannerCache;
     }
@@ -375,7 +384,7 @@ internal static class Hooks
         var liquidDictionary = Liquid.LiquidDict;
         var liquids = Liquid.Liquids;
         var entries = new List<(string Name, int Amount)>();
-        var totalAmount = 0;
+        long totalAmount = 0;
 
         if (liquidDictionary != null)
         {
@@ -418,7 +427,7 @@ internal static class Hooks
         List<(string Name, int Amount)> entries,
         GameItem item,
         Liquid? liquid,
-        ref int totalAmount)
+        ref long totalAmount)
     {
         if (liquid == null)
             return;
@@ -463,87 +472,174 @@ internal static class Hooks
         return $"{amountInMicroLiters / 1000d:0.##} ml";
     }
 
-    internal static void TryReplaceDepletedFilters()
+    internal static void UpdateMaintenance(bool replaceFilters)
     {
-        if (_filterReplacementRunning)
+        if (_maintenance == null && _retryFilterRecovery == null && !_inventoryRefreshRequested &&
+            _scannerCacheExpiresAt >= 0f &&
+            (!replaceFilters || Time.unscaledTime < _nextMaintenanceAt))
             return;
 
-        _filterReplacementRunning = true;
+        if (!PlayerStore.IsInstanceExist() || PlayerStore.Instance == null)
+        {
+            ResetMaintenance();
+            return;
+        }
+
+        var store = PlayerStore.Instance;
+        if (_storePointer != store.Pointer)
+        {
+            ResetMaintenance();
+            _storePointer = store.Pointer;
+        }
+
+        if (_retryFilterRecovery != null)
+        {
+            if (Time.unscaledTime >= _nextMaintenanceAt)
+            {
+                if (_retryFilterRecovery())
+                    _retryFilterRecovery = null;
+                _nextMaintenanceAt = Time.unscaledTime + 2f;
+            }
+            return;
+        }
+
+        if (_maintenance == null)
+        {
+            _inventoryRefreshRequested = false;
+            _maintenance = MaintainFilters(store, replaceFilters).GetEnumerator();
+        }
+
+        var started = System.Diagnostics.Stopwatch.GetTimestamp();
         try
         {
-            if (!PlayerStore.IsInstanceExist())
-                return;
-
-            var store = PlayerStore.Instance;
-            if (store == null)
-                return;
-
-            var allItems = CollectOwnedItems(store);
-            if (allItems.Count == 0)
-                return;
-
-            foreach (var item in allItems)
+            do
             {
-                if (!IsWaterContainer(item))
-                    continue;
-
-                var container = item;
-                var depletedFilter = WaterHelper.GetFilterItem(container);
-                if (depletedFilter == null)
-                    continue;
-
-                // The container holds exactly one insertable item, and it is not
-                // always a filter: a UV lamp shares that slot and also has
-                // durability. Without this check a spent lamp is treated as a
-                // depleted filter and swapped out for one.
-                if (!IsFilterItem(depletedFilter))
-                    continue;
-
-                // A filter that has just hit zero durability may already be in a
-                // transient state where reading it throws. Treating a failed read
-                // as "still good" would skip exactly the case this feature exists
-                // for, so only a readable, positive durability means "leave alone".
-                var filterIsAlive = true;
-                try
+                if (!_maintenance.MoveNext())
                 {
-                    filterIsAlive = DurabilityHelper.GetRealDurability(depletedFilter) > 0;
-                }
-                catch
-                {
-                    filterIsAlive = false;
-                }
-
-                if (filterIsAlive)
-                    continue;
-
-                var replacement = FindReplacementFilter(allItems, container, depletedFilter);
-                if (replacement == null)
-                    continue;
-
-                // The precheck reads inventory state that the swap itself will
-                // mutate, so it can only reject obviously impossible swaps; the
-                // real guarantee comes from verifying after the swap.
-                if (!CanSwapFilterPlacement(depletedFilter, replacement))
-                    continue;
-
-                if (ReplaceFilter(container, depletedFilter, replacement, out var toastMessage))
-                {
-                    ShowToast(toastMessage);
-                }
-                else
-                {
-                    Core.Log?.Warning(
-                        $"Filter swap for {SafeIdentifier(depletedFilter)} did not complete; inventory left unchanged.");
+                    _maintenance.Dispose();
+                    _maintenance = null;
+                    _nextMaintenanceAt = Time.unscaledTime + 2f;
+                    break;
                 }
             }
+            while ((System.Diagnostics.Stopwatch.GetTimestamp() - started) * 1000d /
+                   System.Diagnostics.Stopwatch.Frequency < MaintenanceBudgetMilliseconds);
         }
         catch (Exception ex)
         {
-            Core.Log?.Warning($"Filter replacement pass failed: {ex.Message}");
+            ResetMaintenance();
+            _nextMaintenanceAt = Time.unscaledTime + 2f;
+            _scannerCacheExpiresAt = _nextMaintenanceAt;
+            Core.Log?.Warning($"Water maintenance failed: {ex.Message}");
         }
-        finally
+    }
+
+    internal static void ResetMaintenance()
+    {
+        _maintenance?.Dispose();
+        _maintenance = null;
+        _retryFilterRecovery = null;
+        _storePointer = IntPtr.Zero;
+        _scannerCache = false;
+        _scannerCacheExpiresAt = -1f;
+        _inventoryRefreshRequested = false;
+        _nextMaintenanceAt = 0f;
+        TooltipSections.Clear();
+    }
+
+    private static IEnumerable<object?> MaintainFilters(PlayerStore store, bool replaceFilters)
+    {
+        var allItems = new List<GameItem>();
+        var depleted = new List<(GameItem Container, GameItem Filter)>();
+        var hasScanner = false;
+        foreach (var item in EnumerateOwnedItems(store))
         {
-            _filterReplacementRunning = false;
+            if (item != null)
+            {
+                allItems.Add(item);
+                if (!hasScanner && IsWaterScanner(item))
+                    hasScanner = true;
+
+                if (replaceFilters && IsWaterContainer(item) &&
+                    TryGetDepletedFilter(item, out var filter))
+                    depleted.Add((item, filter!));
+            }
+            yield return null;
+        }
+
+        _scannerCache = hasScanner;
+        _scannerCacheExpiresAt = Time.unscaledTime + 1f;
+        _inventoryRefreshRequested = false;
+
+        if (!replaceFilters || depleted.Count == 0 ||
+            Core.AutoReplaceFilters is not { Value: true })
+            yield break;
+
+        // No spare-filter work is performed until a depleted filter is found.
+        // Three stable buckets avoid repeated native name reads in a comparator.
+        var buckets = new[] { new List<GameItem>(), new List<GameItem>(), new List<GameItem>() };
+        foreach (var item in allItems)
+        {
+            if (IsAvailableFilter(item))
+                buckets[GetFilterPriority(item)].Add(item);
+            yield return null;
+        }
+
+        foreach (var entry in depleted)
+        {
+            foreach (var bucket in buckets)
+            {
+                for (var candidateIndex = 0; candidateIndex < bucket.Count; candidateIndex++)
+                {
+                    var replacement = bucket[candidateIndex];
+                    yield return null;
+                    if (Core.AutoReplaceFilters is not { Value: true })
+                        yield break;
+
+                    // Inventory membership and durability may change between frames.
+                    if (!TryGetDepletedFilter(entry.Container, out var current) ||
+                        current!.Pointer != entry.Filter.Pointer)
+                        goto NextContainer;
+
+                    if (!IsAvailableFilter(replacement) ||
+                        !CanSwapFilterPlacement(entry.Filter, replacement) ||
+                        !AreItemsStillOwned(entry.Container, replacement))
+                        continue;
+
+                    if (ReplaceFilter(entry.Container, entry.Filter, replacement, out var toast))
+                    {
+                        bucket.RemoveAt(candidateIndex);
+                        ShowToast(toast);
+                    }
+                    else
+                        Core.Log?.Warning(
+                            $"Filter swap for {SafeIdentifier(entry.Filter)} was skipped or failed.");
+
+                    if (_retryFilterRecovery != null)
+                        yield break;
+
+                    // A native swap can partially mutate inventories. Re-scan on
+                    // the next pass instead of trying another item in this state.
+                    goto NextContainer;
+                }
+            }
+        NextContainer:;
+        }
+    }
+
+    private static bool TryGetDepletedFilter(GameItem container, out GameItem? filter)
+    {
+        filter = null;
+        try
+        {
+            filter = WaterHelper.GetFilterItem(container);
+            return filter != null && IsFilterItem(filter) &&
+                   DurabilityHelper.GetRealDurability(filter) <= 0;
+        }
+        catch (Exception ex)
+        {
+            Core.Log?.Warning($"Cannot inspect filter in {SafeIdentifier(container)}: {ex.Message}");
+            return false;
         }
     }
 
@@ -559,513 +655,275 @@ internal static class Hooks
         }
     }
 
-    private static List<GameItem> CollectOwnedItems(PlayerStore store)
+    private static IEnumerable<GameItem?> EnumerateOwnedItems(PlayerStore store)
     {
-        var result = new List<GameItem>();
-        var pending = new Queue<GameItem>();
+        var pending = new Queue<Il2CppInterop.Runtime.InteropTypes.Il2CppObjectBase>();
         var visited = new HashSet<IntPtr>();
-        var visitedStorages = new HashSet<IntPtr>();
 
-        AddItemRoots(store.FindAllItem(true), pending, visited);
-
-        try
+        void Enqueue(Il2CppInterop.Runtime.InteropTypes.Il2CppObjectBase? node)
         {
-            AddItemRoots(store.GetAllRepoEligibleItems(), pending, visited);
-        }
-        catch
-        {
+            if (node != null && visited.Add(node.Pointer))
+                pending.Enqueue(node);
         }
 
+        var roots = store.FindAllItem(true);
+        for (var i = 0; i < roots.Count; i++)
+        {
+            Enqueue(roots[i]);
+            yield return null;
+        }
+        var repo = store.GetAllRepoEligibleItems();
+        for (var i = 0; i < repo.Count; i++)
+        {
+            Enqueue(repo[i]);
+            yield return null;
+        }
+
+        // Traverse each graph object once. FindAllChildItems recursively walks
+        // this same graph and must not be repeated for every descendant.
         while (pending.Count > 0)
         {
-            var item = pending.Dequeue();
-            result.Add(item);
+            var node = pending.Dequeue();
+            var item = node.TryCast<GameItem>();
+            yield return item;
 
-            try
+            if (item != null)
             {
-                AddItemRoots(item.FindAllChildItems(), pending, visited);
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                AddNestedWindowItems(item.child, pending, visited, visitedStorages);
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                foreach (var child in item.children)
+                Enqueue(item.child);
+                var children = item.children;
+                for (var i = 0; i < children.Count; i++)
                 {
-                    AddNestedStorageItems(
-                        child,
-                        pending,
-                        visited,
-                        visitedStorages);
+                    Enqueue(children[i]);
+                    yield return null;
                 }
             }
-            catch
+            else
             {
+                var storage = node.TryCast<GraphNodeStorage>();
+                if (storage != null)
+                {
+                    var children = storage.children;
+                    for (var i = 0; i < children.Count; i++)
+                    {
+                        Enqueue(children[i]);
+                        yield return null;
+                    }
+                }
+                var window = node.TryCast<GraphNodeWindow>();
+                if (window != null)
+                    Enqueue(window.child);
             }
-        }
 
-        return result;
-    }
-
-    private static void AddItemRoots(
-        Il2CppSystem.Collections.Generic.List<GameItem>? items,
-        Queue<GameItem> pending,
-        HashSet<IntPtr> visited)
-    {
-        if (items == null)
-            return;
-
-        foreach (var item in items)
-        {
-            if (item == null || !visited.Add(item.Pointer))
+            var inventory = node.TryCast<GameInventory>();
+            if (inventory == null)
                 continue;
 
-            pending.Enqueue(item);
-        }
-    }
-
-    private static void AddNestedWindowItems(
-        GraphNodeWindow? window,
-        Queue<GameItem> pending,
-        HashSet<IntPtr> visited,
-        HashSet<IntPtr> visitedStorages)
-    {
-        if (window == null)
-            return;
-
-        var inventory = window.TryCast<GameInventory>();
-        if (inventory != null)
-            AddInventoryItems(inventory, pending, visited, visitedStorages);
-
-        AddNestedStorageItems(
-            window.child,
-            pending,
-            visited,
-            visitedStorages);
-    }
-
-    private static void AddNestedStorageItems(
-        GraphNodeStorage? storage,
-        Queue<GameItem> pending,
-        HashSet<IntPtr> visited,
-        HashSet<IntPtr> visitedStorages)
-    {
-        if (storage == null || !visitedStorages.Add(storage.Pointer))
-            return;
-
-        var inventory = storage.TryCast<GameInventory>();
-        if (inventory != null)
-            AddInventoryItems(inventory, pending, visited, visitedStorages);
-
-        var item = storage.TryCast<GameItem>();
-        if (item != null)
-            AddItemRoot(item, pending, visited);
-
-        try
-        {
-            foreach (var child in storage.children)
-                AddNestedStorageItems(
-                    child,
-                    pending,
-                    visited,
-                    visitedStorages);
-        }
-        catch
-        {
-        }
-    }
-
-    private static void AddInventoryItems(
-        GameInventory inventory,
-        Queue<GameItem> pending,
-        HashSet<IntPtr> visited,
-        HashSet<IntPtr> visitedStorages)
-    {
-        AddItemRoots(inventory.childItems, pending, visited);
-
-        var slotInventory = inventory.TryCast<GameSlotInventory>();
-        if (slotInventory != null)
-            AddItemRoot(slotInventory.childItem, pending, visited);
-
-        var gridInventory = inventory.TryCast<GameGridInventory>();
-        if (gridInventory != null)
-            AddItemRoots(gridInventory.items, pending, visited);
-
-        var scrollableInventory = inventory.TryCast<GameGridScrollableInventory>();
-        if (scrollableInventory != null)
-            AddItemRoots(scrollableInventory.items, pending, visited);
-
-        try
-        {
-            foreach (var child in inventory.children)
+            var childItems = inventory.childItems;
+            for (var i = 0; i < childItems.Count; i++)
             {
-                    AddNestedStorageItems(
-                        child,
-                        pending,
-                        visited,
-                        visitedStorages);
+                Enqueue(childItems[i]);
+                yield return null;
+            }
+            var slot = inventory.TryCast<GameSlotInventory>();
+            if (slot != null)
+                Enqueue(slot.childItem);
+            var grid = inventory.TryCast<GameGridInventory>();
+            if (grid != null)
+            {
+                var items = grid.items;
+                for (var i = 0; i < items.Count; i++)
+                {
+                    Enqueue(items[i]);
+                    yield return null;
+                }
+            }
+            var scrollable = inventory.TryCast<GameGridScrollableInventory>();
+            if (scrollable != null)
+            {
+                var items = scrollable.items;
+                for (var i = 0; i < items.Count; i++)
+                {
+                    Enqueue(items[i]);
+                    yield return null;
+                }
             }
         }
-        catch
+    }
+
+    private static bool CanSwapFilterPlacement(GameItem depletedFilter, GameItem replacement)
+    {
+        try
         {
+            var drag = ItemMouseDragHandler.current;
+            if (drag != null && (drag.IsDraggingItem || drag.GetCurrentItem() != null))
+                return false;
+            var buffer = EmporiumEntry.Instance?.swapBufferElement;
+            if (buffer == null || buffer.childItem != null)
+                return false;
+
+            if (!TryGetParentInventory(depletedFilter, out var target) ||
+                !TryGetParentInventory(replacement, out var source) ||
+                target == null || source == null || target.Pointer == source.Pointer)
+                return false;
+
+            if (!CanMoveBothWays(target) || !CanMoveBothWays(source))
+                return false;
+
+            return CanPlaceAtRecordedPosition(depletedFilter, replacement, source) &&
+                   CanPlaceAtRecordedPosition(replacement, depletedFilter, target);
+        }
+        catch (Exception ex)
+        {
+            Core.Log?.Warning($"Cannot validate filter placement: {ex.Message}");
+            return false;
         }
     }
 
-    private static void AddItemRoot(
-        GameItem item,
-        Queue<GameItem> pending,
-        HashSet<IntPtr> visited)
+    private static bool CanMoveBothWays(GameInventory inventory)
     {
-        if (item != null && visited.Add(item.Pointer))
-            pending.Enqueue(item);
-    }
-
-    private sealed class GridInventoryInfo
-    {
-        internal GridInventoryInfo(
-            int minX,
-            int minY,
-            int width,
-            int height,
-            Il2CppSystem.Collections.Generic.List<GameItem>? items)
-        {
-            MinX = minX;
-            MinY = minY;
-            Width = width;
-            Height = height;
-            Items = items;
-        }
-
-        internal int MinX { get; }
-        internal int MinY { get; }
-        internal int Width { get; }
-        internal int Height { get; }
-        internal Il2CppSystem.Collections.Generic.List<GameItem>? Items { get; }
-    }
-
-    private readonly struct ItemBounds
-    {
-        internal ItemBounds(int left, int top, int right, int bottom)
-        {
-            Left = left;
-            Top = top;
-            Right = right;
-            Bottom = bottom;
-        }
-
-        internal int Left { get; }
-        internal int Top { get; }
-        internal int Right { get; }
-        internal int Bottom { get; }
-    }
-
-    private static bool CanSwapFilterPlacement(
-        GameItem depletedFilter,
-        GameItem replacement)
-    {
-        var targetInventory = depletedFilter.parentInventory;
-        var sourceInventory = replacement.parentInventory;
-        if (targetInventory == null || sourceInventory == null)
-            return false;
-
-        if (!CanPlaceAtRecordedPosition(
-                depletedFilter,
-                replacement,
-                sourceInventory))
-            return false;
-
-        if (!CanPlaceAtRecordedPosition(
-                replacement,
-                depletedFilter,
-                targetInventory))
-            return false;
-
-        return true;
+        return !inventory.IsInsertLocked() && !inventory.IsRemoveLocked();
     }
 
     private static bool CanPlaceAtRecordedPosition(
-        GameItem itemToPlace,
-        GameItem slotItem,
-        GameInventory inventory)
+        GameItem itemToPlace, GameItem slotItem, GameInventory inventory)
     {
-        var grid = GetGridInventoryInfo(inventory);
-        if (grid == null)
-        {
-            // A slot inventory holds exactly one item, so it can only accept the
-            // incoming item if that slot is the one the two items are trading.
-            // Approving it unconditionally is what allowed occupied slots to be
-            // treated as free.
-            if (inventory.TryCast<GameSlotInventory>() != null)
-            {
-                if (IsInsertLocked(inventory))
-                    return false;
-
-                var occupant = GetSlotOccupant(inventory);
-                return occupant == null ||
-                       occupant.Pointer == itemToPlace.Pointer ||
-                       occupant.Pointer == slotItem.Pointer;
-            }
-
-            try
-            {
-                return inventory.MayHaveValidInventorySlot(itemToPlace);
-            }
-            catch
-            {
-            }
-
-            return false;
-        }
-
-        var itemShape = itemToPlace.modifiedShape ?? itemToPlace.shape;
-        var slotShape = slotItem.modifiedShape ?? slotItem.shape;
+        var itemShape = itemToPlace.modifiedShape;
+        var slotShape = slotItem.modifiedShape;
         if (itemShape == null || slotShape == null)
             return false;
 
-        var itemBounds = GetItemBoundsAtSlot(itemShape, slotItem);
-        var inventoryRight = grid.MinX + grid.Width - 1;
-        var inventoryBottom = grid.MinY + grid.Height - 1;
-        if (itemBounds.Left < grid.MinX ||
-            itemBounds.Top < grid.MinY ||
-            itemBounds.Right > inventoryRight ||
-            itemBounds.Bottom > inventoryBottom)
-            return false;
-
-        var checkedItems = new HashSet<IntPtr>();
-        foreach (var other in EnumerateGridItems(inventory, grid))
+        // modifiedShape already carries global position and rotation. Follow
+        // GraphUtils' placement transform; never add modifiedXOrigin again.
+        var placedShape = new GridShapeBuilder(itemShape).SetTransform(slotShape).Build();
+        var slot = inventory.TryCast<GameSlotInventory>();
+        if (slot != null)
         {
-            if (other == null || !checkedItems.Add(other.Pointer))
-            {
-                continue;
-            }
-
-            if (other.Pointer == itemToPlace.Pointer ||
-                other.Pointer == slotItem.Pointer)
-            {
-                continue;
-            }
-
-            var otherShape = other.modifiedShape ?? other.shape;
-            if (otherShape == null)
-                continue;
-
-            var otherBounds = GetItemBounds(
-                other,
-                other.modifiedXOrigin,
-                other.modifiedYOrigin,
-                otherShape);
-            if (BoundsOverlap(itemBounds, otherBounds))
+            var occupant = slot.childItem;
+            if (occupant != null && occupant.Pointer != slotItem.Pointer)
                 return false;
-        }
+            if (!inventory.MayHaveValidInventorySlot(itemToPlace))
+                return false;
 
-        return true;
-    }
-
-    private static IEnumerable<GameItem> EnumerateGridItems(
-        GameInventory inventory,
-        GridInventoryInfo grid)
-    {
-        if (grid.Items != null)
-        {
-            foreach (var item in grid.Items)
-                yield return item;
-        }
-
-        foreach (var item in inventory.childItems)
-            yield return item;
-    }
-
-    private static GridInventoryInfo? GetGridInventoryInfo(GameInventory inventory)
-    {
-        var gridInventory = inventory.TryCast<GameGridInventory>();
-        if (gridInventory != null)
-        {
-            var shape = gridInventory.inventoryShape;
-            if (shape == null)
-                return null;
-
-            return new GridInventoryInfo(
-                shape.minX,
-                shape.minY,
-                Math.Max(shape.globalWidth, shape.width),
-                Math.Max(shape.globalHeight, shape.height),
-                gridInventory.items);
-        }
-
-        var scrollableInventory = inventory.TryCast<GameGridScrollableInventory>();
-        if (scrollableInventory != null)
-        {
-            return new GridInventoryInfo(
-                0,
-                0,
-                scrollableInventory.width,
-                scrollableInventory.height,
-                scrollableInventory.items);
-        }
-
-        return null;
-    }
-
-    private static ItemBounds GetItemBounds(
-        GameItem item,
-        int originX,
-        int originY,
-        GridShape shape)
-    {
-        var minX = shape.minX;
-        var minY = shape.minY;
-        var maxX = shape.maxX;
-        var maxY = shape.maxY;
-        if (maxX < minX)
-            maxX = minX + Math.Max(shape.width, 1) - 1;
-        if (maxY < minY)
-            maxY = minY + Math.Max(shape.height, 1) - 1;
-
-        return new ItemBounds(
-            originX + minX,
-            originY + minY,
-            originX + maxX,
-            originY + maxY);
-    }
-
-    private static ItemBounds GetItemBoundsAtSlot(GridShape itemShape, GameItem slotItem)
-    {
-        var slotShape = slotItem.modifiedShape ?? slotItem.shape;
-        var slotX = slotShape?.minX ?? slotItem.modifiedXOrigin;
-        var slotY = slotShape?.minY ?? slotItem.modifiedYOrigin;
-        var width = Math.Max(
-            itemShape.globalWidth,
-            Math.Max(itemShape.width, 1));
-        var height = Math.Max(
-            itemShape.globalHeight,
-            Math.Max(itemShape.height, 1));
-
-        return new ItemBounds(
-            slotX,
-            slotY,
-            slotX + width - 1,
-            slotY + height - 1);
-    }
-
-    private static bool BoundsOverlap(ItemBounds left, ItemBounds right)
-    {
-        return left.Left <= right.Right &&
-               left.Right >= right.Left &&
-               left.Top <= right.Bottom &&
-               left.Bottom >= right.Top;
-    }
-
-    private static GameItem? FindReplacementFilter(
-        List<GameItem> allItems,
-        GameItem container,
-        GameItem depletedFilter)
-    {
-        GameItem? best = null;
-        var bestPriority = int.MaxValue;
-
-        foreach (var item in allItems)
-        {
-            if (!IsAvailableFilter(item, container, depletedFilter))
-                continue;
-
-            var priority = GetFilterPriority(item);
-            if (priority < bestPriority)
+            var marker = new SlotMarker
             {
-                best = item;
-                bestPriority = priority;
-            }
+                item = itemToPlace,
+                inventory = inventory,
+                itemGridShape = placedShape,
+                numTransfer = itemToPlace.unitCount
+            };
+            return itemToPlace.CheckIsStateValid(
+                       inventory, marker, placedShape, itemToPlace.modifiedState) &&
+                   inventory.CheckAcceptParentShapeStateModifier(
+                       itemToPlace, marker, placedShape, itemToPlace.modifiedState);
         }
 
-        return best;
+        var ignored = new Il2CppSystem.Collections.Generic.List<GameItem>();
+        ignored.Add(itemToPlace);
+        ignored.Add(slotItem);
+        return inventory.CheckShapePlacement(itemToPlace, placedShape, ignored);
     }
 
-    private static bool IsAvailableFilter(GameItem item, GameItem container, GameItem depletedFilter)
+    private static bool IsAvailableFilter(GameItem item)
     {
-        if (item == null ||
-            item.Pointer == container.Pointer ||
-            item.Pointer == depletedFilter.Pointer ||
-            !IsFilterItem(item) ||
-            item.parentInventory == null ||
-            IsInstalledInWaterContainer(item))
-        {
-            return false;
-        }
-
         try
         {
+            if (!IsFilterItem(item) ||
+                !TryGetParentInventory(item, out var parent) || parent == null ||
+                IsInstalledInWaterContainer(item))
+                return false;
+
             return DurabilityHelper.GetRealDurability(item) > 0;
         }
-        catch
+        catch (Exception ex)
         {
+            Core.Log?.Warning($"Cannot inspect replacement {SafeIdentifier(item)}: {ex.Message}");
             return false;
         }
     }
 
     private static bool ReplaceFilter(
-        GameItem container,
-        GameItem depletedFilter,
-        GameItem replacement,
-        out string toastMessage)
+        GameItem container, GameItem depletedFilter, GameItem replacement, out string toastMessage)
     {
         toastMessage = string.Empty;
-
-        // Re-read the live parents instead of trusting whatever the precheck saw:
-        // the container may have been moved, or the filter slot re-populated,
-        // since the item list was collected.
-        var targetInventory = GetParentInventorySafely(depletedFilter);
-        var sourceInventory = GetParentInventorySafely(replacement);
-        if (targetInventory == null || sourceInventory == null)
+        if (!CanSwapFilterPlacement(depletedFilter, replacement) ||
+            !AreItemsStillOwned(container, replacement) ||
+            !TryGetDepletedFilter(container, out var installed) ||
+            installed!.Pointer != depletedFilter.Pointer ||
+            !IsAvailableFilter(replacement) ||
+            !TryGetParentInventory(depletedFilter, out var targetInventory) ||
+            !TryGetParentInventory(replacement, out var sourceInventory) ||
+            targetInventory == null || sourceInventory == null)
             return false;
 
-        if (SameInventory(targetInventory, sourceInventory))
-            return false;
-
-        if (IsInsertLocked(targetInventory) || IsInsertLocked(sourceInventory))
-            return false;
-
-        // Names are read before the swap so the toast still reports what was
-        // replaced even if the swap leaves an item in a transient state.
+        // Capture actual native shapes before any mutation, including recovery.
+        var targetShape = depletedFilter.modifiedShape.Clone();
+        var sourceShape = replacement.modifiedShape.Clone();
         var depletedName = GetDisplayName(depletedFilter);
         var replacementName = GetDisplayName(replacement);
 
-        bool swapped;
         try
         {
-            swapped = GraphUtils.SwapItemsInPlace(depletedFilter, replacement);
+            GraphUtils.SwapItemsInPlace(depletedFilter, replacement);
         }
         catch (Exception ex)
         {
             Core.Log?.Warning($"SwapItemsInPlace threw: {ex.Message}");
-            swapped = false;
-        }
-
-        // SwapItemsInPlace is not guaranteed to be atomic: if the second half of
-        // the move fails, an item can end up detached from every inventory. Verify
-        // both landed where intended and repair the container slot if not.
-        var depletedPlaced = IsInInventory(depletedFilter, sourceInventory);
-        var replacementPlaced = IsInInventory(replacement, targetInventory);
-
-        if (!swapped || !depletedPlaced || !replacementPlaced)
-        {
-            RecoverFilterSwap(container, depletedFilter, replacement, targetInventory, sourceInventory);
-            return false;
         }
 
         Validate(targetInventory);
         Validate(sourceInventory);
         Validate(container);
+        if (IsAtPlacement(depletedFilter, sourceInventory, sourceShape) &&
+            IsAtPlacement(replacement, targetInventory, targetShape) &&
+            IsInstalledFilter(container, replacement))
+        {
+            BuildFilterToast(depletedName, replacementName, out toastMessage);
+            return true;
+        }
 
-        BuildFilterToast(depletedName, replacementName, out toastMessage);
-        return true;
+        if (!RecoverFilterSwap(container, depletedFilter, replacement,
+                targetInventory, sourceInventory, targetShape, sourceShape))
+        {
+            // Hold references to unplaced items and retry recovery before any
+            // further maintenance; otherwise a native failure could lose them.
+            _retryFilterRecovery = () => RecoverFilterSwap(container, depletedFilter, replacement,
+                targetInventory, sourceInventory, targetShape, sourceShape);
+            Core.Log?.Warning(
+                $"Filter recovery incomplete: {SafeIdentifier(depletedFilter)} / " +
+                $"{SafeIdentifier(replacement)}; recovery will retry before further swaps.");
+        }
+        return false;
+    }
+
+    private static bool AreItemsStillOwned(GameItem container, GameItem replacement)
+    {
+        if (!PlayerStore.IsInstanceExist() || PlayerStore.Instance == null)
+            return false;
+
+        var roots = new HashSet<IntPtr>();
+        foreach (var item in PlayerStore.Instance.FindAllItem(true))
+            roots.Add(item.Pointer);
+        foreach (var item in PlayerStore.Instance.GetAllRepoEligibleItems())
+            roots.Add(item.Pointer);
+
+        return IsUnderOwnedRoot(container, roots) && IsUnderOwnedRoot(replacement, roots);
+    }
+
+    private static bool IsUnderOwnedRoot(GameItem item, HashSet<IntPtr> roots)
+    {
+        var visited = new HashSet<IntPtr>();
+        while (visited.Add(item.Pointer))
+        {
+            if (roots.Contains(item.Pointer))
+                return true;
+            if (!TryGetParentInventory(item, out var parent) || parent == null)
+                return false;
+            var parentItem = parent.GetParentItem();
+            if (parentItem == null)
+                return false;
+            item = parentItem;
+        }
+        return false;
     }
 
     private static void BuildFilterToast(
@@ -1111,36 +969,47 @@ internal static class Hooks
         }
     }
 
-    // Puts the depleted filter back into the container slot when a swap leaves it
-    // detached, so a failed replacement never results in an empty filter slot.
-    private static void RecoverFilterSwap(
-        GameItem container,
-        GameItem depletedFilter,
-        GameItem replacement,
-        GameInventory targetInventory,
-        GameInventory sourceInventory)
+    private static bool RecoverFilterSwap(
+        GameItem container, GameItem depletedFilter, GameItem replacement,
+        GameInventory targetInventory, GameInventory sourceInventory,
+        GridShape targetShape, GridShape sourceShape)
     {
         try
         {
-            // The exhausted filter must end up back in the slot it came from.
-            if (IsDetached(depletedFilter) && !AcceptInto(targetInventory, depletedFilter))
+            if (!TryGetParentInventory(depletedFilter, out var oldParent) ||
+                !TryGetParentInventory(replacement, out var newParent))
+                return false;
+
+            // Never move an item adopted by an unrelated inventory or treat a
+            // failed parent read as evidence that an item is detached.
+            if (!IsRecoveryParent(oldParent, targetInventory, sourceInventory) ||
+                !IsRecoveryParent(newParent, targetInventory, sourceInventory))
+                return false;
+
+            var targetSlot = targetInventory.TryCast<GameSlotInventory>();
+            var occupant = targetSlot?.childItem;
+            if (occupant != null && occupant.Pointer != depletedFilter.Pointer &&
+                occupant.Pointer != replacement.Pointer)
+                return false;
+
+            if (IsInInventory(replacement, targetInventory))
             {
-                Core.Log?.Warning(
-                    $"Could not return {SafeIdentifier(depletedFilter)} to the water container; " +
-                    "the filter may need to be re-inserted manually.");
+                if (IsInInventory(depletedFilter, sourceInventory))
+                    GraphUtils.SwapItemsInPlace(replacement, depletedFilter);
+                else if (!RestoreAtShape(replacement, sourceInventory, sourceShape))
+                    return false;
             }
 
-            // A replacement that never made it in goes back to its original spot;
-            // it is never pushed into some unrelated inventory.
-            if (IsDetached(replacement) && !AcceptInto(sourceInventory, replacement))
-            {
-                Core.Log?.Warning(
-                    $"Could not return {SafeIdentifier(replacement)} to its original inventory.");
-            }
+            // Restore the exhausted filter FIRST to free its occupied position
+            // in the spare inventory before returning the replacement.
+            var oldRestored = RestoreAtShape(depletedFilter, targetInventory, targetShape);
+            var newRestored = RestoreAtShape(replacement, sourceInventory, sourceShape);
+            return oldRestored && newRestored && IsInstalledFilter(container, depletedFilter);
         }
         catch (Exception ex)
         {
             Core.Log?.Warning($"Filter recovery failed: {ex.Message}");
+            return false;
         }
         finally
         {
@@ -1150,137 +1019,127 @@ internal static class Hooks
         }
     }
 
-    private static bool AcceptInto(GameInventory inventory, GameItem item)
+    private static bool IsRecoveryParent(
+        GameInventory? parent, GameInventory target, GameInventory source)
     {
-        try
-        {
-            var slot = inventory.TryFindOneValidInventorySlot(item);
-            if (slot == null)
-                return false;
+        var buffer = EmporiumEntry.Instance?.swapBufferElement;
+        return parent == null || parent.Pointer == target.Pointer || parent.Pointer == source.Pointer ||
+               (buffer != null && parent.Pointer == buffer.Pointer);
+    }
 
-            slot.AcceptUnchecked();
-            return IsInInventory(item, inventory);
-        }
-        catch
-        {
+    private static bool RestoreAtShape(GameItem item, GameInventory inventory, GridShape shape)
+    {
+        if (!TryGetParentInventory(item, out var parent))
             return false;
-        }
+        if (IsAtPlacement(item, inventory, shape))
+            return true;
+        if (inventory.IsInsertLocked() || (parent != null && parent.IsRemoveLocked()) ||
+            !inventory.CheckInventorySlotStillValid(item, shape, item.modifiedState))
+            return false;
+
+        return GraphUtils.PlaceAtShape(item, inventory, shape) &&
+               IsAtPlacement(item, inventory, shape);
+    }
+
+    private static bool IsAtPlacement(GameItem item, GameInventory inventory, GridShape shape)
+    {
+        if (!IsInInventory(item, inventory))
+            return false;
+        var actual = item.modifiedShape;
+        return actual != null &&
+               actual.minX == shape.minX && actual.minY == shape.minY &&
+               actual.orientation == shape.orientation && actual.flipped == shape.flipped;
     }
 
     private static bool IsInInventory(GameItem item, GameInventory inventory)
     {
-        var parent = GetParentInventorySafely(item);
-        return parent != null && SameInventory(parent, inventory);
+        return TryGetParentInventory(item, out var parent) &&
+               parent != null && parent.Pointer == inventory.Pointer;
     }
 
-    private static bool IsDetached(GameItem item)
-    {
-        return GetParentInventorySafely(item) == null;
-    }
-
-    private static GameInventory? GetParentInventorySafely(GameItem item)
+    private static bool TryGetParentInventory(GameItem item, out GameInventory? inventory)
     {
         try
         {
-            return item.parentInventory;
+            inventory = item.parentInventory;
+            return true;
         }
-        catch
+        catch (Exception ex)
         {
-            return null;
-        }
-    }
-
-    private static bool SameInventory(GameInventory left, GameInventory right)
-    {
-        try
-        {
-            return left.Pointer == right.Pointer;
-        }
-        catch
-        {
+            inventory = null;
+            Core.Log?.Warning($"Cannot read inventory of {SafeIdentifier(item)}: {ex.Message}");
             return false;
-        }
-    }
-
-    private static bool IsInsertLocked(GameInventory inventory)
-    {
-        try
-        {
-            return inventory.IsInsertLocked();
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    private static GameItem? GetSlotOccupant(GameInventory inventory)
-    {
-        var slot = inventory.TryCast<GameSlotInventory>();
-        if (slot == null)
-            return null;
-
-        try
-        {
-            return slot.childItem;
-        }
-        catch
-        {
-            return null;
         }
     }
 
     private static void Validate(GameInventory inventory)
     {
-        try
-        {
-            inventory.Validate();
-        }
-        catch
-        {
-        }
+        try { inventory.Validate(); }
+        catch (Exception ex) { Core.Log?.Warning($"Inventory validation failed: {ex.Message}"); }
     }
 
     private static void Validate(GameItem item)
     {
-        try
-        {
-            item.Validate();
-        }
-        catch
-        {
-        }
+        try { item.Validate(); }
+        catch (Exception ex) { Core.Log?.Warning($"Item validation failed: {ex.Message}"); }
     }
 
     private static bool IsInstalledInWaterContainer(GameItem item)
     {
-        var inventory = item.parentInventory;
-        for (var depth = 0; inventory != null && depth < 16; depth++)
+        var visited = new HashSet<IntPtr>();
+        if (!TryGetParentInventory(item, out var inventory))
+            return true;
+
+        while (inventory != null)
         {
+            if (!visited.Add(inventory.Pointer))
+                return true;
+
             var parentItem = inventory.GetParentItem();
             if (parentItem == null)
                 return false;
-
             if (IsWaterContainer(parentItem))
                 return true;
-
-            inventory = parentItem.parentInventory;
+            if (!TryGetParentInventory(parentItem, out inventory))
+                return true;
         }
-
         return false;
+    }
+
+    private static bool IsInstalledFilter(GameItem container, GameItem expectedFilter)
+    {
+        try
+        {
+            var installedFilter = WaterHelper.GetFilterItem(container);
+            return installedFilter != null &&
+                   installedFilter.Pointer == expectedFilter.Pointer;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static bool IsWaterContainer(GameItem item)
     {
         try
         {
-            var identifier = item.identifier ?? string.Empty;
-            return KnownWaterContainerIdentifiers.Contains(identifier);
+            return KnownWaterContainerIdentifiers.Contains(item.identifier ?? string.Empty) ||
+                   HasLiquidContainerMetadata(item) ||
+                   WaterHelper.CanUseWaterContainer(item);
         }
-        catch
+        catch (Exception ex)
         {
+            Core.Log?.Warning($"Cannot inspect water container {SafeIdentifier(item)}: {ex.Message}");
             return false;
         }
+    }
+
+    private static bool HasLiquidContainerMetadata(GameItem item)
+    {
+        var state = item.state;
+        return state?.IsTag("LIQUID_CONTAINER_TAG") == true &&
+               state.GetTag("LIQUID_CONTAINER_CAPACITY")?.valueInt > 0;
     }
 
     // Items that occupy the water-container slot but are not water filters.
@@ -1332,6 +1191,10 @@ internal static class Hooks
         try
         {
             var identifier = (item.identifier ?? string.Empty).ToLowerInvariant();
+            if (identifier == "water_filter_adv")
+                return 0;
+            if (identifier == "water_filter")
+                return 1;
             var name = (item.name ?? string.Empty).ToLowerInvariant();
             var text = $"{identifier} {name}";
 

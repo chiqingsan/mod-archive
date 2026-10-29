@@ -1,0 +1,7 @@
+# AquaSense 正式版适配
+
+针对本机 Probably Stolen 正式版 Mono 程序集构建，使用游戏内置 ModLoader 和配置界面。构建：`dotnet build -c Release`；将 `manifest.xml` 和生成的 `AquaSense.dll` 放进游戏 `Mods/AquaSense` 文件夹，然后在游戏的模组界面启用。
+
+AquaSense 会在水容器 Tooltip 中显示水质纯度、液体成分、滤芯名称和耐久；倒水或转移液体后更新标签；滤芯耗尽时从玩家库存和嵌套容器中寻找可用滤芯并自动更换。水质扫描、标签更新、耐久显示和自动换芯都可以单独开关。
+
+试玩版的 MelonLoader 设置不会自动迁移；请在游戏模组设置中重新设置。自动换芯会修改库存，首次验证前请备份存档。

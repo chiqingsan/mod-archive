@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.SmartInventoryArrange</ID>
+  <Name>更好的库存排序</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.1.0</ModVersion>
+  <Description>让库存排列更紧凑、更清晰、更容易查找：优先安排大件、容器、机器和储藏类物品；相同物品尽量连续摆放；相同类型尽量集中在相邻区域，减少空间碎片。综合物品尺寸、类别、状态和实例信息寻找更合适的排列方式。整理前后会校验库存快照；若库存内容或物品状态发生变化，操作会自动取消，避免覆盖新变化。</Description>
+  <Assemblies>
+    <Assembly>SmartInventoryArrange.dll</Assembly>
+  </Assemblies>
+  <Capabilities>
+    <Capability>files</Capability>
+    <Capability>reflection-external</Capability>
+  </Capabilities>
+</Mod>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod><ID>chiqingsan.WaterMerchant</ID><Name>回来吧, 水商!(水商数值回归)</Name><Author>chiqingsan</Author><ModVersion>1.1.0</ModVersion><GameVersions><Version>0.46D</Version></GameVersions><Description>调整集水、过滤、净水与水质配方，各项功能可在模组设置中独立开启或关闭。</Description><Assemblies><Assembly>WaterMerchant.dll</Assembly></Assemblies><Capabilities><Capability>reflection-external</Capability></Capabilities></Mod>
+
+
+

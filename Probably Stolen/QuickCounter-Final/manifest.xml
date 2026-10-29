@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.QuickCounter</ID>
+  <Name>QuickCounter</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.2.0</ModVersion>
+  <Description>为柜台日常操作提供可配置快捷键：开始营业、呼叫下一位顾客、转移全部物品、遣散当前顾客、呼叫治安部、打开日历和平板电脑，并可快速确认平板交易或将鼠标下的物品放入垃圾箱。支持单键以及 Ctrl、Shift、Alt 组合键，快捷键可在模组设置中分别修改。</Description>
+  <Assemblies><Assembly>QuickCounter.dll</Assembly></Assemblies>
+  <Capabilities></Capabilities>
+</Mod>

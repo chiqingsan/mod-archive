@@ -12,12 +12,24 @@
 
 ## 目录结构
 
+正式版使用游戏内置 ModLoader。以下为本地正式版源码项目：
+
+- [更好的水商操作体验（AquaSense）](AquaSense-Final/README.md)
+- [回来吧，水商！](WaterMerchant-Demo/README.md)
+- [伪人数量保持](AugPresenceGuard-Final/README.md)
+- [CustomerCreditBoost](CustomerCreditBoost-Final/README.md)
+- [QuickCounter](QuickCounter-Final/README.md)
+- [QuickSell](QuickSell/README.md)
+- [更好的库存排序](SmartInventoryArrange-Final/README.md)
+
+各项目的清单与说明记载对应版本；本地源码可能包含尚未部署或尚未完成实机验证的更新。
+
 | 目录 | 说明 |
 | --- | --- |
 | [`docs/`](docs/README.md) | 跨 Mod 通用的开发资料库（01~07 主文档 + API 快照），是本仓库的唯一权威文档源。 |
 | [`QuickCounter/`](QuickCounter/README.md) | **QuickCounter** 源码与发布包，可配置柜台快捷键 Mod（当前 v1.2.0）。 |
 | [`BlackMarketRescue/`](BlackMarketRescue/README.md) | **BlackMarketRescue** 源码，黑市交换后自动把垃圾桶物品搬回柜台。 |
-| [`AquaSense/`](AquaSense/AquaSense.cs) | **AquaSense** 源码工程（当前 v1.1.0，发布包见 [`release/`](release/)）。 |
+| [`AquaSense/`](AquaSense/AquaSense.cs) | **AquaSense** 源码工程（当前 v1.1.2，发布包见 [`release/`](release/)）。 |
 | [`release/`](release/) | 发布包归档：AquaSense 1.0.0 / 1.0.1 / 1.0.2 / 1.1.0、BlackMarketRescue 1.0.0 / 1.0.1（含 zip）。 |
 | [`decompiled/`](decompiled/) | 其他 Mod 的反编译参考工程：AutoBatterySwap、AutoStorage、FutureTech、WaterTower、XIAOWOTradePerks。 |
 | [`tools/`](tools/) | 辅助工具（`ilspycmd` 反编译 CLI）。 |

@@ -1,6 +1,6 @@
 # AquaSense 水系统与过滤器
 
-本文记录 AquaSense（版本 `1.1.0`）开发过程中在 Probably Stolen Demo `0.46D` 上实机验证过的游戏逻辑和 API。内容是当前版本的行为记录，不是官方 API 文档。
+本文记录 AquaSense `1.1.2` 在 Probably Stolen Demo `0.46D` 上的接口与实现。原生库存接口已用本地二进制静态核对，当前修改已编译并通过隔离回归测试；1.1.2 的实机帧耗时尚待采集。本文不是官方 API 文档。
 
 ## 功能边界
 
@@ -10,7 +10,7 @@ AquaSense 当前包含五项功能：
 2. 拥有水质扫描仪时，倒水或转移液体后调用游戏原有逻辑更新容器标签。可在 MelonPreferences 中开关 `AutoUpdateWaterLabels`，默认开启。
 3. 悬浮水容器时显示槽内滤芯的名称与耐久度，水罐为空时同样显示。可在 MelonPreferences 中开关 `ShowFilterDurability`，默认开启。
 4. 水罐中的过滤器耐久归零后，自动从玩家拥有的物品和嵌套容器中寻找替换品。可在 MelonPreferences 中开关 `AutoReplaceFilters`，默认开启；替换成功后通过游戏 UI 提示玩家（中英双语）。
-5. 交换过滤器前后做安全检查：交换前检查两个物品交换位置的形状、边界和重叠情况，并确认槽内物品确实是滤芯；交换后校验结果，失败时恢复并把脱钩物品放回原处。
+5. 交换过滤器前后做安全检查：检查所有权、实时槽位、插入/移除锁和原生形状规则；失败时按保存的形状恢复，暂时无法恢复时保留物品引用并优先重试恢复。
 
 三个开关的具体说明见「设置开关」章节。
 
@@ -23,19 +23,23 @@ QuickCounter 不属于 AquaSense 的功能范围。
 ```text
 WaterHelper.CreateWaterContainerTooltip(RichTextBuilder, GameItem)
 WaterFeatureHelper.CreateWaterFeatureTooltip(RichTextBuilder, GameItem)
+GameItemElement.GetTooltipBasic()
 ```
 
 处理顺序：
 
 ```text
 生成原版 Tooltip
-  -> 检查玩家是否拥有水质扫描仪
   -> 检查目标是否为装水容器
+  -> 检查玩家是否拥有水质扫描仪
   -> WaterHelper.GetWaterPurity(item)
   -> 读取 Liquid.LiquidDict / Liquid.Liquids
   -> 从 GameItem.state.GetTag(...) 读取成分数量
   -> 添加水质标题和成分行
 ```
+
+前两个 Postfix 覆盖原版水系统 Tooltip；`GameItemElement.GetTooltipBasic()` 是通用兜底，
+用于兼容没有进入原版水 Tooltip 分支、但仍使用游戏液体容器数据结构的 Mod 物品。同帧按 builder 与物品去重，并记录追加内容的 slice 指针：A/B/A 交错不会重复，builder 清空后可以重新追加。
 
 语言判断使用游戏当前 locale 是否以 `zh` 开头。不会使用 `cn` 作为语言代码。
 
@@ -50,17 +54,28 @@ WaterFeatureHelper.CreateWaterFeatureTooltip(RichTextBuilder, GameItem)
 
 水质标签由游戏原版 `WaterFeatureHelper.GetWaterDisplayName(GameItem)` 返回，AquaSense 不自行维护普通水、优质水、幽灵水等标签映射。
 
-当前已知的标准瓶装水标识为 `bottled_water`；它与高级瓶装水、大小瓶装水一样属于可显示水质详情的水容器。
+水容器识别采用三层策略：
 
-成分数量统一按 `ml` 显示。内部读取的数量保持游戏当前数值，不再做额外单位换算；如果成分占比四舍五入后为 `0.00%`，该行隐藏。
+1. 现有 identifier 白名单，作为零额外调用的快速路径和异常 Mod 的兜底。
+2. `LIQUID_CONTAINER_TAG` 与正数 `LIQUID_CONTAINER_CAPACITY`，自动覆盖按原版液体容器契约创建的 Mod 物品。
+3. 对前两层无法判断的物品调用原生 `WaterHelper.CanUseWaterContainer(GameItem)`。
+
+不再按 identifier 缓存实例能力。相同物品 ID 的实例标签可能不同，动态标签变化也必须立即生效；白名单和标签仍作为短路路径，未知容器使用原生查询。
+
+当前已知的标准瓶装水标识为 `bottled_water`；它与高级瓶装水、大小瓶装水一样属于可显示水质详情的水容器。
+BrewingExpansion 3.6.2 的水容器标识为 `be_xuxu_super_water_bottle`、
+`be_xuxu_small_water_bottle`、`be_xuxu_slim_water_bottle` 和 `be_clear_brew_water_bucket`，
+这些标识也纳入 AquaSense 的水容器识别。
+
+成分数量统一按 `ml` 显示。单项数量仍按游戏 int 标签读取，总量累加使用 long，避免大容量容器的多项正数成分相加溢出；如果成分占比四舍五入后为 `0.00%`，该行隐藏。
 
 没有水质扫描仪时，Postfix 不追加水质信息，保持原版 Tooltip。
 
-水质扫描仪检测目前有约 1 秒缓存，避免每次 Tooltip 调用都递归扫描全部库存。
+Tooltip 仅查询扫描仪检测缓存，缓存过期时请求后台式的主线程分帧扫描，不在悬停回调中同步遍历库存。首次检测尚未完成时可能暂不显示详情，扫描完成后后续 Tooltip 生效。扫描仪检测和维护共享同一轮遍历；关闭自动更换后，悬停仍能请求扫描仪检测。倒水不改变库存所有权，不再为倒水重复丢弃库存快照。切换 PlayerStore 或执行 LoadGame 后清除旧缓存和待处理工作。
 
 ### 滤芯耐久行
 
-容器中装有滤芯时，在水质成分之后追加一行滤芯耐久：
+容器中装有滤芯时，在水质成分之后追加一行滤芯耐久。由 `WaterHelper.GetFilterItem` 判断实际槽内物品，不额外添加必须具备 `FILTER_CONTAINER_TAG` 的限制：
 
 ```text
 WaterHelper.GetFilterItem(container)
@@ -263,11 +278,13 @@ var labels = category.CreateEntry("AutoUpdateWaterLabels", true, "倒水后自�
 
 ```text
 MelonMod.OnUpdate()
-  -> 每 2 秒执行一次 TryReplaceDepletedFilters()
-  -> 递归收集玩家物品
-  -> 找到水罐
-  -> WaterHelper.GetFilterItem(container)
-  -> DurabilityHelper.GetRealDurability(filter)
+  -> UpdateMaintenance：一轮结束后约 2 秒启动下一轮
+  -> 按约 2ms 的每帧预算推进迭代器
+  -> 队列遍历玩家物品图，按指针去重，不递归调用 FindAllChildItems
+  -> 同轮检测扫描仪、读取容器中的滤芯耐久
+  -> 只有存在耗尽滤芯才收集备用滤芯
+  -> 计算一次优先级，按三个稳定桶依次尝试候选
+  -> 交换前复核实时父库存、所有权、耐久、锁和放置条件
 ```
 
 ## 替换提示
@@ -301,52 +318,31 @@ StoreUIManager.Instance?.Notify(message, "default")
 GraphUtils.SwapItemsInPlace(depletedFilter, replacement)
 ```
 
-交换前记录两个过滤器各自的 `parentInventory` 和当前网格位置，并验证双向交换：
+交换前保存两个过滤器原始父库存和 `modifiedShape.Clone()`。形状已包含放置变换，不再额外叠加 `modifiedXOrigin/YOrigin`。
 
-```text
-旧过滤器 -> 替换过滤器原来的位置
-替换过滤器 -> 旧过滤器在水罐中的位置
-```
+预检使用 `GridShapeBuilder(itemShape).SetTransform(destinationShape).Build()` 构造放置形状：
 
-网格库存检查包括：
+- 网格调用原生 `CheckShapePlacement`，将参与交换的两个物品加入忽略列表。边界、异形空洞与碰撞由游戏规则判断。
+- 单槽检查实际占用、`MayHaveValidInventorySlot`、物品状态与父形状/状态修饰规则。
+- 双向检查 `IsInsertLocked` 和 `IsRemoveLocked`；锁定候选会被跳过，不阻塞后续候选。
+- 拖拽物品或原生 `EmporiumEntry.swapBufferElement` 已被占用时延后自动交换。
+- 真正交换前重新查询当前拥有的根物品，沿实时父链确认容器与备用滤芯仍归玩家拥有。扫描期间售出的物品不会继续参与交换。
 
-- 目标位置是否超出库存边界。
-- 替换后物品的完整形状是否可放入目标位置。
-- 是否与目标库存中其他物品重叠。
-- `GameGridInventory.inventoryShape` 的实际宽高。
-- `GameGridScrollableInventory.width/height`。
-- `GameSlotInventory` 单槽是否已被占用（occupant 必须是参与交换的两个物品之一），以及 `IsInsertLocked()`。
+交换后 Validate 并校验两个物品的父库存、位置/旋转/翻转，以及 `WaterHelper.GetFilterItem` 返回的实际滤芯。最终状态确实完成交换时才提示成功，不单纯依赖原生 bool 返回值。
 
-如果新旧物品尺寸不兼容，直接跳过交换，不删除任何过滤器。
+失败恢复使用 `GraphUtils.PlaceAtShape` 与原始形状，不再随机寻找一个空位。处理原生交换缓冲槽、脱离库存、旧滤芯已到来源库存等部分交换状态；一般先归还旧滤芯以腾出备用滤芯原位，目标槽中已有替换品时先处理对应的反向移动。读取父库存失败不等于 detached，不对无法读取的物品盲目接收。
 
-`GraphUtils.SwapItemsInPlace` 不保证原子性：如果"放入"阶段失败，物品可能脱离所有库存，表现为水罐滤芯位变空且旧过滤器消失。因此交换后必须重新读取两个过滤器的 `parentInventory` 做校验：
+恢复仍受真实锁、占用和原生方法失败影响，不能保证每次原生故障都能立即修复。未完成恢复时保留闭包中的物品、库存和形状引用，约 2 秒重试一次，并暂停其他自动交换。只允许在原来源、原目标及本次使用的游戏缓冲槽之间恢复，不强制抢回被其他库存接管的物品。切换存档后不再重试旧世界对象。
 
-```text
-旧过滤器 parentInventory == 替换过滤器原库存？
-替换过滤器 parentInventory == 水罐滤芯槽？
-```
-
-任一校验失败时执行恢复：把脱离库存的旧过滤器放回水罐槽位，把未成功放入的替换过滤器放回其原库存（`TryFindOneValidInventorySlot` + `SlotMarker.AcceptUnchecked`）。恢复不会把替换过滤器塞进无关的容器。
-
-交换成功后调用：
-
-```text
-sourceInventory.Validate()
-targetInventory.Validate()
-container.Validate()
-```
-
-交换前会重新读取两个过滤器的实时 `parentInventory`，并拒绝源槽和目标槽为同一库存、或任一槽位 `IsInsertLocked()` 的情况；不再依赖物品快照中缓存的旧引用。
-
-游戏的交换行为会把旧过滤器放回替换过滤器原来的位置，而不是删除旧过滤器。
+过滤器父链使用指针集合检测循环，不再以 16 层作为兼容上限。`water_filter_adv` 和 `water_filter` 的优先级先按稳定 identifier 判断，未知 Mod 继续使用名称/标识符兼容识别与已有非滤芯排除规则。
 
 ## 已确认的风险边界
 
 - `GameInventory.UncheckedAccept` 是高风险 Harmony 目标，正式版本不监听。
 - 不直接修改 `GameItem.identifier`；高级过滤器的 identifier 应保持 `water_filter_adv`。
 - 不直接修改库存集合；移动使用游戏的 `GraphUtils.SwapItemsInPlace`。
-- 不在每帧递归扫描库存；当前间隔为 2 秒。
-- AquaSense 正式版默认不向 MelonLoader 输出日志。
+- 遍历和候选检查分帧推进，预算约 2ms；预算检查不能中断正在执行的一次原生方法，所以不承诺任何极端情况下都不超过 2ms。恢复与真实交换也需要完整执行。
+- 正常运行不输出诊断明细；缺失补丁、读取失败、交换/恢复异常会输出 warning，避免静默失效。
 - 诊断日志、候选过滤器明细和补丁安装过程日志只存在于开发排查阶段，不属于发布版。
 
 ## 当前已验证环境
@@ -356,5 +352,21 @@ Game: Probably Stolen Demo 0.46D
 Unity: 2021.3.45f2
 MelonLoader: 0.7.3 Open-Beta / net6
 Assembly-CSharp snapshot: 2026-09-22
-Mod: AquaSense 1.1.0
+Mod: AquaSense 1.1.2
 ```
+
+## 1.1.2 修改依据与验证
+
+修改针对 1.1.1 的无需求候选排序、锁定候选阻塞、部分交换恢复、实例缓存串状态、Tooltip 重入及成分总量溢出等复现问题。
+
+当前游戏 `GameAssembly.dll` SHA256：`A2CAA0CECBF197CCD6B12DDEC7BB9E6FA0BC2CD2A5C52ABEF627AA919E2B9BFD`。
+通过 Cpp2IL 元数据定位并静态反汇编核对 `SwapItemsInPlace`（RVA `0x7C8E40`）、`PlaceAtShape`（`0x7C8D40`）、`CheckShapePlacement`（`0x7B99D0`）和单槽检查。这些是静态接口/调用约定依据，不是实机运行结果。
+
+回归工程直接链接当前 AquaSense.cs，使用边界桩模拟原生调用，不加载游戏 DLL，也不部署测试程序集：
+
+```powershell
+dotnet run --project "Probably Stolen/AquaSense.Tests/AquaSense.Tests.csproj" -c Release
+dotnet build "Probably Stolen/AquaSense/AquaSense.csproj" -c Release -p:SkipDeploy=true
+```
+
+场景与局限见 [AquaSense.Tests/README.md](../AquaSense.Tests/README.md)。原生碰撞、IL2CPP 补丁启动和真实帧耗时仍需要在游戏内验收，不能用桩测试替代。

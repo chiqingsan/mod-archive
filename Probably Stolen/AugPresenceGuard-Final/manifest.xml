@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.AugPresenceGuard</ID>
+  <Name>伪人数量保持</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.0.0</ModVersion>
+  <GameVersions><Version>0.46D</Version></GameVersions>
+  <Description>限制“改造体存在度”在 1～99 之间，避免改造体剧情过早结束。</Description>
+  <Assemblies><Assembly>AugPresenceGuard.dll</Assembly></Assemblies>
+  <Capabilities><Capability>reflection-external</Capability></Capabilities>
+</Mod>
