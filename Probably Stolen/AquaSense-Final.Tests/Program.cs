@@ -35,6 +35,43 @@ internal static class Program
     static int Cached() { var f = typeof(Hooks).GetField("FilterCache", BindingFlags.Static | BindingFlags.NonPublic)!; return ((System.Collections.IEnumerable)f.GetValue(null)!).Cast<System.Collections.ICollection>().Sum(x => x.Count); }
     static void Main()
     {
+        Test("highest remaining durability among fitting cached filters", () => {
+            var (jug, old) = Jug(10); var (_, inner) = Box();
+            var low = Item("water_filter", inner, 20);
+            var full = Item("water_filter", inner, 90); full.modifiedShape.minX = 2;
+            var blocked = Item("water_filter", inner, 100); blocked.modifiedShape.minX = 4;
+            jug.FilterSlot!.Accepts = item => item != blocked;
+            Frames(); old.Durability = 0; Hooks.AfterFilter(old); Frames();
+            Check(jug.FilterSlot.childItem == full, "did not choose highest fitting durability");
+        });
+        Test("filter type priority precedes durability", () => {
+            var (jug, old) = Jug(10); var (_, inner) = Box();
+            var normal = Item("water_filter", inner, 100);
+            var advanced = Item("water_filter_adv", inner, 1); advanced.modifiedShape.minX = 2;
+            Frames(); old.Durability = 0; Hooks.AfterFilter(old); Frames();
+            Check(jug.FilterSlot!.childItem == advanced, "durability overrode type priority");
+        });
+        Test("composition bypass defaults off and responds to toggle", () => {
+            Check(Core.ShowCompositionWithoutScanner!.Value == false, "bypass must default off");
+            var jug = Item("water_pitcher", EmporiumEntry.Instance.invWindow);
+            Liquid.Liquids = new() { new Liquid() };
+            Liquid.LiquidDict = null;
+            jug.state.Set("water", 1000000);
+            try {
+                var hidden = new RichTextBuilder(); Hooks.AfterWaterContainerTooltip(hidden, jug);
+                Check(hidden.Slices.Count == 0, "composition visible by default");
+                Core.ShowCompositionWithoutScanner.Value = true;
+                var shown = new RichTextBuilder(); Hooks.AfterWaterContainerTooltip(shown, jug);
+                Hooks.AfterWaterFeatureTooltip(shown, jug);
+                Check(shown.Slices.Count == 2 && shown.Slices.Any(x => x.text.Contains("1000 ml")), "composition missing or duplicated");
+                Core.ShowCompositionWithoutScanner.Value = false;
+                var hiddenAgain = new RichTextBuilder(); Hooks.AfterWaterContainerTooltip(hiddenAgain, jug);
+                Check(hiddenAgain.Slices.Count == 0, "toggle off ignored");
+                Item("aquascan", EmporiumEntry.Instance.invWindow); Frames();
+                var scanned = new RichTextBuilder(); Hooks.AfterWaterContainerTooltip(scanned, jug);
+                Check(scanned.Slices.Count == 2, "scanner no longer enables composition");
+            } finally { Liquid.Liquids.Clear(); }
+        });
         Test("filter durability without scanner, empty and filled containers", () => {
             var (jug, filter) = Jug(37);
             filter.MaxDurability = 400;

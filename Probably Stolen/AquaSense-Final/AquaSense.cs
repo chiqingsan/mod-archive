@@ -15,6 +15,7 @@ public sealed class Core : IMod
         try
         {
             var category = ModConfig.For(manifest.ID);
+            ShowCompositionWithoutScanner = category.Define("ShowCompositionWithoutScanner", false, "AquaSense", () => "无需水质扫描仪查看液体成分");
             AutoReplaceFilters = category.Define("AutoReplaceFilters", true, "AquaSense", () => "滤芯耗尽后自动更换");
             ShowFilterDurability = category.Define("ShowFilterDurability", true, "AquaSense", () => "悬浮面板显示滤芯耐久");
             AutoUpdateWaterLabels = category.Define("AutoUpdateWaterLabels", true, "AquaSense", () => "倒水后自动更新水质标签");
@@ -93,6 +94,8 @@ public sealed class Core : IMod
         _runner = null;
         Hooks.ResetMaintenance();
     }
+
+    internal static ConfigEntry<bool>? ShowCompositionWithoutScanner { get; private set; }
 
     internal static ConfigEntry<bool>? AutoReplaceFilters { get; private set; }
 
@@ -253,7 +256,7 @@ internal static class Hooks
 
             // The water composition section needs actual liquid to describe; the
             // filter durability line does not, so an empty jug still shows it.
-            if (HasWaterScanner() && IsFilledWaterContainer(item))
+            if ((Core.ShowCompositionWithoutScanner is { Value: true } || HasWaterScanner()) && IsFilledWaterContainer(item))
             {
                 var purity = WaterHelper.GetWaterPurity(item);
                 var locale = LocHelper.GetCurrentLocaleCode();
@@ -665,14 +668,31 @@ internal static class Hooks
             {
                 for (var i = 0; i < bucket.Count;)
                 {
-                    var candidate = bucket[i];
-                    yield return null;
-                    if (Core.AutoReplaceFilters is not { Value: true }) yield break;
-                    if (candidate.Item.parentInventory != candidate.Inventory || !IsAvailableFilter(candidate.Item))
+                    // Select from the existing cache only; keep filter-type priority.
+                    var bestIndex = -1;
+                    var bestDurability = 0;
+                    for (var j = i; j < bucket.Count;)
                     {
-                        bucket.RemoveAt(i);
-                        continue;
+                        var cached = bucket[j];
+                        yield return null;
+                        if (Core.AutoReplaceFilters is not { Value: true }) yield break;
+                        if (cached.Item.parentInventory != cached.Inventory || !IsAvailableFilter(cached.Item))
+                        {
+                            bucket.RemoveAt(j);
+                            continue;
+                        }
+                        var durability = DurabilityHelper.GetRealDurability(cached.Item);
+                        if (durability > bestDurability && AreItemsStillOwned(container, cached.Item) &&
+                            CanSwapFilterPlacement(filter, cached.Item))
+                        {
+                            bestIndex = j;
+                            bestDurability = durability;
+                        }
+                        j++;
                     }
+                    if (bestIndex < 0) break;
+                    (bucket[i], bucket[bestIndex]) = (bucket[bestIndex], bucket[i]);
+                    var candidate = bucket[i];
                     if (ReplaceFilter(container, filter, candidate.Item, out var toast, out attempted))
                     {
                         bucket.RemoveAt(i);
