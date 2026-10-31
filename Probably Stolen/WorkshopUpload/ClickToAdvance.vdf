@@ -1,0 +1,13 @@
+"workshopitem"
+{
+	"appid"		"4348910"
+	"publishedfileid"		"3829312622"
+	"contentfolder"		"D:\\app\\steam\\steamapps\\common\\Probably Stolen\\Mods\\ClickToAdvance"
+	"previewfile"		"D:\\code\\mod\\Probably Stolen\\ClickToAdvance-Final\\preview.png"
+	"visibility"		"0"
+	"title"		"点击推进对话"
+	"description"		"[h1]点击推进对话[/h1]
+
+在对话时点击鼠标左键，即可显示完整的当前文字或推进对话。"
+	"changenote"		"正式版首发"
+}

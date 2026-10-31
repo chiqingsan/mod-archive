@@ -188,66 +188,92 @@ PlayerStore.GetAllRepoEligibleItems()
 
 ### 水容器槽位不是滤芯专用
 
-`WaterHelper.GetFilterItem(container)` 返回的是**水容器槽位里的物品**，不保证是滤芯。该槽位可以放其他物品，游戏物品数据里已确认的同槽位物品包括：
+`WaterHelper.GetFilterItem(container)` 返回的是**水容器槽位里的物品**，不保证是可消耗滤芯。游戏物品数据里已确认的同槽位物品：
 
 ```text
-water_filter        滤水器                <- 滤芯
-water_filter_adv    高级滤水器             <- 滤芯
-uv_filter           紫外线灯              <- 不是滤芯，杀菌灯具
-hydroreed_filter    韧棉织物              <- 不是滤芯，游戏描述写明无法用于净水
-black_lamp          黑光灯                <- 不是滤芯
+water_filter        滤水器                <- 滤芯（WATER_FILTER，FILTER_SIZE_TAG=22）
+water_filter_adv    高级滤水器             <- 滤芯（WATER_FILTER，FILTER_SIZE_TAG=22）
+hydroreed_filter    水培芦苇滤芯           <- 滤芯（WATER_FILTER，FILTER_SIZE_TAG=22，耐久 200）
+uv_filter           紫外线灯              <- 带 WATER_FILTER，但不是可消耗滤芯
+black_lamp          黑光灯                <- 不是滤芯（无 WATER_FILTER）
+kotton_fabric       韧棉织物              <- 带 WATER_FILTER，但 FILTER_SIZE_TAG=150；悬停显示耐久，不参与自动换芯
 ```
 
-游戏侧证据：`WaterHelper.OnUVUsed(GameItem waterContainer)` 的参数是水容器而不是灯具，说明 UV 功能作用在容器槽位上。
+游戏侧证据：
+
+- `AmenitiesItemDirectory.HydroreedFilter()` 明确 `EnableTag("WATER_FILTER")`、`FILTER_SIZE_TAG=22`、`DurabilityHelper.InitItemWithDurability(gameItem, 200)`；水罐槽位的 `mayInventoryAddItemFunc` 只要求 `WATER_FILTER` 且排除 `uv_filter`，因此水培芦苇滤芯就是游戏承认的可放置滤芯。
+- `WaterHelper.HandleFilter` 对带 `WATER_FILTER` 的物品按 `FILTER_SIZE_TAG > liquid.particleSize` 判断能否过滤，并按耐久消耗；hydroreed_filter 与普通过滤器尺寸相同，过滤范围一致，只是耐久 200（普通 400）。
+- `kotton_fabric`（韧棉织物）同样带 `WATER_FILTER`，也能放进水罐，但它 `FILTER_SIZE_TAG=150`，只能过滤极大颗粒；游戏描述写“用于化学实验 / 织孔太粗，完全无法用于净水”。它是化学玩法的粗孔布料，对水商玩法没有收益，因此不参与自动换芯；不过游戏槽位里它同样按耐久消耗，所以悬停时仍显示耐久。
+- `WaterHelper.OnUVUsed(GameItem waterContainer)` 的参数是水容器而不是灯具，说明紫外线灯带 `WATER_FILTER` 只是为了从槽位触发，不按耐久消耗，也不显示耐久。
 
 因此在做任何替换之前，必须同时校验**被替换物**和**替换物**都是滤芯。
 
 ### 识别规则
 
-识别使用物品的 `identifier` 和 `name`：先排除已知的非滤芯槽位物品，再要求命中滤芯关键字。
+采用游戏自己的 `WATER_FILTER` 标签做正向判定，区分两个用途：耐久显示只要求“槽位内可消耗的滤芯”，自动换芯还需过滤孔不比原版更粗：
 
 ```csharp
-private static readonly string[] NonFilterSlotIdentifiers =
-{
-    "uv_filter", "uvfilter", "uv_lamp", "uvlamp",
-    "black_lamp", "hydroreed"
-};
+private static readonly string[] UvLampIdentifiers = { "uvfilter", "uvlamp" };
 
-// 命中排除表 -> 不是滤芯
-// 否则：包含 filter / 过滤器 / 滤水器 之一 -> 是滤芯
+// 槽位内按耐久消耗的滤芯（含水培芦苇滤芯、韧棉织物等粗孔布料）；排除紫外线灯。
+private static bool IsWaterFilterSlotItem(GameItem item)
+{
+    var identifier = NormalizeIdentifier(item.identifier ?? string.Empty);
+    foreach (var uvLamp in UvLampIdentifiers)
+    {
+        if (identifier == uvLamp)
+            return false;
+    }
+
+    return item.IsTag("WATER_FILTER");
+}
+
+// 可参与自动换芯判定：比原版更粗的织物对水商玩法无收益，不换。
+private static bool IsFilterItem(GameItem item) =>
+    IsWaterFilterSlotItem(item) && IsAtLeastAsFineAsVanilla(item);
 ```
 
-**不能只用"名字含 filter"做正向匹配。** 紫外线灯的 identifier 是 `uv_filter`，韧棉织物的 identifier 是 `hydroreed_filter`，两者都包含 `filter`，纯正向匹配会把它们当成滤芯。这是 1.0.2 及更早版本的真实缺陷：把紫外线灯放进水容器后，它会被当作滤芯替换掉（用户实机反馈）。
-
-排除表按 identifier 子串匹配，因为 identifier 稳定、不随语言变化；显示名会随本地化改变，不能作为判断依据。
-
-不使用过宽的 `AmenitiesItemDirectory.WATER_FILTER` tag 判断，因为实测该判断会把普通物品误加入候选列表。
+**不能只用"名字含 filter"做正向匹配。** 紫外线灯（`uv_filter`）和水培芦苇滤芯（`hydroreed_filter`）的 identifier 都含 `filter`；旧实现用关键字黑名单把两者都排除，且把 `hydroreed_filter` 误当成“韧棉织物”（实际韧棉织物是 `kotton_fabric`），导致水培芦苇滤芯不显示耐久、也不会被自动换芯使用（用户实机反馈）。现在改用游戏标签，黑光灯等无标签物品自动被排除；韧棉织物的耐久会显示，但不会被自动换芯选中。
 
 ### 候选过滤器条件
 
 - 不是当前水罐或当前耗尽过滤器。
-- 是滤芯（先过排除表，再命中关键字）。
+- 是滤芯：带 `WATER_FILTER`、不是紫外线灯，且过滤孔不比原版普通过滤器更粗（`FILTER_SIZE_TAG <= 22`）——避免把韧棉织物（150）这类粗孔物品自动装进水罐造成降级。
 - 有 `parentInventory`。
 - 不在其他水容器内部。
 - `DurabilityHelper.GetRealDurability(item) > 0`。
 
-优先级：
+优先级（同档内优先剩余耐久最高的可用滤芯）：
 
 ```text
 0  高级过滤器：advanced / adv_filter / high_filter / 高级
 1  原版普通过滤器：由 PreBuiltItemHelper.WaterFilter() 记录 identifier/name
-2  其他符合过滤器命名规则的 Mod 过滤器
+2  其他兼容滤芯：Mod 滤芯与游戏内其他 WATER_FILTER 物品（如水培芦苇滤芯）
 ```
+
+### 排除宿主机器内的滤芯
+
+部分机器的内置槽位会自己读取滤芯，而不是把滤芯放在水容器物品里。当前需要排除的是循环水养殖系统（`MachineRAS`）：它的 4 个滤芯槽带 `RAS_FILTER_SLOT_TAG`，由 `AquacultureHelper.TickTank`/`RunFilter` 每个养殖周期读取并通过 `WaterHelper.HandleFilter` 消耗耐久。滤芯挂在机器的 `GameSlotInventory` 槽位上，机器本身不是水容器，`IsInstalledInWaterContainer` 看不到它们，因此会被当成玩家库存里的备用滤芯拿走（用户反馈：制药时一直换走鱼池里的滤水器）。
+
+规则：滤芯父链上的宿主物品带 `RAS_TAG`（identifier 兼容 `ras`/`ras_empty`）时，既不会被自动换芯当作备用，也不会把耗尽滤芯加入待更换队列：
+
+- `IsAvailableFilter` 排除：不作为替换候选。
+- `AfterFilter` 排除：耗尽事件不入队。
 
 ### 已知局限
 
-排除表是黑名单而不是白名单。改成白名单（只认已知滤芯 identifier）会挡掉其他 Mod 添加的滤芯，破坏兼容性，因此保留"关键字通配 + 黑名单排除"的折中方案。**代价是：如果游戏或 Mod 新增了名称含 `filter` 的非滤芯槽位物品，仍可能被误判。** 遇到时把该物品的名称加入排除表即可。
+- 识别以游戏标签为准，不再需要维护名字黑名单；但同槽位里带 `WATER_FILTER` 却不可消耗的功能件（例如紫外线灯）仍需在 `IsWaterFilterSlotItem` 中单独排除。
+- 过滤孔过粗的带标签织物（韧棉织物 `kotton_fabric`，尺寸 150）能放进水罐、悬停时也显示耐久，但对水商玩法没有收益，因此不参与自动换芯（`IsFilterItem` 的尺寸检查）。
+- 替换只保证“不会比原版普通过滤器更粗”；更细的 Mod 滤芯可以参与候选。
+- 宿主黑名单目前只包含循环水养殖系统（`RAS_TAG`）；其他“内置滤芯槽但不装在水容器内”的机器若出现同样反馈，需要往 `ExcludedFilterHostTags`/`ExcludedFilterHostIdentifiers` 中追加。
+- 失败恢复仍受真实锁、占用和原生方法失败影响，不能保证每次原生故障都能立即修复。
 
 ### 结论口径
 
-- 标识符清单（`uv_filter` / `hydroreed_filter` / `black_lamp`）：已从游戏数据 `resources.assets` 的本地化键确认。
-- 紫外线灯被误替换：用户实机反馈确认。
-- 排除表修复后的效果：待验证行为，尚未完成实机验证。
+- 水培芦苇滤芯（`hydroreed_filter`）是合法滤芯：游戏数据带 `WATER_FILTER`、`FILTER_SIZE_TAG=22`、耐久 200；旧黑名单把它误当成“韧棉织物、无法用于净水”而排除。
+- 韧棉织物（`kotton_fabric`）确实放得进水罐，但 `FILTER_SIZE_TAG=150`，只过滤极大颗粒，属化学玩法；模组会显示它的耐久，但不把它当作可自动更换的水滤芯。
+- 紫外线灯被误替换：用户实机反馈确认，现由 `uv_filter` 排除规则处理。
+- 水培芦苇滤芯识别：工具提示耐久与自动换芯候选均已修复，回归测试覆盖；用户于 2026-10-31 部署 1.8 后反馈“测试后发现没问题了”，实机验证正常。
 
 ## 设置开关
 

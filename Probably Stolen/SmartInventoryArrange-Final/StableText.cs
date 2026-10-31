@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -8,6 +9,8 @@ using System.Text;
 
 internal static class StableText
 {
+    private static readonly ConcurrentDictionary<Type, MemberInfo[]> MemberCache = new();
+
     internal static string Serialize(object? value)
     {
         var builder = new StringBuilder();
@@ -42,11 +45,7 @@ internal static class StableText
             throw new InvalidOperationException("Stable serialization encountered a reference cycle.");
 
         builder.Append('{');
-        var members = value.GetType().GetMembers(BindingFlags.Instance | BindingFlags.Public)
-            .Where(m => m.MemberType is MemberTypes.Field or MemberTypes.Property)
-            .Where(m => m is not PropertyInfo p || p.GetIndexParameters().Length == 0)
-            .OrderBy(m => m.Name, StringComparer.Ordinal)
-            .ToArray();
+        var members = GetSerializableMembers(value.GetType());
         for (var i = 0; i < members.Length; i++)
         {
             if (i != 0) builder.Append(',');
@@ -56,6 +55,13 @@ internal static class StableText
         }
         builder.Append('}');
     }
+
+    private static MemberInfo[] GetSerializableMembers(Type type) =>
+        MemberCache.GetOrAdd(type, static t => t.GetMembers(BindingFlags.Instance | BindingFlags.Public)
+            .Where(m => m.MemberType is MemberTypes.Field or MemberTypes.Property)
+            .Where(m => m is not PropertyInfo p || p.GetIndexParameters().Length == 0)
+            .OrderBy(m => m.Name, StringComparer.Ordinal)
+            .ToArray());
 
     private static void AppendString(StringBuilder builder, string value)
     {

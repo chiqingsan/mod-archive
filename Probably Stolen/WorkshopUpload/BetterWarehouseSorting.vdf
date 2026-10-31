@@ -1,0 +1,31 @@
+"workshopitem"
+{
+    "appid" "4348910"
+    "publishedfileid" "3828928932"
+    "contentfolder" "D:\\code\\mod\\Probably Stolen\\WorkshopUpload\\BetterWarehouseSortingContent"
+    "title" "更好的库存排序"
+    "description" "[h1]更好的库存排序[/h1]
+让库存排列更紧凑、更清晰、更容易查找。
+
+[h2]原作与源码[/h2]
+本模组基于《智能仓库排列》（Smart Inventory Arrange）修改，是非官方版本，并非原作者发布。感谢原作者的工作。
+
+原作者：xiepeixuan（[url=https://steamcommunity.com/profiles/76561198166860494]Steam 主页[/url]）
+原作：[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3829206666]Steam 创意工坊[/url]
+
+本版本源码：[url=https://github.com/chiqingsan/mod-archive/tree/main/Probably%20Stolen/SmartInventoryArrange-Final]GitHub[/url]
+
+[h2]功能[/h2]
+[list]
+[*][b]大件优先[/b]：优先安排大件、容器、机器和储藏类物品，减少空间碎片。
+[*][b]同物连续[/b]：相同物品尽量连续摆放，方便快速识别和取用。
+[*][b]分类集中[/b]：相同类型尽量安排在相邻区域，形成清晰分区。
+[*][b]安全保护[/b]：整理前后检查库存快照；如果库存内容或物品状态发生变化，会自动取消操作，避免覆盖新变化。
+[/list]
+
+[h2]v1.1.1 更新内容[/h2]
+[list]
+[*]修复排序时游戏内已固定的物品被移动的问题。
+[/list]"
+    "changenote" "更新原作、作者及源码链接。"
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.BetterPerformance</ID>
+  <Name>深空当铺 · 更好的性能优化</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.0.0</ModVersion>
+  <GameVersions><Version>0.46D</Version></GameVersions>
+  <Description>提升流畅度与夜间结算速度：修复拖拽粘手，装满物品的容器里拖拽不再卡顿，容器打开更快，中键悬浮预览容器，缓存提示框与界面射线检测；过夜结算合并库存刷新、缓存化学模拟读取；读档期界面异常兜底，减少卡死。全部优化可单独开关，默认全开；可选性能诊断默认关闭。针对正式版 Mono/ModLoader 独立实现。</Description>
+  <Assemblies><Assembly>BetterPerformance.dll</Assembly></Assemblies>
+  <Capabilities>
+    <Capability>reflection-external</Capability>
+  </Capabilities>
+</Mod>

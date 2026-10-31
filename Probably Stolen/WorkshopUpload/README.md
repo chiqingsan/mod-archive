@@ -32,3 +32,22 @@
 - 线上页面：https://steamcommunity.com/sharedfiles/filedetails/?id=3828878417
 - 本地介绍：`AquaSense.bbcode`
 - 本地发布配置：`AquaSense.vdf`
+
+## 按键拖拽多选框（BatchSelect）
+
+- Workshop ID：`3830936204`
+- 线上页面：https://steamcommunity.com/sharedfiles/filedetails/?id=3830936204
+- 本地介绍：`BatchSelect.bbcode`
+- 本地发布配置：`BatchSelect.vdf`
+- 首次发布：2026-10-31，版本 1.0.0，适配游戏 0.46D。
+
+## 深空当铺 · 更好的性能优化（BetterPerformance）
+
+- Workshop ID：`3831227725`
+- 线上页面：https://steamcommunity.com/sharedfiles/filedetails/?id=3831227725
+- 本地介绍：`BetterPerformance.bbcode`
+- 首发配置（含标题/介绍/可见性）：`BetterPerformance.vdf`
+- 更新配置（后续更新只用这个）：`BetterPerformance-3831227725-1.0.0.vdf`
+- 内容目录：`BetterPerformance-1.0.0-Content/`（`BetterPerformance.dll` 86,016 B `f6c01a98…`、manifest 1.0.0 869 B `d147490f…`、preview `d586868b…`）
+- 封面：`BetterPerformance-cover.jpg`（1280×720）
+- 首次发布：2026-11-01，版本 1.0.0，适配游戏 0.46D。

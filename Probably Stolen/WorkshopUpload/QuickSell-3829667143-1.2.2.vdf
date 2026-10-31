@@ -1,0 +1,10 @@
+"workshopitem"
+{
+    "appid" "4348910"
+    "publishedfileid" "3829667143"
+    "contentfolder" "D:\\code\\mod\\Probably Stolen\\WorkshopUpload\\QuickSell-1.2.2-Content"
+    "changenote" "1.2.2：
+- 「保护同类」改为按名称持续生效，之后获得的同名物品也会被保护；面板可单独放行或恢复某一件物品。
+- 修复「尽量用满预算」在多样化顾客下可能卡住不上货：规划改用上台后预计报价，超预算时自动回填其它候选。
+- 修复被保护物品误报「预算不足」；上货失败回滚后不再残留顾客对话。"
+}

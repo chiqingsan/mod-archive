@@ -8,7 +8,7 @@ namespace SmartInventoryArrange.Core;
 
 public sealed class GlobalArrangeController : IDisposable
 {
-	public sealed record Request(Native34Solver.SearchSession Session, bool Restarted, long Generation, string InputSignature, int NodeBudget, int SolutionBatch);
+	public sealed record Request(Native34Solver.SearchSession Session, bool Restarted, long Generation, string InputSignature, int NodeBudget, int SolutionBatch, string RestartDetail);
 
 	private Native34Solver.SearchSession? _session;
 
@@ -31,6 +31,18 @@ public sealed class GlobalArrangeController : IDisposable
 	public int SolutionBatch { get; init; } = 64;
 
 
+	public int ResumeSolutionBatch { get; init; } = 16;
+
+
+	public int LargeInventoryThreshold { get; init; } = 100;
+
+
+	public int LargeSolutionBatch { get; init; } = 128;
+
+
+	public int LargeResumeSolutionBatch { get; init; } = 32;
+
+
 	public Request Begin(LayoutProblem p, IReadOnlyList<Placement> original, string context)
 	{
 		if (_pending)
@@ -39,8 +51,14 @@ public sealed class GlobalArrangeController : IDisposable
 		}
 		string text = ProblemSignature(p);
 		string text2 = Native34Solver.Key(original);
-		bool flag = _session == null || text != _problem || text2 != _expectedPose || context != _context;
-		if (flag)
+		bool noSession = _session == null;
+		bool problemChanged = !noSession && text != _problem;
+		bool poseChanged = !noSession && text2 != _expectedPose;
+		bool contextChanged = !noSession && context != _context;
+		bool restarted = noSession || problemChanged || poseChanged || contextChanged;
+		string reason = (noSession ? "no-session" : (problemChanged ? "problem" : (poseChanged ? "pose" : (contextChanged ? "context" : "resume"))));
+		string detail = "problemChanged=" + (problemChanged ? "true" : "false") + ",poseChanged=" + (poseChanged ? "true" : "false") + ",contextChanged=" + (contextChanged ? "true" : "false") + ",reason=" + reason;
+		if (restarted)
 		{
 			_session?.Dispose();
 			_session = new Native34Solver().CreateSession(p, original);
@@ -50,12 +68,13 @@ public sealed class GlobalArrangeController : IDisposable
 			_generation++;
 		}
 		_pending = true;
-		return new Request(_session, flag, _generation, text, flag ? InitialNodeBudget : ContinueNodeBudget, SolutionBatch);
+		bool large = p.Items.Count >= LargeInventoryThreshold;
+		return new Request(_session, restarted, _generation, text, restarted ? InitialNodeBudget : ContinueNodeBudget, restarted ? (large ? LargeSolutionBatch : SolutionBatch) : (large ? LargeResumeSolutionBatch : ResumeSolutionBatch), detail);
 	}
 
 	public void Complete(Request request, LayoutProblem p, IReadOnlyList<Placement> output)
 	{
-		if (!_pending || request.Generation != _generation || request.Session != _session || ProblemSignature(p) != _problem)
+		if (!_pending || request.Generation != _generation || request.Session != _session || request.InputSignature != _problem)
 		{
 			throw new InvalidOperationException("Stale search-session completion.");
 		}

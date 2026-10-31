@@ -69,7 +69,8 @@ item_uv_filter_name      -> 紫外线灯
 item_uv_filter_desc      -> 可用于水容器
 item_water_filter_name   -> 滤水器
 item_water_filter_adv_name -> 高级滤水器
-item_hydroreed_filter_name -> 韧棉织物
+item_hydroreed_filter_name -> 水培芦苇滤芯
+item_kotton_fabric_name  -> 韧棉织物
 ```
 
 反查步骤：
@@ -86,11 +87,14 @@ item_hydroreed_filter_name -> 韧棉织物
 
 | identifier | 实际物品 | 陷阱 |
 | --- | --- | --- |
-| `uv_filter` | 紫外线灯 | 含 `filter`，但不是滤芯 |
-| `hydroreed_filter` | 韧棉织物 | 含 `filter`，游戏描述写明无法用于净水 |
-| `black_lamp` | 黑光灯 | 名称含 `lamp`，与紫外线灯是不同物品 |
+| `uv_filter` | 紫外线灯 | 含 `filter` 且带 `WATER_FILTER` 标签，但它是灯具不是可消耗滤芯 |
+| `hydroreed_filter` | 水培芦苇滤芯 | 含 `filter`；带 `WATER_FILTER`、`FILTER_SIZE_TAG=22`、耐久 200，是合法滤芯（旧文档误记为“韧棉织物 / 无法净水”） |
+| `kotton_fabric` | 韧棉织物 | 带 `WATER_FILTER`、`FILTER_SIZE_TAG=150`；能放进水罐，但只过滤大颗粒，属化学玩法 |
+| `black_lamp` | 黑光灯 | 名称含 `lamp`，与紫外线灯是不同物品；无 `WATER_FILTER` 标签 |
 
 因此**判断物品类别时必须先排除已知的非目标物品**，不能只做关键字正向匹配；否则会把无关物品当成目标处理。分类判断还应优先使用 identifier（稳定、不随语言变化），而不是显示名（会本地化）。
+
+判断滤芯的正确依据是游戏的 `WATER_FILTER` 标签（`WaterHelper.GetFilterItem` / `HandleFilter` 自己就用它），不是名字关键字：紫外线灯需要单独排除；水培芦苇滤芯应当被识别；韧棉织物（`kotton_fabric`）只服务化学玩法，悬停时会显示耐久，但不参与 AquaSense 的自动换芯。（2026-10-31 修正：旧文档把 `hydroreed_filter` 误记为“韧棉织物”，并错误地写成“无法用于净水”。）
 
 ## GameInventory / GameGridInventory
 

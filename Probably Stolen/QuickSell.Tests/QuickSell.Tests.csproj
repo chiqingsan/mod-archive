@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GameDirectory Condition="'$(GameDirectory)' == ''">D:\app\steam\steamapps\common\Probably Stolen</GameDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameDirectory)\Probably Stolen_Data\Managed\Assembly-CSharp.dll</HintPath></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(GameDirectory)\Probably Stolen_Data\Managed\UnityEngine.CoreModule.dll</HintPath></Reference>
+    <Compile Include="../QuickSell/SelectionPlanner.cs" Link="SelectionPlanner.cs" />
+    <Compile Include="../QuickSell/SelectionRules.cs" Link="SelectionRules.cs" />
+    <Compile Include="../QuickSell/NativeContracts.cs" Link="NativeContracts.cs" />
+    <Compile Include="../QuickSell/HintBounds.cs" Link="HintBounds.cs" />
+    <Compile Include="../QuickSell/ShortcutKeys.cs" Link="ShortcutKeys.cs" />
+  </ItemGroup>
+</Project>

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -10,6 +11,15 @@ namespace SmartInventoryArrange;
 internal static class InstanceOrderNative
 {
 	private sealed record Condition(string Category, string Id, int Custom);
+
+	private sealed class InstanceOrderCacheEntry
+	{
+		internal ulong Signature;
+
+		internal InstanceOrderInfo Info = null!;
+	}
+
+	private static readonly ConditionalWeakTable<GameItem, InstanceOrderCacheEntry> InstanceOrderCache = new ConditionalWeakTable<GameItem, InstanceOrderCacheEntry>();
 
 	private static TagState? Tag(GameItem item, string key)
 	{
@@ -355,12 +365,162 @@ internal static class InstanceOrderNative
 		return HashCompat.Sha256Hex(JsonSerializer.SerializeToUtf8Bytes(Enumerable.OrderBy((IEnumerable<string>)list, (string x) => x, (IComparer<string>?)StringComparer.Ordinal)));
 	}
 
+	internal static ulong Signature(GameItem item)
+	{
+		ulong hash = 14695981039346656037UL;
+		hash = MixText(hash, item.identifier);
+		hash = MixValue(hash, (ulong)(uint)item.uniqueId);
+		hash = MixValue(hash, (ulong)(uint)item.unitCount);
+		hash = MixText(hash, item.GetDisplayName(true));
+		TagSystem state = item.state;
+		Dictionary<string, TagState> val = ((state != null) ? state.dict : null);
+		ulong tagHash = 0UL;
+		int tagCount = 0;
+		if (val != null)
+		{
+			foreach (KeyValuePair<string, TagState> item2 in val)
+			{
+				tagHash ^= HashTag(item2.Key, item2.Value);
+				tagCount++;
+			}
+		}
+		hash = MixValue(hash, tagHash);
+		hash = MixValue(hash, (ulong)(uint)tagCount);
+		List<ItemFeature> itemFeatures = item.itemFeatures;
+		ulong featureHash = 0UL;
+		int featureCount = 0;
+		if (itemFeatures != null)
+		{
+			for (int i = 0; i < itemFeatures.Count; i++)
+			{
+				ItemFeature val2 = itemFeatures[i];
+				featureHash ^= ((val2 == null) ? 0x9E3779B97F4A7C15UL : HashFeature(val2));
+				featureCount++;
+			}
+		}
+		hash = MixValue(hash, featureHash);
+		hash = MixValue(hash, (ulong)(uint)featureCount);
+		List<string> itemTypes = item.itemTypes;
+		if (itemTypes == null)
+		{
+			hash = MixValue(hash, 0UL);
+		}
+		else
+		{
+			hash = MixValue(hash, (ulong)(uint)itemTypes.Count);
+			for (int j = 0; j < itemTypes.Count; j++)
+			{
+				hash = MixText(hash, itemTypes[j]);
+			}
+		}
+		return hash;
+	}
+
+	private static ulong MixValue(ulong hash, ulong value)
+	{
+		hash ^= value + 0x9E3779B97F4A7C15UL + (hash << 6) + (hash >> 2);
+		return hash;
+	}
+
+	private static ulong MixText(ulong hash, string? text)
+	{
+		if (text == null)
+		{
+			return MixValue(hash, 0xFFFFFFFFFFFFFFFFUL);
+		}
+		hash = MixValue(hash, (ulong)(uint)text.Length);
+		for (int i = 0; i < text.Length; i++)
+		{
+			hash = MixValue(hash, text[i]);
+		}
+		return hash;
+	}
+
+	private static ulong HashTag(string key, TagState tag)
+	{
+		ulong hash = MixText(14695981039346656037UL, key);
+		if (tag == null)
+		{
+			return MixValue(hash, 1UL);
+		}
+		hash = MixText(hash, tag.identifier);
+		hash = MixText(hash, tag.identifierName);
+		hash = MixValue(hash, tag.valueEnabled ? 1UL : 0UL);
+		hash = MixValue(hash, (ulong)(uint)tag.valueInt);
+		hash = MixValue(hash, (ulong)tag.valueLong);
+		hash = MixValue(hash, (ulong)(uint)HashCompat.SingleBits(tag.valueFloat));
+		hash = MixValue(hash, (ulong)HashCompat.DoubleBits(tag.valueDouble));
+		hash = MixValue(hash, tag.valueBool ? 1UL : 0UL);
+		return MixText(hash, tag.valueString);
+	}
+
+	private static ulong HashFeature(ItemFeature feature)
+	{
+		ulong hash = 14695981039346656037UL;
+		hash = MixText(hash, feature.category);
+		hash = MixText(hash, feature.identifier);
+		hash = MixValue(hash, feature.isDisabled ? 1UL : 0UL);
+		hash = MixValue(hash, (ulong)(uint)(int)feature.featureType);
+		hash = MixValue(hash, (ulong)(uint)(int)feature.valueStage);
+		hash = MixValue(hash, (ulong)(uint)feature.parentItemUniqueId);
+		hash = MixValue(hash, feature.isExposing ? 1UL : 0UL);
+		hash = MixValue(hash, feature.isPublicHidden ? 1UL : 0UL);
+		hash = MixValue(hash, (ulong)(uint)feature.customIntValue1);
+		hash = MixValue(hash, feature.isFeatureMatch ? 1UL : 0UL);
+		hash = MixValue(hash, feature.useCondition ? 1UL : 0UL);
+		hash = MixValue(hash, feature.isExposable ? 1UL : 0UL);
+		hash = MixValue(hash, feature.IsInitiallyShown() ? 1UL : 0UL);
+		hash = MixValue(hash, feature.IsFeatureDiscovered() ? 1UL : 0UL);
+		hash = MixValue(hash, feature.IsExposed() ? 1UL : 0UL);
+		ItemCondition realCondition = feature.realCondition;
+		ItemCondition fakeCondition = feature.fakeCondition;
+		int actualModifier = (feature.useCondition ? ((realCondition == null) ? 0 : realCondition.modValue) : feature.GetActualValueModifier());
+		int fakeModifier = (feature.useCondition ? ((fakeCondition == null) ? 0 : fakeCondition.modValue) : feature.GetFakeValueModifier());
+		hash = MixValue(hash, (ulong)(uint)actualModifier);
+		hash = MixValue(hash, (ulong)(uint)fakeModifier);
+		hash = MixText(hash, feature.useCondition ? fakeCondition?.display : feature.GetPublicDisplay());
+		hash = MixText(hash, feature.useCondition ? realCondition?.display : feature.GetActualDisplay());
+		hash = MixCondition(hash, realCondition);
+		hash = MixCondition(hash, fakeCondition);
+		return hash;
+	}
+
+	private static ulong MixCondition(ulong hash, ItemCondition condition)
+	{
+		if (condition == null)
+		{
+			return MixValue(hash, 0UL);
+		}
+		hash = MixValue(hash, 1UL);
+		hash = MixText(hash, condition.identifier);
+		hash = MixText(hash, condition.category);
+		hash = MixText(hash, Convert.ToString(condition.customValue, CultureInfo.InvariantCulture));
+		hash = MixText(hash, Convert.ToString(condition.compareValue, CultureInfo.InvariantCulture));
+		hash = MixText(hash, Convert.ToString(condition.display, CultureInfo.InvariantCulture));
+		return hash;
+	}
+
+	internal static InstanceOrderInfo ReadCached(GameItem item, string stableId)
+	{
+		ulong signature = Signature(item);
+		if (InstanceOrderCache.TryGetValue(item, out InstanceOrderCacheEntry? cached) && cached != null && cached.Signature == signature && string.Equals(cached.Info.StableId, stableId, StringComparison.Ordinal))
+		{
+			PerfTrace.Increment("instanceOrderHits");
+			return cached.Info;
+		}
+		InstanceOrderInfo info = Read(item, stableId);
+		InstanceOrderCache.Remove(item);
+		InstanceOrderCache.Add(item, new InstanceOrderCacheEntry
+		{
+			Signature = signature,
+			Info = info
+		});
+		PerfTrace.Increment("instanceOrderMisses");
+		return info;
+	}
+
 	internal static string FingerprintSuffix(GameItem item)
 	{
-		return JsonSerializer.Serialize(new
-		{
-			order = Read(item, ""),
-			stateIntegrity = StateIntegrity(item)
-		});
+		return JsonSerializer.Serialize(Read(item, ""));
 	}
 }

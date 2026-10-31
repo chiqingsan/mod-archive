@@ -3,9 +3,12 @@ using System.Security.Cryptography;
 
 internal static class HashCompat
 {
+    [ThreadStatic]
+    private static SHA256? _sha;
+
     internal static string Sha256Hex(byte[] data)
     {
-        using var sha = SHA256.Create();
+        var sha = _sha ?? (_sha = SHA256.Create());
         var bytes = sha.ComputeHash(data);
         return BitConverter.ToString(bytes).Replace("-", "", StringComparison.Ordinal);
     }

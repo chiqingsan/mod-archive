@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.BetterAutomotiveBattery</ID>
+  <Name>更好的自动更换电池</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.0</ModVersion>
+  <GameVersions><Version>0.46D</Version></GameVersions>
+  <Description>机器或供电设备里的电池快没电时，自动更换电池</Description>
+  <Assemblies><Assembly>BetterAutomotiveBattery.dll</Assembly></Assemblies>
+  <Capabilities><Capability>reflection-external</Capability></Capabilities>
+</Mod>

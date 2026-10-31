@@ -160,6 +160,28 @@ public sealed class QuickCounterMod : IMod
                 return;
             }
 
+            if (frame != null && frame.buttonHost != null && frame.buttonHost.parent != null)
+            {
+                var actions = frame.buttonHost.parent.Find("QuickSellActions");
+                if (actions != null && actions.gameObject.activeInHierarchy)
+                {
+                    var buttons = actions.GetComponentsInChildren<TabletButton>();
+                    if (buttons.Length >= 2 && buttons[1].gameObject.activeInHierarchy && buttons[1].Interactable)
+                        buttons[1].button.onClick.Invoke();
+                    return;
+                }
+            }
+
+            var wholesale = (TabletButton?)typeof(NegociationUIManager)
+                .GetField("secondaryButton", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .GetValue(negotiation);
+            if (wholesale != null && wholesale.gameObject.activeInHierarchy)
+            {
+                if (wholesale.Interactable)
+                    wholesale.button.onClick.Invoke();
+                return;
+            }
+
             var button = (TabletButton?)typeof(NegociationUIManager)
                 .GetField("primaryButton", BindingFlags.Instance | BindingFlags.NonPublic)!
                 .GetValue(negotiation);

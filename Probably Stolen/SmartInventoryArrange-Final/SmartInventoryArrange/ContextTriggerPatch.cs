@@ -1,4 +1,5 @@
 using HarmonyLib;
+using UnityEngine;
 
 namespace SmartInventoryArrange;
 
@@ -7,17 +8,19 @@ internal static class ContextTriggerPatch
 {
 	private static bool Prefix(ItemContextHandler __instance, RichTextElement button)
 	{
-		if (!NativeSmartMenu.IsCurrent(__instance))
+		bool smart = NativeSmartMenu.Button != null && ReferenceEquals(button, NativeSmartMenu.Button);
+		bool preserve = NativeSmartMenu.PreserveButton != null && ReferenceEquals(button, NativeSmartMenu.PreserveButton);
+		if (!smart && !preserve)
 		{
 			return true;
 		}
-		bool num = NativeSmartMenu.Button != null && ReferenceEquals(button, NativeSmartMenu.Button);
-		bool flag = NativeSmartMenu.PreserveButton != null && ReferenceEquals(button, NativeSmartMenu.PreserveButton);
-		if (!num && !flag)
-		{
-			return true;
-		}
+		bool menuCurrent = NativeSmartMenu.IsCurrent(__instance);
 		GameGridInventory? currentInventory = ContextAccess.CurrentInventory(__instance);
+		Debug.Log("Smart arrange click: button=" + (preserve ? "preserve" : "smart") + ", menuCurrent=" + menuCurrent + ", inventory=" + ((currentInventory != null) ? "yes" : "null") + ", busy=" + SmartArrangeMod.Busy);
+		if (!menuCurrent)
+		{
+			return true;
+		}
 		PixelWindow sortWindow = ContextAccess.SortWindow(__instance);
 		if (sortWindow != null)
 		{
@@ -25,7 +28,11 @@ internal static class ContextTriggerPatch
 		}
 		if (currentInventory != null)
 		{
-			SmartArrangeMod.Run(currentInventory, flag);
+			SmartArrangeMod.Run(currentInventory, preserve);
+		}
+		else
+		{
+			Debug.LogWarning("Smart arrange click ignored: no current inventory.");
 		}
 		return false;
 	}

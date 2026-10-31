@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.QuickSell</ID>
+  <Name>帮我上货! (更好的交易体验)</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.0.1</ModVersion>
+  <Description>指定供货区，按顾客需求与预算一键上货；支持物品保护、高亮物品与选货规则。Ctrl+L 开关面板，按住 N 查看高亮。出售仍由玩家确认。</Description>
+  <Assemblies><Assembly>QuickSell.dll</Assembly></Assemblies>
+  <Capabilities><Capability>reflection-external</Capability></Capabilities>
+</Mod>

@@ -1,0 +1,20 @@
+PASS native AddParent/RemoveParent detached-object contract (console runtime)
+PASS 70/60/40 chooses 60+40 for budget 100
+PASS zero remaining budget
+PASS over-budget allowance is a strict bound
+PASS single item limit
+PASS variety cannot repeat a type
+PASS same-price different types remain available for variety selection
+PASS space priority
+PASS one quantity choice per physical stack
+PASS 100 small samples match exhaustive budget solutions
+PASS 100 candidates respect computation, money and 8 MiB allocation limits (4ms, 2452 KiB allocated; console total, not a native frame measurement)
+PASS 1000 candidates respect computation, money and 8 MiB allocation limits (10ms, 3857 KiB allocated; console total, not a native frame measurement)
+PASS 10000 candidates respect computation, money and 8 MiB allocation limits (12ms, 4208 KiB allocated; console total, not a native frame measurement)
+PASS native item footprints: four rotations, both flips, nonzero inventory offset
+PASS drag preview ignores inventory offset, uses live rotation/flip, and restores stored bounds
+PASS panel shortcut parses Ctrl+L
+PASS panel shortcut accepts either Ctrl and either chord press order
+PASS panel shortcut does not repeat while held or fire for an incomplete chord
+PASS hold highlight remains independent; cleared and invalid shortcuts do not trigger
+19 checks passed.

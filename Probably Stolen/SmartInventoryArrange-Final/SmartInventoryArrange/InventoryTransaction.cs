@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -18,15 +19,57 @@ internal sealed class InventoryTransaction
 {
 	private sealed record Snap(GameItem Item, string StableId, GridShape OriginalShape, string Fingerprint, LayoutItem Model);
 
-	private sealed record DiagnosticItem(string StableId, string Name, string ItemId, int Width, int Height, string Type, string[] Categories, int Orientation, bool CanRotate, bool Movable, int OriginalX, int OriginalY);
+
+	private static readonly ConditionalWeakTable<GameItem, FingerprintCacheEntry> FingerprintCache = new ConditionalWeakTable<GameItem, FingerprintCacheEntry>();
+
+	private static int _fingerprintAuditsLeft = 64;
+
+	private static int _fingerprintAuditMismatches;
+
+	private sealed class FingerprintCacheEntry
+	{
+		internal ulong Signature;
+
+		internal string Value = "";
+	}
+
+	internal sealed class CaptureResult
+	{
+		internal InventoryTransaction? Transaction;
+	}
+
+	private const int ChunkThreshold = 16;
+
+	private const double MaxFrameBudgetMs = 6.0;
+
+	private const double MinFrameBudgetMs = 1.0;
+
+	private const double FrameBudgetShare = 0.35;
+
+	private static double _frameBudgetMs = MaxFrameBudgetMs;
+
+	private static double ResolveFrameBudgetMs()
+	{
+		double frameMs = Time.deltaTime * 1000.0;
+		if (frameMs <= 0.0 || frameMs > 100.0)
+		{
+			frameMs = 16.6667;
+		}
+		return Math.Min(MaxFrameBudgetMs, Math.Max(MinFrameBudgetMs, frameMs * FrameBudgetShare));
+	}
+
+	private static bool OverBudget(long frameStart)
+	{
+		return PerfTrace.ElapsedMs(frameStart) >= _frameBudgetMs;
+	}
 
 	private readonly GameGridInventory _inventory;
+
+	private readonly InventoryObservation _capturedObservation;
 
 	private readonly bool _keepContainers;
 
 	private readonly IReadOnlyDictionary<IntPtr, bool> _capturedWindowPresence;
-
-	private readonly InventoryObservation _capturedObservation;
 
 	private readonly InstanceOrderInfo[] _instanceOrder;
 
@@ -42,17 +85,13 @@ internal sealed class InventoryTransaction
 
 	private readonly int _originY;
 
-	private readonly IReadOnlyList<DiagnosticItem> _diagnostics;
 
-	private readonly IReadOnlyList<ValueTuple<LayoutItem, bool>> _capturedModels;
-
-	public int PreservedContainerCount { get; }
-
-	public string SessionContext { get; }
 
 	public LayoutProblem Problem { get; }
 
 	public IReadOnlyList<Placement> OriginalPlacements { get; }
+
+	public int PreservedContainerCount { get; }
 
 	public int Width => Problem.Width;
 
@@ -68,39 +107,37 @@ internal sealed class InventoryTransaction
 
 	public int UnknownCategoryCount => Enumerable.Count(Problem.Items, (LayoutItem i) => i.PrimaryCategory == "~unknown");
 
-	private InventoryTransaction(GameGridInventory inventory, List<Snap> movable, List<ValueTuple<GameItem, GridShape>> allOriginal, LayoutProblem problem, IReadOnlyList<Placement> originals, int originX, int originY, IReadOnlyList<DiagnosticItem> diagnostics, IReadOnlyList<ValueTuple<LayoutItem, bool>> capturedModels, InventoryObservation capturedObservation, bool keepContainers, IReadOnlyDictionary<IntPtr, bool> windowPresence, int preservedContainerCount)
+	private InventoryTransaction(GameGridInventory inventory, List<Snap> movable, List<ValueTuple<GameItem, GridShape>> allOriginal, LayoutProblem problem, IReadOnlyList<Placement> originals, int originX, int originY, InventoryObservation capturedObservation, InstanceOrderInfo[] instanceOrder, bool keepContainers, IReadOnlyDictionary<IntPtr, bool> windowPresence, int preservedContainerCount)
 	{
 		_inventory = inventory;
 		_capturedObservation = capturedObservation;
 		_keepContainers = keepContainers;
 		_capturedWindowPresence = windowPresence;
 		PreservedContainerCount = preservedContainerCount;
-		_instanceOrder = Enumerable.ToArray(Enumerable.Select((IEnumerable<Snap>)movable, (Snap s) => InstanceOrderNative.Read(s.Item, s.StableId)));
+		_instanceOrder = instanceOrder;
 		_movable = movable;
 		_allOriginal = allOriginal;
 		Problem = problem;
 		OriginalPlacements = originals;
 		_originX = originX;
 		_originY = originY;
-		_diagnostics = diagnostics;
-		_capturedModels = capturedModels;
-		SessionContext = HashCompat.Sha256Hex(JsonSerializer.SerializeToUtf8Bytes(new
+	}
+
+	internal string BuildSessionContext()
+	{
+		return HashCompat.Sha256Hex(JsonSerializer.SerializeToUtf8Bytes(new
 		{
-			inventory = ReferenceIdentity.Pointer(inventory).ToString(),
-			originX = originX,
-			originY = originY,
-			keepContainers = keepContainers,
-			windows = Enumerable.Select(Enumerable.OrderBy(windowPresence, (KeyValuePair<IntPtr, bool> x) => x.Key.ToInt64()), (KeyValuePair<IntPtr, bool> x) => new
+			inventory = ReferenceIdentity.Pointer(_inventory).ToString(),
+			originX = _originX,
+			originY = _originY,
+			keepContainers = _keepContainers,
+			windows = Enumerable.Select(Enumerable.OrderBy((IEnumerable<KeyValuePair<IntPtr, bool>>)_capturedWindowPresence, (KeyValuePair<IntPtr, bool> x) => x.Key.ToInt64()), (KeyValuePair<IntPtr, bool> x) => new
 			{
 				pointer = x.Key.ToString(),
 				exists = x.Value
 			}),
-			instances = Enumerable.OrderBy(Enumerable.Select((IEnumerable<ValueTuple<GameItem, GridShape>>)allOriginal, (ValueTuple<GameItem, GridShape> x) => new
-			{
-				pointer = ReferenceIdentity.Pointer(x.Item1).ToString(),
-				state = Fingerprint(x.Item1)
-			}), x => x.pointer, (IComparer<string>?)StringComparer.Ordinal),
-			movableIdentity = Enumerable.OrderBy(Enumerable.Select((IEnumerable<Snap>)movable, (Snap x) => new
+			instances = Enumerable.OrderBy(Enumerable.Select((IEnumerable<ValueTuple<GameItem, GridShape>>)_allOriginal, (ValueTuple<GameItem, GridShape> x) => ReferenceIdentity.Pointer(x.Item1).ToString()), (string x) => x, (IComparer<string>?)StringComparer.Ordinal),
+			movableIdentity = Enumerable.OrderBy(Enumerable.Select((IEnumerable<Snap>)_movable, (Snap x) => new
 			{
 				StableId = x.StableId,
 				pointer = ReferenceIdentity.Pointer(x.Item).ToString()
@@ -108,8 +145,14 @@ internal sealed class InventoryTransaction
 		}));
 	}
 
-	public static InventoryTransaction Capture(GameGridInventory inventory, bool keepContainers = false)
+	internal static IEnumerator CaptureCoroutine(GameGridInventory inventory, bool keepContainers, CaptureResult result)
 	{
+		bool chunked = false;
+		long frameStart = PerfTrace.Mark();
+		int progressStep = 250;
+		double passOneMs = 0.0;
+		double itemsMs = 0.0;
+		double layoutMs = 0.0;
 		//IL_0289: Unknown result type (might be due to invalid IL or missing references)
 		//IL_029f: Unknown result type (might be due to invalid IL or missing references)
 		//IL_03ef: Unknown result type (might be due to invalid IL or missing references)
@@ -151,46 +194,54 @@ internal sealed class InventoryTransaction
 				array[k, j] = container.Get(k + container.minX, j + container.minY) == 0;
 			}
 		}
-		Dictionary<IntPtr, bool> dictionary = new Dictionary<IntPtr, bool>();
-		int num = 0;
-		List<ValueTuple<LayoutItem, bool>> list = new List<ValueTuple<LayoutItem, bool>>();
+		Dictionary<IntPtr, string> fingerprints = new Dictionary<IntPtr, string>();
 		List<SnapshotItem> list2 = new List<SnapshotItem>();
+		long geometryStarted = PerfTrace.Mark();
 		string geometry = Geometry(inventory);
+		PerfTrace.Add("captureGeometry", geometryStarted);
 		List<Snap> list3 = new List<Snap>();
 		List<Placement> list4 = new List<Placement>();
 		List<ValueTuple<GameItem, GridShape>> list5 = new List<ValueTuple<GameItem, GridShape>>();
 		List<ValueTuple<GameItem, string, GridShape, List<string>, bool>> list6 = new List<ValueTuple<GameItem, string, GridShape, List<string>, bool>>();
-		List<GameItem> childItems = ((GameInventory)inventory).childItems;
+		List<GameItem> childItems = new List<GameItem>(((GameInventory)inventory).childItems);
+		_frameBudgetMs = ResolveFrameBudgetMs();
+		chunked = childItems.Count > ChunkThreshold;
+		progressStep = Math.Max(250, childItems.Count / 8);
 		Dictionary<string, int> dictionary2 = new Dictionary<string, int>((IEqualityComparer<string>)StringComparer.Ordinal);
-		DefaultInterpolatedStringHandler val2 = default(DefaultInterpolatedStringHandler);
+		Dictionary<IntPtr, bool> windowPresence = new Dictionary<IntPtr, bool>();
+		int preservedContainerCount = 0;
+		long passOneStarted = PerfTrace.Mark();
 		for (int l = 0; l < childItems.Count; l++)
 		{
 			GameItem val = childItems[l];
 			if (val != null && val.modifiedShape != null)
 			{
-				val2 = new DefaultInterpolatedStringHandler(1, 2);
-				val2.AppendFormatted(val.identifier);
-				val2.AppendLiteral("\u001f");
-				val2.AppendFormatted<int>(val.uniqueId, "D10");
-				string text = val2.ToStringAndClear();
+				string text = val.identifier + "\u001f" + val.uniqueId.ToString("D10", CultureInfo.InvariantCulture);
 				dictionary2[text] = CollectionExtensions.GetValueOrDefault<string, int>((IReadOnlyDictionary<string, int>)dictionary2, text) + 1;
 			}
+			if (chunked && OverBudget(frameStart))
+			{
+				passOneMs += PerfTrace.ElapsedMs(passOneStarted);
+				passOneStarted = PerfTrace.Mark();
+				PerfTrace.Increment("captureFrames");
+				yield return null;
+				frameStart = PerfTrace.Mark();
+			}
 		}
+		passOneMs += PerfTrace.ElapsedMs(passOneStarted);
+		PerfTrace.AddMs("capturePass1", passOneMs);
+		long itemsStarted = PerfTrace.Mark();
 		for (int m = 0; m < childItems.Count; m++)
 		{
 			GameItem val3 = childItems[m];
 			if (val3 == null || val3.modifiedShape == null)
 			{
-				val2 = new DefaultInterpolatedStringHandler(50, 1);
-				val2.AppendLiteral("Snapshot capture: missing item or shape at child=");
-				val2.AppendFormatted<int>(m);
-				val2.AppendLiteral(".");
-				throw new InvalidOperationException(val2.ToStringAndClear());
+				throw new InvalidOperationException("Snapshot capture: missing item or shape at child=" + m + ".");
 			}
 			string text2 = StableId(val3, m, (IReadOnlyDictionary<string, int>)dictionary2);
 			List<string> list7 = Categories(val3);
 			int num2;
-			if (val3.MayRemove())
+			if (!ItemPinHelper.IsPinned(val3) && !DebrisHelper.IsDebris(val3) && val3.MayRemove())
 			{
 				GameInventory parentInventory = val3.parentInventory;
 				num2 = (SnapshotConsistency.SameNativeObject((parentInventory != null) ? ReferenceIdentity.Pointer(parentInventory) : IntPtr.Zero, ReferenceIdentity.Pointer(inventory)) ? 1 : 0);
@@ -202,22 +253,39 @@ internal sealed class InventoryTransaction
 			bool flag = (byte)num2 != 0;
 			if (keepContainers)
 			{
-				bool flag2 = val3.contentWindow != null;
-				dictionary.Add(ReferenceIdentity.Pointer(val3), flag2);
-				if (flag2 || string.Equals(val3.identifier, "powerblock", StringComparison.Ordinal))
+				bool hasContentWindow = val3.contentWindow != null;
+				windowPresence[ReferenceIdentity.Pointer(val3)] = hasContentWindow;
+				if (hasContentWindow || string.Equals(val3.identifier, "powerblock", StringComparison.Ordinal))
 				{
 					if (flag)
 					{
-						num++;
+						preservedContainerCount++;
 					}
 					flag = false;
 				}
 			}
-			list2.Add(Observe(val3, text2, flag));
+			SnapshotItem snapshotItem = Observe(val3, text2, flag);
+			list2.Add(snapshotItem);
+			fingerprints[ReferenceIdentity.Pointer(val3)] = snapshotItem.State;
 			GridShape val4 = val3.modifiedShape.Clone();
 			list5.Add(new ValueTuple<GameItem, GridShape>(val3, val4));
 			list6.Add(new ValueTuple<GameItem, string, GridShape, List<string>, bool>(val3, text2, val4, list7, flag));
+			if (chunked && OverBudget(frameStart))
+			{
+				itemsMs += PerfTrace.ElapsedMs(itemsStarted);
+				itemsStarted = PerfTrace.Mark();
+				PerfTrace.Increment("captureFrames");
+				yield return null;
+				frameStart = PerfTrace.Mark();
+				if (m % progressStep == 0)
+				{
+					Debug.Log("Smart arrange capture: " + m + "/" + childItems.Count);
+				}
+			}
 		}
+		itemsMs += PerfTrace.ElapsedMs(itemsStarted);
+		PerfTrace.AddMs("captureItems", itemsMs);
+		long layoutStarted = PerfTrace.Mark();
 		Dictionary<string, int> dictionary3 = Enumerable.ToDictionary(Enumerable.Select(Enumerable.OrderBy(Enumerable.Distinct(Enumerable.SelectMany((IEnumerable<ValueTuple<GameItem, string, GridShape, List<string>, bool>>)list6, (ValueTuple<GameItem, string, GridShape, List<string>, bool> r) => (IEnumerable<string>)r.Item4), (IEqualityComparer<string>?)StringComparer.Ordinal), CategoryRank).ThenBy((string x) => x, (IComparer<string>?)StringComparer.Ordinal), (string c, int i) => new ValueTuple<string, int>(c, i)), (ValueTuple<string, int> x) => x.Item1, (ValueTuple<string, int> x) => x.Item2, (IEqualityComparer<string>?)StringComparer.Ordinal);
 		if (!dictionary3.ContainsKey("~unknown"))
 		{
@@ -240,19 +308,28 @@ internal sealed class InventoryTransaction
 				OriginalY = item.Item3.minY - container.minY,
 				VisualPriority = VisualPriority(primaryCategory)
 			};
-			list.Add(new ValueTuple<LayoutItem, bool>(layoutItem, item.Item5));
 			if (item.Item5)
 			{
-				list3.Add(new Snap(item.Item1, item.Item2, item.Item3, Fingerprint(item.Item1), layoutItem));
+				list3.Add(new Snap(item.Item1, item.Item2, item.Item3, fingerprints[ReferenceIdentity.Pointer(item.Item1)], layoutItem));
 			}
 			else
 			{
 				list4.Add(new Placement(item.Item2, item.Item3.minX - container.minX, item.Item3.minY - container.minY, item.Item3.orientation, Mask(item.Item3), "~fixed", Rotated: false));
 			}
+			if (chunked && OverBudget(frameStart))
+			{
+				layoutMs += PerfTrace.ElapsedMs(layoutStarted);
+				layoutStarted = PerfTrace.Mark();
+				PerfTrace.Increment("captureFrames");
+				yield return null;
+				frameStart = PerfTrace.Mark();
+			}
 		}
+		layoutMs += PerfTrace.ElapsedMs(layoutStarted);
+		PerfTrace.AddMs("captureLayout", layoutMs);
 		Placement[] originals = Enumerable.ToArray(Enumerable.Select((IEnumerable<Snap>)list3, delegate(Snap s)
 		{
-			ShapeMask shapeMask2 = Mask(s.OriginalShape);
+			ShapeMask shapeMask2 = s.Model.OriginalMask;
 			return new Placement(s.StableId, s.OriginalShape.minX - container.minX, s.OriginalShape.minY - container.minY, s.OriginalShape.orientation, shapeMask2, s.Model.PrimaryCategory, shapeMask2.Width > shapeMask2.Height);
 		}));
 		LayoutProblem layoutProblem = new LayoutProblem
@@ -264,29 +341,29 @@ internal sealed class InventoryTransaction
 			Items = Enumerable.ToArray(Enumerable.Select((IEnumerable<Snap>)list3, (Snap s) => s.Model)),
 			CategoryOrder = (IReadOnlyDictionary<string, int>)dictionary3
 		};
-		DiagnosticItem[] diagnostics = Enumerable.ToArray(Enumerable.Select(Enumerable.OrderBy((IEnumerable<ValueTuple<GameItem, string, GridShape, List<string>, bool>>)list6, (ValueTuple<GameItem, string, GridShape, List<string>, bool> x) => x.Item2, (IComparer<string>?)StringComparer.Ordinal), delegate(ValueTuple<GameItem, string, GridShape, List<string>, bool> x)
-		{
-			//IL_0000: Unknown result type (might be due to invalid IL or missing references)
-			//IL_004f: Unknown result type (might be due to invalid IL or missing references)
-			//IL_005b: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0061: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0076: Unknown result type (might be due to invalid IL or missing references)
-			//IL_008e: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0099: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00a4: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00aa: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00c2: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00c8: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00df: Unknown result type (might be due to invalid IL or missing references)
-			string type = Enumerable.FirstOrDefault(Enumerable.OrderBy((IEnumerable<string>)x.Item4, CategoryRank).ThenBy((string v) => v, (IComparer<string>?)StringComparer.Ordinal)) ?? "~unknown";
-			ShapeMask shapeMask = Mask(x.Item3);
-			return new DiagnosticItem(x.Item2, x.Item1.GetDisplayName(true) ?? "", x.Item1.identifier, shapeMask.Width, shapeMask.Height, type, x.Item4.ToArray(), x.Item3.orientation, SupplyCrateOrientationPolicy.Allowed((IReadOnlyList<string>)x.Item4, BuildOrientations(x.Item3)).Count > 1, x.Item5, x.Item3.minX - container.minX, x.Item3.minY - container.minY);
-		}));
-		DeterministicSolver.ValidateProblem(layoutProblem);
 		InventoryObservation capturedObservation = new InventoryObservation(ReferenceIdentity.Pointer(inventory), geometry, Array.AsReadOnly(list2.ToArray()));
-		InventoryTransaction inventoryTransaction = new InventoryTransaction(inventory, list3, list5, layoutProblem, originals, container.minX, container.minY, diagnostics, (IReadOnlyList<ValueTuple<LayoutItem, bool>>)list, capturedObservation, keepContainers, (IReadOnlyDictionary<IntPtr, bool>)dictionary, num);
-		inventoryTransaction.AssertSnapshotCurrent("capture-complete");
-		return inventoryTransaction;
+		long instanceOrderStarted = PerfTrace.Mark();
+		double instanceOrderMs = 0.0;
+		InstanceOrderInfo[] instanceOrder = new InstanceOrderInfo[list3.Count];
+		for (int q = 0; q < list3.Count; q++)
+		{
+			Snap snap = list3[q];
+			instanceOrder[q] = InstanceOrderNative.ReadCached(snap.Item, snap.StableId);
+			if (chunked && OverBudget(frameStart))
+			{
+				instanceOrderMs += PerfTrace.ElapsedMs(instanceOrderStarted);
+				instanceOrderStarted = PerfTrace.Mark();
+				PerfTrace.Increment("captureFrames");
+				yield return null;
+				frameStart = PerfTrace.Mark();
+			}
+		}
+		instanceOrderMs += PerfTrace.ElapsedMs(instanceOrderStarted);
+		PerfTrace.AddMs("captureInstanceOrder", instanceOrderMs);
+		long constructorStarted = PerfTrace.Mark();
+		InventoryTransaction inventoryTransaction = new InventoryTransaction(inventory, list3, list5, layoutProblem, originals, container.minX, container.minY, capturedObservation, instanceOrder, keepContainers, windowPresence, preservedContainerCount);
+		PerfTrace.Add("captureConstructor", constructorStarted);
+		result.Transaction = inventoryTransaction;
 	}
 
 	public LayoutResult OrderInstances(LayoutResult result)
@@ -308,206 +385,6 @@ internal sealed class InventoryTransaction
 			Score = score,
 			Elapsed = result.Elapsed + val.Elapsed
 		};
-	}
-
-	public string WriteExactInput()
-	{
-		string text = Path.Combine(Application.persistentDataPath, "SmartInventoryArrange", "Inputs");
-		System.IO.Directory.CreateDirectory(text);
-		string text2 = Path.Combine(text, DateTime.Now.ToString("yyyyMMdd-HHmmss-fff") + "-" + Guid.NewGuid().ToString("N") + ".json");
-		Dictionary<string, string> state = ((IEnumerable<Snap>)_movable).ToDictionary((Snap s) => s.StableId, (Snap s) => HashCompat.Sha256Hex(Encoding.UTF8.GetBytes(s.Fingerprint)), (IEqualityComparer<string>?)StringComparer.Ordinal);
-		List<int[]> list = new List<int[]>();
-		for (int j = 0; j < Height; j++)
-		{
-			for (int k = 0; k < Width; k++)
-			{
-				if (!Problem.Usable[k, j])
-				{
-					list.Add(new int[2] { k, j });
-				}
-			}
-		}
-		var value = new
-		{
-			schemaVersion = 2,
-			version = "3.17.9",
-			capturedAt = DateTimeOffset.Now,
-			keepContainers = _keepContainers,
-			preservedContainers = PreservedContainerCount,
-			instanceOrderPolicy = "semantic-slots-v3:real-state-appraisal-ignored;name;empty-last;usable-sealed-rustfree;wine-2-1-0-age-desc-ferment-asc;water-grade-then-volume;food-fresh-first;absolute-remaining-desc;quality-before-quantity;stable-id",
-			instanceOrder = _instanceOrder,
-			wineOrder = Enumerable.Select(Enumerable.Where(_instanceOrder, (InstanceOrderInfo i) => i.ItemId == "wine_bottle"), (InstanceOrderInfo i) => new WineBottleInfo(i.StableId, i.CurrentName, i.WineState, i.AgeDays)),
-			provenance = new
-			{
-				nativeMasks = true,
-				nativeStableIds = true,
-				nativeStateVerified = false
-			},
-			@case = new
-			{
-				input = new
-				{
-					width = Width,
-					height = Height,
-					disabled = list,
-					items = Enumerable.Select(_capturedModels, (ValueTuple<LayoutItem, bool> s) => new
-					{
-						stableId = s.Item1.StableId,
-						itemId = s.Item1.ItemId,
-						category = (s.Item2 ? s.Item1.PrimaryCategory : "~fixed"),
-						categories = s.Item1.Categories,
-						priority = s.Item1.VisualPriority,
-						@fixed = !s.Item2,
-						orientations = Enumerable.Select(s.Item1.Orientations, (Orientation o) => new
-						{
-							orientation = o.GameOrientation,
-							cells = Enumerable.Select(o.Mask.Cells, (Cell c) => new int[2] { c.X, c.Y })
-						})
-					})
-				},
-				baseline = Enumerable.Select(_capturedModels, (ValueTuple<LayoutItem, bool> s) => new
-				{
-					stableId = s.Item1.StableId,
-					itemId = s.Item1.ItemId,
-					x = s.Item1.OriginalX,
-					y = s.Item1.OriginalY,
-					orientation = s.Item1.OriginalOrientation,
-					category = (s.Item2 ? s.Item1.PrimaryCategory : "~fixed"),
-					@fixed = !s.Item2,
-					stateToken = CollectionExtensions.GetValueOrDefault<string, string>((IReadOnlyDictionary<string, string>)state, s.Item1.StableId, "fixed-snapshot"),
-					cells = Enumerable.Select(s.Item1.OriginalMask.Cells, (Cell c) => new
-					{
-						x = c.X,
-						y = c.Y
-					})
-				})
-			}
-		};
-		File.WriteAllText(text2, JsonSerializer.Serialize(value), (Encoding)(object)new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-		return text2;
-	}
-
-	public string WriteDiagnosticSnapshot()
-	{
-		string text = Path.Combine(Application.persistentDataPath, "SmartInventoryArrange", "Logs");
-		System.IO.Directory.CreateDirectory(text);
-		string text2 = Path.Combine(text, "SmartInventoryArrange-Snapshot.log");
-		StringBuilder stringBuilder = new StringBuilder(512 + _diagnostics.Count * 160);
-		stringBuilder.AppendLine("========== Smart Arrange Snapshot ==========");
-		stringBuilder.Append("Time: ").AppendLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-		stringBuilder.Append("ContainerSize: ").Append(Width).Append('x')
-			.AppendLine(Height.ToString());
-		stringBuilder.Append("TotalItems: ").AppendLine(_diagnostics.Count.ToString());
-		stringBuilder.Append("MovableItems: ").AppendLine(MovableCount.ToString());
-		stringBuilder.Append("FixedItems: ").AppendLine(FixedCount.ToString());
-		stringBuilder.Append("KeepContainers: ").AppendLine(_keepContainers.ToString());
-		stringBuilder.Append("PreservedContainers: ").AppendLine(PreservedContainerCount.ToString());
-		stringBuilder.AppendLine("---------- Item Details ----------");
-		int num = 0;
-		foreach (DiagnosticItem diagnostic in _diagnostics)
-		{
-			StringBuilder stringBuilder2 = stringBuilder.Append('[');
-			int num2 = ++num;
-			stringBuilder2.Append(num2.ToString("D3")).Append("] Name: ").Append(diagnostic.Name)
-				.Append(" | ItemId: ")
-				.Append(diagnostic.ItemId)
-				.Append(" | Size: ")
-				.Append(diagnostic.Width)
-				.Append('x')
-				.Append(diagnostic.Height)
-				.Append(" | Type: ")
-				.Append(diagnostic.Type)
-				.Append(" | Categories: [")
-				.Append(string.Join(",", diagnostic.Categories))
-				.Append(']')
-				.Append(" | Orientation: ")
-				.Append(diagnostic.Orientation)
-				.Append(" | CanRotate: ")
-				.Append(diagnostic.CanRotate)
-				.Append(" | Movable: ")
-				.AppendLine(diagnostic.Movable.ToString());
-		}
-		stringBuilder.AppendLine("========== Snapshot End ==========");
-		stringBuilder.AppendLine();
-		File.AppendAllText(text2, stringBuilder.ToString(), (Encoding)(object)new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-		return text2;
-	}
-
-	public void WriteResultSnapshot(IReadOnlyList<Placement> movablePlacements, string outcome)
-	{
-		string text = Path.Combine(Application.persistentDataPath, "SmartInventoryArrange", "Logs");
-		System.IO.Directory.CreateDirectory(text);
-		string text2 = Path.Combine(text, "SmartInventoryArrange-Snapshot.log");
-		Dictionary<string, Placement> positions = Problem.Fixed.Concat(movablePlacements).ToDictionary((Placement x) => x.StableId, (Placement x) => x, (IEqualityComparer<string>?)StringComparer.Ordinal);
-		StringBuilder stringBuilder = new StringBuilder(512 + _diagnostics.Count * 150);
-		stringBuilder.AppendLine("========== Smart Arrange Result ==========");
-		stringBuilder.Append("Time: ").AppendLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-		stringBuilder.Append("Outcome: ").AppendLine(outcome);
-		stringBuilder.Append("ContainerSize: ").Append(Width).Append('x')
-			.AppendLine(Height.ToString());
-		int num = 0;
-		foreach (DiagnosticItem diagnostic in _diagnostics)
-		{
-			if (positions.TryGetValue(diagnostic.StableId, out var value))
-			{
-				StringBuilder stringBuilder2 = stringBuilder.Append('[');
-				int num2 = ++num;
-				stringBuilder2.Append(num2.ToString("D3")).Append("] Name: ").Append(diagnostic.Name)
-					.Append(" | ItemId: ")
-					.Append(diagnostic.ItemId)
-					.Append(" | Coordinate: (")
-					.Append(value.X)
-					.Append(',')
-					.Append(value.Y)
-					.Append(')')
-					.Append(" | Size: ")
-					.Append(value.Mask.Width)
-					.Append('x')
-					.Append(value.Mask.Height)
-					.Append(" | Type: ")
-					.Append(diagnostic.Type)
-					.Append(" | Orientation: ")
-					.AppendLine(value.GameOrientation.ToString());
-			}
-			else
-			{
-				StringBuilder stringBuilder3 = stringBuilder.Append('[');
-				int num2 = ++num;
-				stringBuilder3.Append(num2.ToString("D3")).Append("] Name: ").Append(diagnostic.Name)
-					.Append(" | ItemId: ")
-					.Append(diagnostic.ItemId)
-					.Append(" | Coordinate: (")
-					.Append(diagnostic.OriginalX)
-					.Append(',')
-					.Append(diagnostic.OriginalY)
-					.Append(')')
-					.Append(" | Size: ")
-					.Append(diagnostic.Width)
-					.Append('x')
-					.Append(diagnostic.Height)
-					.Append(" | Type: ")
-					.Append(diagnostic.Type)
-					.Append(" | Orientation: ")
-					.Append(diagnostic.Orientation)
-					.AppendLine(" | Status: original/unresolved");
-			}
-		}
-		if (_instanceOrder.Length != 0)
-		{
-			stringBuilder.AppendLine("---------- Instance slot order ----------");
-			stringBuilder.Append("Policy: ").AppendLine("semantic-slots-v3:real-state-appraisal-ignored;name;empty-last;usable-sealed-rustfree;wine-2-1-0-age-desc-ferment-asc;water-grade-then-volume;food-fresh-first;absolute-remaining-desc;quality-before-quantity;stable-id");
-			stringBuilder.Append("InstanceOrderingNotes: ").AppendLine(_instanceOrderingNotes);
-			stringBuilder.Append("InstanceOrderingMs: ").AppendLine(_instanceOrderingMs.ToString("F3", (IFormatProvider)CultureInfo.InvariantCulture));
-			Placement value3;
-			Placement value2;
-			foreach (InstanceOrderInfo item in Enumerable.OrderBy(_instanceOrder, (InstanceOrderInfo i) => (!positions.TryGetValue(i.StableId, out value3)) ? int.MaxValue : value3.Y).ThenBy((InstanceOrderInfo i) => (!positions.TryGetValue(i.StableId, out value2)) ? int.MaxValue : value2.X).ThenBy((InstanceOrderInfo i) => i.StableId, (IComparer<string>?)StringComparer.Ordinal))
-			{
-				stringBuilder.Append("InstanceOrder: ").AppendLine(JsonSerializer.Serialize(item));
-			}
-		}
-		stringBuilder.AppendLine("========== Result End ==========");
-		stringBuilder.AppendLine();
-		File.AppendAllText(text2, stringBuilder.ToString(), (Encoding)(object)new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 	}
 
 	private static string Geometry(GameGridInventory inventory)
@@ -538,53 +415,45 @@ internal sealed class InventoryTransaction
 		return new SnapshotItem(pointer, (parentInventory != null) ? ReferenceIdentity.Pointer(parentInventory) : IntPtr.Zero, stableId, movable, Fingerprint(item), pose);
 	}
 
-	public void AssertSnapshotCurrent(string stage = "before-apply")
+	public IEnumerator AssertSnapshotCurrentCoroutine(string stage = "before-apply")
 	{
-		Dictionary<IntPtr, SnapshotItem> dictionary = Enumerable.ToDictionary(_capturedObservation.Items, (SnapshotItem x) => x.Pointer);
-		List<SnapshotItem> list = new List<SnapshotItem>();
-		int num = 0;
-		DefaultInterpolatedStringHandler val2 = default(DefaultInterpolatedStringHandler);
-		for (int i = 0; i < ((GameInventory)_inventory).childItems.Count; i++)
+		Dictionary<IntPtr, SnapshotItem> captured = Enumerable.ToDictionary(_capturedObservation.Items, (SnapshotItem x) => x.Pointer);
+		List<SnapshotItem> current = new List<SnapshotItem>(_capturedObservation.Items.Count);
+		int aliases = 0;
+		List<GameItem> childItems = ((GameInventory)_inventory).childItems;
+		_frameBudgetMs = ResolveFrameBudgetMs();
+		bool chunked = childItems.Count > ChunkThreshold;
+		long frameStart = PerfTrace.Mark();
+		for (int i = 0; i < childItems.Count; i++)
 		{
-			GameItem val = ((GameInventory)_inventory).childItems[i];
-			if (val == null)
+			GameItem item = childItems[i];
+			if (item == null)
 			{
-				nint pointer = 0;
-				nint parentPointer = 0;
-				val2 = new DefaultInterpolatedStringHandler(6, 1);
-				val2.AppendLiteral("child-");
-				val2.AppendFormatted<int>(i);
-				list.Add(new SnapshotItem(pointer, parentPointer, val2.ToStringAndClear(), Movable: false, "null", null));
-				continue;
+				current.Add(new SnapshotItem(0, 0, "child-" + i, false, "null", null));
 			}
-			if (_keepContainers && _capturedWindowPresence.TryGetValue(ReferenceIdentity.Pointer(val), out var value) && val.contentWindow != null != value)
+			else
 			{
-				val2 = new DefaultInterpolatedStringHandler(68, 2);
-				val2.AppendLiteral("Snapshot guard rejected stage=");
-				val2.AppendFormatted(stage);
-				val2.AppendLiteral("; contentWindow presence changed for ");
-				val2.AppendFormatted(val.identifier);
-				val2.AppendLiteral(".");
-				throw new InvalidOperationException(val2.ToStringAndClear());
+				captured.TryGetValue(ReferenceIdentity.Pointer(item), out SnapshotItem? value);
+				if (_keepContainers && value != null && _capturedWindowPresence.TryGetValue(ReferenceIdentity.Pointer(item), out bool wasOpen) && (item.contentWindow != null) != wasOpen)
+				{
+					throw new InvalidOperationException("Snapshot guard rejected stage=" + stage + "; contentWindow presence changed for " + item.identifier + ".");
+				}
+				GameInventory parentInventory = item.parentInventory;
+				if (parentInventory != null && parentInventory != _inventory && SnapshotConsistency.SameNativeObject(ReferenceIdentity.Pointer(parentInventory), ReferenceIdentity.Pointer(_inventory)))
+				{
+					aliases++;
+				}
+				current.Add(Observe(item, value?.StableId ?? item.identifier, value?.Movable ?? false));
 			}
-			dictionary.TryGetValue(ReferenceIdentity.Pointer(val), out var value2);
-			GameInventory parentInventory = val.parentInventory;
-			if (parentInventory != null && parentInventory != _inventory && SnapshotConsistency.SameNativeObject(ReferenceIdentity.Pointer(parentInventory), ReferenceIdentity.Pointer(_inventory)))
+			if (chunked && OverBudget(frameStart))
 			{
-				num++;
+				PerfTrace.Increment("captureFrames");
+				yield return null;
+				frameStart = PerfTrace.Mark();
 			}
-			list.Add(Observe(val, value2?.StableId ?? val.identifier, value2?.Movable ?? false));
 		}
-		SnapshotConsistency.AssertSame(_capturedObservation, new InventoryObservation(ReferenceIdentity.Pointer(_inventory), Geometry(_inventory), Array.AsReadOnly(list.ToArray())), stage);
-		val2 = new DefaultInterpolatedStringHandler(93, 3);
-		val2.AppendLiteral("Smart arrange snapshot guard passed: stage=");
-		val2.AppendFormatted(stage);
-		val2.AppendLiteral(", members=");
-		val2.AppendFormatted<int>(list.Count);
-		val2.AppendLiteral(", nativeWrapperAliases=");
-		val2.AppendFormatted<int>(num);
-		val2.AppendLiteral(", changedFields=0");
-		Debug.Log(val2.ToStringAndClear());
+		SnapshotConsistency.AssertSame(_capturedObservation, new InventoryObservation(ReferenceIdentity.Pointer(_inventory), Geometry(_inventory), Array.AsReadOnly(current.ToArray())), stage);
+		Debug.Log("Smart arrange snapshot guard passed: stage=" + stage + ", members=" + current.Count + ", nativeWrapperAliases=" + aliases + ", changedFields=0");
 	}
 
 	private void AssertFixedSnapshotCurrent()
@@ -599,13 +468,6 @@ internal sealed class InventoryTransaction
 		if (members.Count != _capturedObservation.Items.Count || Enumerable.Any(_capturedObservation.Items, (SnapshotItem s) => !members.ContainsKey(s.Pointer)))
 		{
 			throw new InvalidOperationException("Post-apply inventory membership changed.");
-		}
-		foreach (KeyValuePair<IntPtr, bool> item in _capturedWindowPresence)
-		{
-			if (members[item.Key].contentWindow != null != item.Value)
-			{
-				throw new InvalidOperationException("Post-apply contentWindow presence changed.");
-			}
 		}
 		ReadOnlyCollection<SnapshotItem> readOnlyCollection = Array.AsReadOnly(Enumerable.ToArray(Enumerable.Where(_capturedObservation.Items, (SnapshotItem s) => !s.Movable)));
 		ReadOnlyCollection<SnapshotItem> items = Array.AsReadOnly(Enumerable.ToArray(Enumerable.Select(readOnlyCollection, (SnapshotItem s) => Observe(members[s.Pointer], s.StableId, movable: false))));
@@ -651,7 +513,10 @@ internal sealed class InventoryTransaction
 		{
 			throw new InvalidOperationException("Candidate does not contain every movable item exactly once.");
 		}
+		long verifyBeforeStarted = PerfTrace.Mark();
 		VerifyUnchanged();
+		PerfTrace.Add("applyVerifyBefore", verifyBeforeStarted);
+		long shapePrecheckStarted = PerfTrace.Mark();
 		List<ValueTuple<Snap, GridShape, Placement>> list = new List<ValueTuple<Snap, GridShape, Placement>>();
 		List<GameItem> val = new List<GameItem>();
 		foreach (Snap item in _movable)
@@ -679,12 +544,16 @@ internal sealed class InventoryTransaction
 			}
 			list.Add(new ValueTuple<Snap, GridShape, Placement>(s, val2, placement));
 		}
+		PerfTrace.Add("applyShapePrecheck", shapePrecheckStarted);
 		try
 		{
+			long writeShapesStarted = PerfTrace.Mark();
 			foreach (ValueTuple<Snap, GridShape, Placement> item2 in list)
 			{
 				item2.Item1.Item.modifiedShape = item2.Item2;
 			}
+			PerfTrace.Add("applyWriteShapes", writeShapesStarted);
+			long slotCheckStarted = PerfTrace.Mark();
 			foreach (ValueTuple<Snap, GridShape, Placement> item3 in list)
 			{
 				if (!((GameInventory)_inventory).CheckInventorySlotStillValid(item3.Item1.Item, item3.Item2, item3.Item1.Item.state))
@@ -702,13 +571,18 @@ internal sealed class InventoryTransaction
 					throw new InvalidOperationException(val3.ToStringAndClear());
 				}
 			}
+			PerfTrace.Add("applySlotCheck", slotCheckStarted);
+			long validateStarted = PerfTrace.Mark();
 			((GameInventory)_inventory).Validate();
+			PerfTrace.Add("applyValidate", validateStarted);
+			long backgroundStarted = PerfTrace.Mark();
 			_inventory.ForceRecomputeDynamicBackground();
+			PerfTrace.Add("applyBackground", backgroundStarted);
+			long verifyAfterStarted = PerfTrace.Mark();
 			VerifyUnchanged(ignoreShape: true);
-			if (_keepContainers)
-			{
-				AssertFixedSnapshotCurrent();
-			}
+			AssertFixedSnapshotCurrent();
+			PerfTrace.Add("applyVerifyAfter", verifyAfterStarted);
+			long postShapeStarted = PerfTrace.Mark();
 			foreach (ValueTuple<Snap, GridShape, Placement> item4 in list)
 			{
 				if (item4.Item1.Item.modifiedShape.minX != item4.Item2.minX || item4.Item1.Item.modifiedShape.minY != item4.Item2.minY || item4.Item1.Item.modifiedShape.orientation != item4.Item2.orientation)
@@ -716,6 +590,7 @@ internal sealed class InventoryTransaction
 					throw new InvalidOperationException("Post-apply shape verification failed for " + item4.Item1.Item.identifier);
 				}
 			}
+			PerfTrace.Add("applyPostShapeCheck", postShapeStarted);
 		}
 		catch
 		{
@@ -763,6 +638,10 @@ internal sealed class InventoryTransaction
 		}
 		foreach (Snap item in _movable)
 		{
+			if (ItemPinHelper.IsPinned(item.Item) || DebrisHelper.IsDebris(item.Item))
+			{
+				throw new InvalidOperationException("Item became fixed during arrangement: " + item.StableId);
+			}
 			if (Fingerprint(item.Item) != item.Fingerprint)
 			{
 				throw new InvalidOperationException("Item state changed during arrangement: " + item.StableId);
@@ -782,6 +661,52 @@ internal sealed class InventoryTransaction
 	}
 
 	private static string Fingerprint(GameItem i)
+	{
+		long started = PerfTrace.Mark();
+		ulong signature = InstanceOrderNative.Signature(i);
+		if (FingerprintCache.TryGetValue(i, out FingerprintCacheEntry? cached) && cached != null && cached.Signature == signature && cached.Value.Length != 0)
+		{
+			PerfTrace.Increment("fingerprintHits");
+			if (_fingerprintAuditsLeft > 0)
+			{
+				_fingerprintAuditsLeft--;
+				PerfTrace.Increment("fingerprintAudits");
+				long auditStarted = PerfTrace.Mark();
+				string auditValue = FingerprintSlow(i);
+				PerfTrace.Add("fingerprintAudit", auditStarted);
+				if (!string.Equals(auditValue, cached.Value, StringComparison.Ordinal))
+				{
+					_fingerprintAuditMismatches++;
+					PerfTrace.Increment("fingerprintAuditMismatches");
+					Debug.LogError("Smart arrange fingerprint audit mismatch: " + i.identifier + "#" + i.uniqueId + " signature=" + signature.ToString("X16", CultureInfo.InvariantCulture));
+					FingerprintCache.Remove(i);
+					PerfTrace.Add("fingerprint", started);
+					PerfTrace.Increment("fingerprintCalls");
+					return auditValue;
+				}
+				if (_fingerprintAuditsLeft == 0)
+				{
+					Debug.Log("Smart arrange fingerprint audit: checked=64 mismatches=" + _fingerprintAuditMismatches);
+				}
+			}
+			PerfTrace.Add("fingerprint", started);
+			PerfTrace.Increment("fingerprintCalls");
+			return cached.Value;
+		}
+		string value = FingerprintSlow(i);
+		FingerprintCache.Remove(i);
+		FingerprintCache.Add(i, new FingerprintCacheEntry
+		{
+			Signature = signature,
+			Value = value
+		});
+		PerfTrace.Increment("fingerprintMisses");
+		PerfTrace.Add("fingerprint", started);
+		PerfTrace.Increment("fingerprintCalls");
+		return value;
+	}
+
+	private static string FingerprintSlow(GameItem i)
 	{
 		DefaultInterpolatedStringHandler val = default(DefaultInterpolatedStringHandler);
 		val = new DefaultInterpolatedStringHandler(3, 4);

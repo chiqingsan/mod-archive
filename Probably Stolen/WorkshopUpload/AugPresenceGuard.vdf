@@ -1,0 +1,11 @@
+"workshopitem"
+{
+	"appid"		"4348910"
+	"publishedfileid"		"3829015855"
+	"contentfolder"		"D:\\code\\mod\\Probably Stolen\\WorkshopUpload\\AugPresenceGuardContent"
+	"previewfile"		"D:\\code\\mod\\Probably Stolen\\WorkshopUpload\\AugPresenceGuard-cover.jpg"
+	"visibility"		"0"
+	"title"		"伪人数量保持"
+	"description"		"[h1]伪人数量保持[/h1]\n\n限制“改造体存在度”在 1～99 之间，避免改造体剧情过早结束。\n\n[h2]注意事项[/h2]\n\n已经触发改造体剧情结束的存档无法自动恢复。"
+	"changenote"		"版本 1.0.0：修复启用阶段空引用错误；适用游戏版本改为 0.46D"
+}

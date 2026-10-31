@@ -17,19 +17,28 @@ internal static class Program
     static GameItem Item(string id, GameInventory inv, int durability = 10)
     {
         var x = new GameItem { identifier = id, Durability = durability }; x.state.Set("IS_OWNED_TAG");
-        if (id.Contains("water_filter")) x.state.Set("WATER_FILTER");
+        if (id.Contains("filter")) x.state.Set("WATER_FILTER");
+        if (id is "water_filter" or "water_filter_adv" or "hydroreed_filter") x.state.Set("FILTER_SIZE_TAG", 22);
         inv.Put(x); return x;
     }
-    static (GameItem jug, GameItem filter) Jug(int durability)
+    static (GameItem jug, GameItem filter) Jug(int durability) => JugOf("water_filter", durability);
+    static (GameItem jug, GameItem filter) JugOf(string filterIdentifier, int durability = 10)
     {
         var jug = Item("water_pitcher", EmporiumEntry.Instance.invWindow);
         var slot = new GameSlotInventory { ParentItem = jug }; jug.child = slot; jug.children.Add(slot); jug.FilterSlot = slot;
-        return (jug, Item("water_filter", slot, durability));
+        return (jug, Item(filterIdentifier, slot, durability));
     }
     static (GameItem box, GameGridInventory inner) Box()
     {
         var box = Item("storage_box", EmporiumEntry.Instance.invWindow);
         var inner = new GameGridInventory { ParentItem = box }; box.child = inner; box.children.Add(inner); return (box, inner);
+    }
+    static (GameItem ras, GameSlotInventory slot) Ras()
+    {
+        var ras = Item("ras_empty", EmporiumEntry.Instance.invWindow);
+        ras.state.Set("RAS_TAG");
+        var slot = new GameSlotInventory { ParentItem = ras }; ras.child = slot; ras.children.Add(slot);
+        return (ras, slot);
     }
     static void Frames(int count = 80) { for (var i = 0; i < count; i++) { Time.frameCount++; Hooks.UpdateMaintenance(true); } }
     static int Cached() { var f = typeof(Hooks).GetField("FilterCache", BindingFlags.Static | BindingFlags.NonPublic)!; return ((System.Collections.IEnumerable)f.GetValue(null)!).Cast<System.Collections.ICollection>().Sum(x => x.Count); }
@@ -156,6 +165,64 @@ internal static class Program
             GraphUtils.PlaceFault=null; GraphUtils.SwapFault=null; Time.unscaledTime=6; Frames(1);
             Check(jug.FilterSlot!.childItem==old && spare.parentInventory==inner,"original positions not recovered");
         });
+        Test("hydroreed filter durability is shown in tooltips", () => {
+            var (jug, hydroreed) = JugOf("hydroreed_filter", 37); hydroreed.MaxDurability = 200;
+            var builder = new RichTextBuilder();
+            Hooks.AfterWaterContainerTooltip(builder, jug);
+            Check(builder.Slices.Count == 1 && builder.Slices[0].text.Contains("37/200"), "hydroreed durability missing");
+        });
+        Test("hydroreed filter is used when no better filter exists", () => {
+            var (jug, old) = Jug(10); var (_, inner) = Box(); var hydroreed = Item("hydroreed_filter", inner, 90);
+            Frames(); old.Durability = 0; Hooks.AfterFilter(old); Frames();
+            Check(jug.FilterSlot!.childItem == hydroreed && GraphUtils.Swaps == 1, "hydroreed filter not used as replacement");
+        });
+        Test("standard filter is preferred over hydroreed filter", () => {
+            var (jug, old) = Jug(10); var (_, inner) = Box();
+            Item("hydroreed_filter", inner, 90);
+            var standard = Item("water_filter", inner, 20); standard.modifiedShape.minX = 2;
+            Frames(); old.Durability = 0; Hooks.AfterFilter(old); Frames();
+            Check(jug.FilterSlot!.childItem == standard, "hydroreed outranked a standard filter");
+        });
+        Test("depleted hydroreed filter is replaced", () => {
+            var (jug, _) = JugOf("hydroreed_filter", 0); var (_, inner) = Box(); var spare = Item("water_filter", inner, 90);
+            Frames();
+            Check(jug.FilterSlot!.childItem == spare && GraphUtils.Swaps == 1, "depleted hydroreed not replaced");
+        });
+        Test("coarse chemistry cloth shows durability but is not installed", () => {
+            var (jug, old) = Jug(10); var (_, inner) = Box();
+            var cloth = Item("kotton_fabric", inner, 100);
+            cloth.state.Set("WATER_FILTER"); cloth.state.Set("FILTER_SIZE_TAG", 150);
+            Frames(); old.Durability = 0; Hooks.AfterFilter(old); Frames();
+            Check(jug.FilterSlot!.childItem == old && GraphUtils.Swaps == 0, "coarse cloth installed as replacement");
+            var (jug2, coarse) = JugOf("kotton_fabric", 100); coarse.MaxDurability = 1000;
+            coarse.state.Set("WATER_FILTER"); coarse.state.Set("FILTER_SIZE_TAG", 150);
+            var builder = new RichTextBuilder();
+            Hooks.AfterWaterContainerTooltip(builder, jug2);
+            Check(builder.Slices.Count == 1 && builder.Slices[0].text.Contains("100/1000"), "coarse chemistry cloth durability missing");
+        });
+        Test("UV lamp is neither shown as filter nor installed", () => {
+            var (jug, lamp) = JugOf("uv_filter", 50); lamp.MaxDurability = 400;
+            var builder = new RichTextBuilder();
+            Hooks.AfterWaterContainerTooltip(builder, jug);
+            Check(builder.Slices.Count == 0, "UV lamp shown as filter durability");
+            var (other, old) = Jug(10); var (_, inner) = Box();
+            Item("uv_filter", inner, 50);
+            Frames(); old.Durability = 0; Hooks.AfterFilter(old); Frames();
+            Check(other.FilterSlot!.childItem == old && GraphUtils.Swaps == 0, "UV lamp installed as replacement");
+        });
+        Test("filter slotted in a RAS machine is not used as a spare", () => {
+            var (jug, old) = Jug(10); var (_, inner) = Box(); var (_, slot) = Ras();
+            Item("water_filter_adv", slot, 100);
+            Frames(); old.Durability = 0; Hooks.AfterFilter(old); Frames();
+            Check(jug.FilterSlot!.childItem == old && GraphUtils.Swaps == 0, "RAS machine filter was taken as a spare");
+        });
+        Test("depleted filter slotted in a RAS machine is not replaced", () => {
+            var (_, slot) = Ras(); var rasFilter = Item("water_filter", slot, 0);
+            var (jug, old) = Jug(10); var (_, inner) = Box(); var spare = Item("water_filter", inner, 90);
+            Frames(); Hooks.AfterFilter(rasFilter); Frames();
+            Check(slot.childItem == rasFilter && jug.FilterSlot!.childItem == old && GraphUtils.Swaps == 0, "RAS machine filter was swapped");
+            Check(spare.parentInventory == inner, "RAS machine filter consumed the spare");
+        });
         Test("reload clears stale references", () => {
             var (jug, old)=Jug(10); var (_,inner)=Box(); var spare=Item("water_filter",inner); Frames();
             Hooks.AfterLoadGame(); inner.childItems.Remove(spare); spare.Parent=null; old.Durability=0; Hooks.AfterFilter(old); Frames();
@@ -167,6 +234,13 @@ internal static class Program
             Check((bool)cache.GetValue(null)!,"scanner addition not found");
             EmporiumEntry.Instance.invWindow.childItems.Remove(scan); scan.Parent=null; Hooks.AfterItemParentChanged(scan,true); Frames();
             Check(!(bool)cache.GetValue(null)!,"scanner removal not found");
+        });
+        Test("chemical scanner is accepted as a water scanner", () => {
+            Frames(); var scan=Item("chem_scanner",EmporiumEntry.Instance.invWindow); Hooks.AfterItemParentChanged(scan,true); Frames();
+            var cache=typeof(Hooks).GetField("_scannerCache",BindingFlags.Static|BindingFlags.NonPublic)!;
+            Check((bool)cache.GetValue(null)!,"chemical scanner addition not found");
+            EmporiumEntry.Instance.invWindow.childItems.Remove(scan); scan.Parent=null; Hooks.AfterItemParentChanged(scan,true); Frames();
+            Check(!(bool)cache.GetValue(null)!,"chemical scanner removal not found");
         });
         Test("scan limits per frame", () => {
             var root=EmporiumEntry.Instance.invWindow; for (int i=0;i<500;i++) Item("object_"+i,root);

@@ -127,6 +127,10 @@ internal static class Hooks
     private const int MaintenanceStepsPerFrame = 64;
     private const float FullScanIntervalSeconds = 30f;
     private const float EmptyCacheRetrySeconds = 5f;
+
+    // FILTER_SIZE_TAG of the vanilla water filter (game data 0.46D). Only used
+    // when the prototype's tag cannot be read for some reason.
+    private const int VanillaFilterSizeFallback = 22;
     private static readonly FieldInfo GridItems = typeof(GameGridInventory).GetField("items", BindingFlags.Instance | BindingFlags.NonPublic)!;
     private static readonly FieldInfo ScrollItems = typeof(GameGridScrollableInventory).GetField("items", BindingFlags.Instance | BindingFlags.NonPublic)!;
     private static List<(GameItem Item, GameInventory Inventory)>[] FilterCache = { new(), new(), new() };
@@ -150,6 +154,7 @@ internal static class Hooks
     private static bool _vanillaFilterIdentityLoaded;
     private static string _vanillaFilterIdentifier = string.Empty;
     private static string _vanillaFilterName = string.Empty;
+    private static int _vanillaFilterSize;
     private static readonly HashSet<string> KnownWaterContainerIdentifiers = new(
         StringComparer.OrdinalIgnoreCase)
     {
@@ -171,6 +176,16 @@ internal static class Hooks
         "be_xuxu_slim_water_bottle",
         "be_clear_brew_water_bucket"
     };
+
+    // Hosts whose built-in filter slots belong to the host's own water loop,
+    // not to the player's spare stock. Currently the recirculating aquaculture
+    // system (循环水养殖系统): AquacultureHelper.TickTank reads its four filter
+    // slots every tank cycle, but those filters sit in machine slots instead of
+    // inside a water container, so IsInstalledInWaterContainer cannot see them.
+    // Treating them as spares would silently starve the fish tank (reported by
+    // players whose drug crafting kept pulling the tank's filters).
+    private static readonly string[] ExcludedFilterHostTags = { "RAS_TAG" };
+    private static readonly string[] ExcludedFilterHostIdentifiers = { "ras", "rasempty" };
 
     public static void AfterWaterContainerTooltip(RichTextBuilder __0, GameItem __1)
     {
@@ -208,14 +223,15 @@ internal static class Hooks
     {
         if (Core.AutoReplaceFilters is not { Value: true } || __3 == null ||
             !__3.IsTag("WATER_FILTER") || !IsFilterItem(__3) ||
-            DurabilityHelper.GetRealDurability(__3) > 0)
+            DurabilityHelper.GetRealDurability(__3) > 0 ||
+            IsInExcludedFilterHost(__3))
             return;
         QueueFilter(__3);
     }
 
     public static void AfterItemParentChanged(GameItem __instance, bool __result)
     {
-        if (__result && string.Equals(__instance.identifier, "aquascan", StringComparison.OrdinalIgnoreCase))
+        if (__result && IsWaterScanner(__instance))
         {
             _scannerCache = false;
             _scannerItem = null;
@@ -301,8 +317,11 @@ internal static class Hooks
         if (filter == null)
             return;
 
-        // The slot can also hold a UV lamp; the durability line is for filters only.
-        if (!IsFilterItem(filter))
+        // The slot can also hold a UV lamp; the durability line is for
+        // consumable filters and coarse cloth alike (both are consumed through
+        // durability in HandleFilter). Auto-replacement still uses
+        // IsFilterItem, which rejects cloth too coarse to be worth swapping.
+        if (!IsWaterFilterSlotItem(filter))
             return;
 
         var name = GetDisplayName(filter);
@@ -405,8 +424,10 @@ internal static class Hooks
 
         try
         {
-            return NormalizeIdentifier(item.identifier ?? string.Empty) == "aquascan" ||
-                   NormalizeIdentifier(item.name ?? string.Empty) == "aquascan";
+            var identifier = NormalizeIdentifier(item.identifier ?? string.Empty);
+            var name = NormalizeIdentifier(item.name ?? string.Empty);
+            return identifier == "aquascan" || identifier == "chemscanner" ||
+                   name == "aquascan" || name == "chemscanner";
         }
         catch
         {
@@ -876,7 +897,8 @@ internal static class Hooks
         {
             if (!IsFilterItem(item) ||
                 !TryGetParentInventory(item, out var parent) || parent == null ||
-                IsInstalledInWaterContainer(item))
+                IsInstalledInWaterContainer(item) ||
+                IsInExcludedFilterHost(item))
                 return false;
 
             return DurabilityHelper.GetRealDurability(item) > 0;
@@ -1147,6 +1169,40 @@ internal static class Hooks
         return false;
     }
 
+    // Filters slotted in these hosts belong to the host's own water loop: the
+    // host reads them every cycle, and unlike the pitcher slot they are not
+    // stored inside a water container item, so IsInstalledInWaterContainer
+    // cannot see them. They must never be used as spares or replaced in place.
+    private static bool IsInExcludedFilterHost(GameItem filter)
+    {
+        var visited = new HashSet<object>();
+        if (!TryGetParentInventory(filter, out var inventory))
+            return false;
+
+        while (inventory != null)
+        {
+            if (!visited.Add(inventory))
+                return false;
+
+            var host = inventory.GetParentItem();
+            if (host == null)
+                return false;
+            foreach (var tag in ExcludedFilterHostTags)
+            {
+                if (host.IsTag(tag))
+                    return true;
+            }
+
+            var identifier = NormalizeIdentifier(host.identifier ?? string.Empty);
+            if (ExcludedFilterHostIdentifiers.Contains(identifier))
+                return true;
+
+            if (!TryGetParentInventory(host, out inventory))
+                return false;
+        }
+        return false;
+    }
+
     private static bool IsInstalledFilter(GameItem container, GameItem expectedFilter)
     {
         try
@@ -1182,43 +1238,52 @@ internal static class Hooks
                state.GetTag("LIQUID_CONTAINER_CAPACITY")?.valueInt > 0;
     }
 
-    // Items that occupy the water-container slot but are not water filters.
-    // Matched on identifier substrings because the id is stable while the
-    // display name is localized. Confirmed against the game's item data:
-    //   uv_filter       紫外线灯（杀菌灯具）
-    //   hydroreed_filter 韧棉织物（工业布料，游戏描述明确说无法用于净水）
-    //   black_lamp       黑光灯
-    private static readonly string[] NonFilterSlotIdentifiers =
-    {
-        "uv_filter",
-        "uvfilter",
-        "uv_lamp",
-        "uvlamp",
-        "black_lamp",
-        "hydroreed"
-    };
+    // The water-container slot also accepts items that are not consumable
+    // filters. The UV lamp carries WATER_FILTER because its UV cleaning is
+    // triggered from the slot, but the game consumes it through
+    // WaterHelper.OnUVUsed instead of durability, so it must never be picked
+    // as a filter. Black lamps are not filters and carry no WATER_FILTER tag,
+    // so the tag check below excludes them without another identifier list.
+    private static readonly string[] UvLampIdentifiers = { "uvfilter", "uvlamp" };
 
+    // True for anything the game treats as a filter in the water-container
+    // slot. Both consumable filters and coarse chemistry cloth are tagged
+    // WATER_FILTER and consumed by durability in WaterHelper.HandleFilter; the
+    // UV lamp is tagged too, but the game consumes it through
+    // WaterHelper.OnUVUsed instead of durability. Black lamps carry no
+    // WATER_FILTER tag, so the tag check also excludes them.
+    private static bool IsWaterFilterSlotItem(GameItem item)
+    {
+        try
+        {
+            var identifier = NormalizeIdentifier(item.identifier ?? string.Empty);
+            foreach (var uvLamp in UvLampIdentifiers)
+            {
+                if (identifier == uvLamp)
+                    return false;
+            }
+
+            return item.IsTag("WATER_FILTER");
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    // WATER_FILTER is the flag the game itself reads in
+    // WaterHelper.GetFilterItem/HandleFilter. It also covers
+    // hydroreed_filter, which an older keyword blacklist wrongly rejected even
+    // though a water purifier accepts and consumes it like any other filter.
+    // The pitcher slot additionally accepts coarse chemistry cloth such as
+    // kotton_fabric (韧棉织物, FILTER_SIZE_TAG 150). It can be placed in a
+    // water container, but it only catches very large particles, so it must
+    // not replace a real filter.
     private static bool IsFilterItem(GameItem item)
     {
         try
         {
-            var identifier = (item.identifier ?? string.Empty).ToLowerInvariant();
-            var name = (item.name ?? string.Empty).ToLowerInvariant();
-            var text = $"{identifier} {name}";
-
-            // Substring matching on "filter" alone is not safe here: the game's
-            // UV lamp identifier is `uv_filter` and the industrial cloth is
-            // `hydroreed_filter`, so both would pass a naive "contains filter"
-            // test. Exclude the known non-filter slot items first.
-            foreach (var blocked in NonFilterSlotIdentifiers)
-            {
-                if (text.Contains(blocked))
-                    return false;
-            }
-
-            return text.Contains("filter") ||
-                   text.Contains("过滤器") ||
-                   text.Contains("滤水器");
+            return IsWaterFilterSlotItem(item) && IsAtLeastAsFineAsVanilla(item);
         }
         catch
         {
@@ -1283,12 +1348,43 @@ internal static class Hooks
 
             _vanillaFilterIdentifier = prototype.identifier ?? string.Empty;
             _vanillaFilterName = prototype.name ?? string.Empty;
+            _vanillaFilterSize = ReadFilterSize(prototype);
             _vanillaFilterIdentityLoaded = true;
             prototype.Destroy();
         }
         catch
         {
         }
+    }
+
+    private static int ReadFilterSize(GameItem item)
+    {
+        try
+        {
+            return item.state?.GetTag("FILTER_SIZE_TAG")?.valueInt ?? 0;
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
+    // The pitcher slot also accepts coarse tagged items. In
+    // WaterHelper.HandleFilter a filter only catches liquids whose
+    // particleSize reaches FILTER_SIZE_TAG, so a larger size means a coarser
+    // filter; only filters at least as fine as the vanilla one are useful for
+    // water trading. Items without the tag are kept so that filters added by
+    // other mods do not need to know about it.
+    private static bool IsAtLeastAsFineAsVanilla(GameItem item)
+    {
+        var filterSize = ReadFilterSize(item);
+        return filterSize <= 0 || filterSize <= VanillaFilterSize();
+    }
+
+    private static int VanillaFilterSize()
+    {
+        EnsureVanillaFilterIdentity();
+        return _vanillaFilterSize > 0 ? _vanillaFilterSize : VanillaFilterSizeFallback;
     }
 
     private static string NormalizeIdentifier(string value)

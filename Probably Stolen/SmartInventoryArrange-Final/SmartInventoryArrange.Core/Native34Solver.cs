@@ -72,6 +72,8 @@ public sealed class Native34Solver
 
 		public string Diagnostic => _owner.Diagnostic;
 
+		public long LastAdvanceAllocatedBytes => _owner.LastAdvanceAllocatedBytes;
+
 		public bool Exhausted
 		{
 			get
@@ -234,13 +236,14 @@ public sealed class Native34Solver
 			{
 				throw new InvalidOperationException("Final immutable geometry validation failed.");
 			}
-			_owner.CandidateRecords = Enumerable.ToArray(Enumerable.Select(Enumerable.Take((IEnumerable<Ranked>)list, 256), (Ranked r) => new CandidateTrace(Hash(r.Key), Enumerable.ToArray((IEnumerable<string>)_owner._pool[r.Key].Item2), Valid: true, (r == best) ? "" : "ranked-lower", Summary(r.M), r == best)));
 			Metrics m = _owner.Measure(array);
 			LayoutScore score = DeterministicSolver.Evaluate(_owner._p, array);
 			ValueTuple<int, int, int> val2 = DeterministicSolver.EvaluateSpaceMetrics(_owner._p, array);
 			string text2 = ((best == null) ? "no-fresh-complete-layout" : (_candidateCap ? "candidate-memory-cap" : (Exhausted ? "generated-search-space-exhausted" : (flag ? "fresh-best-selected" : "no-better-candidate-this-batch"))));
 			val.Stop();
-			_owner._performance.Add(new StageTiming(_batch, "session-advance", val.Elapsed.TotalMilliseconds, GC.GetAllocatedBytesForCurrentThread() - allocatedBytesForCurrentThread, (int)(TotalNodes - totalNodes)));
+			long advanceAllocated = GC.GetAllocatedBytesForCurrentThread() - allocatedBytesForCurrentThread;
+			_owner.LastAdvanceAllocatedBytes = advanceAllocated;
+			_owner._performance.Add(new StageTiming(_batch, "session-advance", val.Elapsed.TotalMilliseconds, advanceAllocated, (int)(TotalNodes - totalNodes)));
 			Native34Solver owner = _owner;
 			DefaultInterpolatedStringHandler val3 = default(DefaultInterpolatedStringHandler);
 			val3 = new DefaultInterpolatedStringHandler(140, 9);
@@ -334,8 +337,6 @@ public sealed class Native34Solver
 
 	private sealed record Metrics(GroupMetric[] Groups, int Regions, int Detached, int ExtraRows, int Mixed, int Landscape, int PortraitInterlock, int Overlaps, int Left, int Inversions, int Middle, int LargestMiddle, int Height, double AnchorY, int AnchorArea, double Priority, int CohortRows, double RowDebt, int AnchorIntrusion);
 
-	public sealed record CandidateTrace(string Signature, string[] Generators, bool Valid, string RejectedReason, string Metrics, bool Selected);
-
 	private SearchSession? _activeSession;
 
 	private readonly HashSet<string> _interlockAnchors = new HashSet<string>((IEqualityComparer<string>)StringComparer.Ordinal);
@@ -382,10 +383,11 @@ public sealed class Native34Solver
 
 	public string Diagnostic { get; private set; } = "";
 
+	public long LastAdvanceAllocatedBytes { get; private set; }
+
 
 	public IReadOnlyList<StageTiming> Performance => (IReadOnlyList<StageTiming>)_performance;
 
-	public IReadOnlyList<CandidateTrace> CandidateRecords { get; private set; } = Array.Empty<CandidateTrace>();
 
 
 	private Ranked Rank(string key)

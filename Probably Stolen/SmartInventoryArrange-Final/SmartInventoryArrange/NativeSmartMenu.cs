@@ -22,7 +22,8 @@ internal static class NativeSmartMenu
 		ItemContextHandler owner2 = owner;
 		PixelWindow sortWindow = ContextAccess.SortWindow(owner2);
 		PixelElement val = sortWindow.childElement ?? throw new InvalidOperationException("Sort window has no child element.");
-		if (Grid != null && Button != null && PreserveButton != null && ReferenceEquals(_window, sortWindow) && ReferenceEquals(val, Grid))
+		bool preserveEnabled = SmartArrangeMod.EnablePreserveContainers?.Value ?? false;
+		if (Grid != null && Button != null && ReferenceEquals(_window, sortWindow) && ReferenceEquals(val, Grid) && (PreserveButton != null) == preserveEnabled)
 		{
 			return;
 		}
@@ -40,13 +41,17 @@ internal static class NativeSmartMenu
 		string text2 = (ContextInitPatch.IsChinese() ? "智能排列" : "Smart Arrange");
 		string text3 = (ContextInitPatch.IsChinese() ? "保留容器排列" : "Preserve Containers");
 		RichTextElement val3 = MakeButton(text2);
-		RichTextElement val4 = MakeButton(text3);
-		width = Math.Max(width, Math.Max(val3.widthPixels, val4.widthPixels));
+		RichTextElement? val4 = (preserveEnabled ? MakeButton(text3) : null);
+		width = Math.Max(width, val3.widthPixels);
+		if (val4 != null)
+		{
+			width = Math.Max(width, val4.widthPixels);
+		}
 		for (int j = 0; j < array.Length; j++)
 		{
 			array[j].SetFixedSize(width, -1);
 		}
-		GridPixelElement val5 = new GridPixelElement(1, 7, false).SetSpacing(ContextAccess.GridXSpacing(val2), ContextAccess.GridYSpacing(val2));
+		GridPixelElement val5 = new GridPixelElement(1, preserveEnabled ? 7 : 6, false).SetSpacing(ContextAccess.GridXSpacing(val2), ContextAccess.GridYSpacing(val2));
 		val5.justifyWidth = val2.justifyWidth;
 		val5.searchUsingPriority = val2.searchUsingPriority;
 		int widthPixels = sortWindow.widthPixels;
@@ -70,15 +75,24 @@ internal static class NativeSmartMenu
 					throw new InvalidOperationException(val6.ToStringAndClear());
 				}
 			}
-			if (!val5.AttachPos(val3, 0, 4) || !val5.AttachPos(val4, 0, 5) || !val5.AttachPos(array[4], 0, 6))
+			bool attached = val5.AttachPos(val3, 0, 4);
+			if (attached && val4 != null)
+			{
+				attached = val5.AttachPos(val4, 0, 5);
+			}
+			if (attached)
+			{
+				attached = val5.AttachPos(array[4], 0, preserveEnabled ? 6 : 5);
+			}
+			if (!attached)
 			{
 				throw new InvalidOperationException("Failed to attach smart sort rows.");
 			}
 			if (!sortWindow.Attach(val5))
 			{
-				throw new InvalidOperationException("Failed to attach the expanded 1x7 sort grid.");
+				throw new InvalidOperationException("Failed to attach the expanded sort grid.");
 			}
-			sortWindow.ResizePixels(width + 2 * sortWindow.xPadding, heightPixels + 2 * (rowHeight + ContextAccess.GridYSpacing(val2)));
+			sortWindow.ResizePixels(width + 2 * sortWindow.xPadding, heightPixels + (preserveEnabled ? 2 : 1) * (rowHeight + ContextAccess.GridYSpacing(val2)));
 			sortWindow.Validate();
 			Button = val3;
 			PreserveButton = val4;
@@ -99,16 +113,18 @@ internal static class NativeSmartMenu
 			Close();
 			throw;
 		}
-		val6 = new DefaultInterpolatedStringHandler(99, 7);
+		val6 = new DefaultInterpolatedStringHandler(110, 8);
 		val6.AppendLiteral("Smart arrange menu injected: label=");
 		val6.AppendFormatted(text2);
-		val6.AppendLiteral(", preserveLabel=");
-		val6.AppendFormatted(text3);
+		val6.AppendLiteral(", preserve=");
+		val6.AppendFormatted<bool>(preserveEnabled);
 		val6.AppendLiteral(", nativeGrid=");
 		val6.AppendFormatted<int>(val2.gridWidth);
 		val6.AppendLiteral("x");
 		val6.AppendFormatted<int>(val2.gridHeight);
-		val6.AppendLiteral(", expandedGrid=1x7, row=");
+		val6.AppendLiteral(", expandedGrid=1x");
+		val6.AppendFormatted<int>(preserveEnabled ? 7 : 6);
+		val6.AppendLiteral(", row=");
 		val6.AppendFormatted<int>(rowHeight);
 		val6.AppendLiteral(", window=");
 		val6.AppendFormatted<int>(sortWindow.widthPixels);

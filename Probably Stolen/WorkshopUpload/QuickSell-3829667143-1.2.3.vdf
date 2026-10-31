@@ -1,0 +1,10 @@
+"workshopitem"
+{
+    "appid" "4348910"
+    "publishedfileid" "3829667143"
+    "contentfolder" "D:\code\mod\Probably Stolen\WorkshopUpload\QuickSell-1.2.3-Content"
+    "changenote" "1.2.3：
+- 每天结算时自动清理失效保护记录：物品被用掉、卖掉或丢掉后，不再在保护面板残留「暂不可用的物品」。
+- 按名称的同类保护不受影响，之后获得的同名物品继续受保护。
+- 无失效记录时不做任何操作，也不写配置。"
+}

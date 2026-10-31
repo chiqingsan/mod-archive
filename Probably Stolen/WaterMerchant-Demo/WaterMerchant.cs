@@ -7,21 +7,108 @@ namespace WaterMerchant;
 
 public sealed class Mod : IMod
 {
+    private const string HarmonyId = "chiqingsan.WaterMerchant";
+
+    private GameObject? _runner;
+    private Harmony? _harmony;
+    private bool _patchAttempted;
 
     public void Init(ModManifest manifest) => Settings.Init(manifest);
     public void OnEnable()
     {
         Settings.Active = true;
-        if (EmporiumEntry.Instance != null) Hooks.RefreshOwned();
-        Debug.Log("WaterMerchant 1.1.0 enabled");
+        _patchAttempted = false;
+        _runner = new GameObject("WaterMerchant");
+        UnityEngine.Object.DontDestroyOnLoad(_runner);
+        _runner.AddComponent<WaterMerchantRunner>().Mod = this;
+        Debug.Log("WaterMerchant 1.1.1 enabled");
     }
+
+    internal void OnUpdate()
+    {
+        if (!_patchAttempted)
+        {
+            if (!PlayerStore.IsInstanceExist() || PlayerStore.Instance == null || EmporiumEntry.Instance == null)
+                return;
+
+            _patchAttempted = true;
+            InstallPatches();
+            if (_harmony == null)
+                return;
+            Hooks.RequestRefresh();
+        }
+
+        if (_harmony != null)
+            Hooks.UpdatePendingRefresh();
+    }
+
+    private void InstallPatches()
+    {
+        try
+        {
+            var harmony = _harmony = new Harmony(HarmonyId);
+            PatchPostfix(harmony, typeof(PlayerStore), nameof(PlayerStore.LoadGame), Type.EmptyTypes, typeof(Loaded), nameof(Loaded.Postfix));
+            PatchPostfix(harmony, typeof(MachineMoistureFarm), nameof(MachineMoistureFarm.MoistureFarm), Type.EmptyTypes, typeof(FarmCreated), nameof(FarmCreated.Postfix));
+            PatchPostfix(harmony, typeof(AmenitiesItemDirectory), "WaterPitcher", Type.EmptyTypes, typeof(PitcherCreated), nameof(PitcherCreated.Postfix));
+            PatchPostfix(harmony, typeof(AmenitiesItemDirectory), "PortableWaterPurifier", Type.EmptyTypes, typeof(PortableCreated), nameof(PortableCreated.Postfix));
+            PatchPrefix(harmony, typeof(MachineMoistureFarm), nameof(MachineMoistureFarm.GetOutputVolume), new[] { typeof(GameItem) }, typeof(FarmOutput), nameof(FarmOutput.Prefix));
+            PatchPrefix(harmony, typeof(MachineMoistureFarm), nameof(MachineMoistureFarm.ApplySharedAir), new[] { typeof(int), typeof(int) }, typeof(FarmAir), nameof(FarmAir.Prefix));
+            PatchPrefix(harmony, typeof(MachineMoistureFarm), nameof(MachineMoistureFarm.GetSharingFarmCount), new[] { typeof(GameItem) }, typeof(FarmTooltip), nameof(FarmTooltip.Prefix));
+            PatchPrefix(harmony, typeof(MachinePurifier), nameof(MachinePurifier.GetPurityMult), new[] { typeof(int) }, typeof(PurifierQuality), nameof(PurifierQuality.Prefix));
+            PatchPrefix(harmony, typeof(MachinePurifier), nameof(MachinePurifier.GetDirtBonus), new[] { typeof(int) }, typeof(PurifierAmount), nameof(PurifierAmount.Prefix));
+            PatchPrefix(harmony, typeof(WaterHelper), nameof(WaterHelper.HandleFilter), new[] { typeof(string), typeof(int), typeof(GameItem), typeof(GameItem) }, typeof(Filter), nameof(Filter.Prefix));
+            PatchPrefix(harmony, typeof(WaterHelper), nameof(WaterHelper.PurifyToBaseWater), new[] { typeof(GameItem) }, typeof(PortablePurify), nameof(PortablePurify.Prefix));
+            PatchPrefix(harmony, typeof(WaterHelper), nameof(WaterHelper.AddWater), new[] { typeof(GameItem), typeof(int), typeof(int), typeof(bool), typeof(int), typeof(int), typeof(bool) }, typeof(RecipeInit), nameof(RecipeInit.Prefix));
+            PatchPrefix(harmony, typeof(MachineMoistureFarm), nameof(MachineMoistureFarm.CountRunningFarms), Type.EmptyTypes, typeof(FarmCount), nameof(FarmCount.Prefix));
+            PatchPostfix(harmony, typeof(DurabilityHelper), nameof(DurabilityHelper.ChangeDurability), new[] { typeof(GameItem), typeof(int) }, typeof(PortableCapacityAfterUse), nameof(PortableCapacityAfterUse.Postfix));
+            Debug.Log("WaterMerchant patches installed after store readiness.");
+        }
+        catch (Exception ex)
+        {
+            _harmony?.UnpatchAll(HarmonyId);
+            _harmony = null;
+            Debug.LogWarning("WaterMerchant patch initialization failed; mod remains inactive: " + ex);
+        }
+    }
+
+    private static void PatchPrefix(Harmony harmony, Type type, string methodName, Type[] argumentTypes, Type patchType, string prefixName)
+    {
+        var original = AccessTools.Method(type, methodName, argumentTypes)
+            ?? throw new MissingMethodException(type.FullName, methodName);
+        var prefix = AccessTools.Method(patchType, prefixName)
+            ?? throw new MissingMethodException(patchType.FullName, prefixName);
+        harmony.Patch(original, prefix: new HarmonyMethod(prefix));
+    }
+
+    private static void PatchPostfix(Harmony harmony, Type type, string methodName, Type[] argumentTypes, Type patchType, string postfixName)
+    {
+        var original = AccessTools.Method(type, methodName, argumentTypes)
+            ?? throw new MissingMethodException(type.FullName, methodName);
+        var postfix = AccessTools.Method(patchType, postfixName)
+            ?? throw new MissingMethodException(patchType.FullName, postfixName);
+        harmony.Patch(original, postfix: new HarmonyMethod(postfix));
+    }
+
     public void OnDisable()
     {
         Settings.Active = false;
         Recipes.Set(false);
-        if (EmporiumEntry.Instance != null) Hooks.RestoreOwned();
+        if (PlayerStore.IsInstanceExist() && PlayerStore.Instance != null && EmporiumEntry.Instance != null)
+            Hooks.RestoreOwned();
+        _harmony?.UnpatchAll(HarmonyId);
+        _harmony = null;
+        Hooks.ResetPendingRefresh();
+        if (_runner != null) UnityEngine.Object.Destroy(_runner);
+        _runner = null;
     }
 
+}
+
+public sealed class WaterMerchantRunner : MonoBehaviour
+{
+    internal Mod Mod = null!;
+
+    private void Update() => Mod.OnUpdate();
 }
 
 internal static class Settings
@@ -43,7 +130,7 @@ internal static class Settings
         PortableCapacity = config.Define("PortableCapacity", true, "海德拉", () => "耐久上限 400", () => "关闭时已超过 300 的耐久暂时保留，直到耐久不超过 300 后恢复原上限。");
         PortableMix = config.Define("PortableMix", true, "海德拉", () => "按比例减少各类杂质");
         Recipes = config.Define("WaterRecipes", true, "水质", () => "水中杂质配比保持修改前标准");
-        foreach (var entry in new[] { FarmPower, FarmAir, FarmPrice, UvPitcher, PortableCapacity }) entry.OnChanged += _ => { if (Active && EmporiumEntry.Instance != null) Hooks.RefreshOwned(); };
+        foreach (var entry in new[] { FarmPower, FarmAir, FarmPrice, UvPitcher, PortableCapacity }) entry.OnChanged += _ => { if (Active) Hooks.RequestRefresh(); };
         Recipes.OnChanged += enabled => { if (Active && !enabled) WaterMerchant.Recipes.Set(false); };
     }
 }
@@ -74,8 +161,42 @@ internal static class Recipes
 
 internal static class Hooks
 {
+    private static bool _refreshRequested;
+    private static int _refreshNotBeforeFrame;
+
+    internal static void RequestRefresh()
+    {
+        _refreshRequested = true;
+        _refreshNotBeforeFrame = Time.frameCount + 1;
+    }
+
+    internal static void UpdatePendingRefresh()
+    {
+        if (!_refreshRequested || Time.frameCount < _refreshNotBeforeFrame ||
+            !PlayerStore.IsInstanceExist() || PlayerStore.Instance == null || EmporiumEntry.Instance == null)
+            return;
+
+        _refreshRequested = false;
+        RefreshOwned();
+    }
+
+    internal static void ResetPendingRefresh()
+    {
+        _refreshRequested = false;
+        _refreshNotBeforeFrame = 0;
+    }
+
     public static void ApplyFarmCreated(GameItem item) { item.identifier = "moisture_farm"; Apply(item); }
-    public static void RefreshOwned() { foreach (var item in EmporiumEntry.Instance.GetAllOwnedItems()) Apply(item); }
+    public static void RefreshOwned()
+    {
+        var count = 0;
+        foreach (var item in EmporiumEntry.Instance.GetAllOwnedItems())
+        {
+            Apply(item);
+            count++;
+        }
+        Debug.Log("WaterMerchant owned item refresh complete: " + count + " item(s).");
+    }
     public static void RestoreOwned() { foreach (var item in EmporiumEntry.Instance.GetAllOwnedItems()) Restore(item); }
     public static void Apply(GameItem item)
     {
@@ -136,30 +257,21 @@ internal static class Hooks
     }
 }
 
-[HarmonyPatch(typeof(PlayerStore), nameof(PlayerStore.LoadGame))]
-internal static class Loaded { private static void Postfix() => Hooks.RefreshOwned(); }
-[HarmonyPatch(typeof(MachineMoistureFarm), nameof(MachineMoistureFarm.MoistureFarm))]
-internal static class FarmCreated { private static void Postfix(GameItem __result) => Hooks.ApplyFarmCreated(__result); }
-[HarmonyPatch(typeof(AmenitiesItemDirectory), "WaterPitcher")]
-internal static class PitcherCreated { private static void Postfix(GameItem __result) => Hooks.Apply(__result); }
-[HarmonyPatch(typeof(AmenitiesItemDirectory), "PortableWaterPurifier")]
-internal static class PortableCreated { private static void Postfix(GameItem __result) { if (Settings.PortableCapacity.Value) DurabilityHelper.SetDurability(__result, 400, 400, 400); } }
-[HarmonyPatch(typeof(MachineMoistureFarm), nameof(MachineMoistureFarm.GetOutputVolume))]
+internal static class Loaded { internal static void Postfix() => Hooks.RequestRefresh(); }
+internal static class FarmCreated { internal static void Postfix(GameItem __result) => Hooks.ApplyFarmCreated(__result); }
+internal static class PitcherCreated { internal static void Postfix(GameItem __result) => Hooks.Apply(__result); }
+internal static class PortableCreated { internal static void Postfix(GameItem __result) { if (Settings.PortableCapacity.Value) DurabilityHelper.SetDurability(__result, 400, 400, 400); } }
 internal static class FarmOutput
 {
-    private static bool Prefix(GameItem gameItem, ref int __result) { if (!Settings.FarmOutput.Value) return true; __result = Math.Max(1000000 * (100 + MachineryHelper.GetCurrentPerformanceBonus(gameItem)) / 100, 0); return false; }
+    internal static bool Prefix(GameItem gameItem, ref int __result) { if (!Settings.FarmOutput.Value) return true; __result = Math.Max(1000000 * (100 + MachineryHelper.GetCurrentPerformanceBonus(gameItem)) / 100, 0); return false; }
 }
-[HarmonyPatch(typeof(MachineMoistureFarm), nameof(MachineMoistureFarm.ApplySharedAir))]
-internal static class FarmAir { private static bool Prefix(int volume, ref int __result) { if (!Settings.FarmAir.Value) return true; __result = volume; return false; } }
-[HarmonyPatch(typeof(MachineMoistureFarm), nameof(MachineMoistureFarm.GetSharingFarmCount))]
-internal static class FarmTooltip { private static bool Prefix(ref int __result) { if (!Settings.FarmAir.Value) return true; __result = 1; return false; } }
-[HarmonyPatch(typeof(MachinePurifier), nameof(MachinePurifier.GetPurityMult))]
-internal static class PurifierQuality { private static bool Prefix(int bonusQuality, ref double __result) { if (!Settings.PurifierQuality.Value || bonusQuality < 150) return true; __result = 0; return false; } }
+internal static class FarmAir { internal static bool Prefix(int volume, ref int __result) { if (!Settings.FarmAir.Value) return true; __result = volume; return false; } }
+internal static class FarmTooltip { internal static bool Prefix(ref int __result) { if (!Settings.FarmAir.Value) return true; __result = 1; return false; } }
+internal static class PurifierQuality { internal static bool Prefix(int bonusQuality, ref double __result) { if (!Settings.PurifierQuality.Value || bonusQuality < 150) return true; __result = 0; return false; } }
 
-[HarmonyPatch(typeof(MachinePurifier), nameof(MachinePurifier.GetDirtBonus))]
 internal static class PurifierAmount
 {
-    private static bool Prefix(int purity, ref double __result)
+    internal static bool Prefix(int purity, ref double __result)
     {
         if (!Settings.PurifierAmount.Value || purity < 9600) return true;
         __result = 1.5;
@@ -167,10 +279,9 @@ internal static class PurifierAmount
     }
 }
 
-[HarmonyPatch(typeof(WaterHelper), nameof(WaterHelper.HandleFilter))]
 internal static class Filter
 {
-    private static bool Prefix(string identifier, int amount, GameItem filter, ref int __result)
+    internal static bool Prefix(string identifier, int amount, GameItem filter, ref int __result)
     {
         if (!Settings.FilterZero.Value && (!Settings.FilterMicrobe.Value || identifier != "microbe")) return true;
         if (identifier == "microbe" && !Settings.FilterMicrobe.Value) return true;
@@ -195,10 +306,9 @@ internal static class Filter
         return false;
     }
 }
-[HarmonyPatch(typeof(WaterHelper), nameof(WaterHelper.PurifyToBaseWater))]
 internal static class PortablePurify
 {
-    private static bool Prefix(GameItem container)
+    internal static bool Prefix(GameItem container)
     {
         if (!Settings.PortableMix.Value) return true;
         if (!container.IsTag("LIQUID_CONTAINER_TAG")) return false;
@@ -227,16 +337,13 @@ internal static class PortablePurify
 }
 
 
-[HarmonyPatch(typeof(WaterHelper), nameof(WaterHelper.AddWater))]
-internal static class RecipeInit { private static void Prefix() => Recipes.Ensure(); }
-[HarmonyPatch(typeof(MachineMoistureFarm), nameof(MachineMoistureFarm.CountRunningFarms))]
-internal static class FarmCount { private static bool Prefix(ref int __result) { if (!Settings.FarmAir.Value) return true; __result = 1; return false; } }
+internal static class RecipeInit { internal static void Prefix() => Recipes.Ensure(); }
+internal static class FarmCount { internal static bool Prefix(ref int __result) { if (!Settings.FarmAir.Value) return true; __result = 1; return false; } }
 
 
-[HarmonyPatch(typeof(DurabilityHelper), nameof(DurabilityHelper.ChangeDurability))]
 internal static class PortableCapacityAfterUse
 {
-    private static void Postfix(GameItem gameItem)
+    internal static void Postfix(GameItem gameItem)
     {
         if (!Settings.PortableCapacity.Value && gameItem.identifier == "portable_water_purifier" && DurabilityHelper.GetMaxDurability(gameItem) == 400 && DurabilityHelper.GetRealDurability(gameItem) <= 300 && DurabilityHelper.GetFakeDurability(gameItem) <= 300)
             Hooks.Apply(gameItem);

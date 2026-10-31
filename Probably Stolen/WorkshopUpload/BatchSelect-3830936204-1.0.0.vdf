@@ -1,0 +1,27 @@
+"workshopitem"
+{
+	"appid"		"4348910"
+	"contentfolder"		"D:\\code\\mod\\Probably Stolen\\WorkshopUpload\\BatchSelect-1.0.0-Content"
+	"previewfile"		"D:\\code\\mod\\Probably Stolen\\WorkshopUpload\\BatchSelect-cover.jpg"
+	"visibility"		"0"
+	"title"		"按键拖拽多选框"
+	"description"		"[h2]按键拖拽多选框[/h2]
+
+原版游戏可以从容器空白处拖动鼠标拉出批量选择框，但起点必须是没有物品的空位，一旦容器装满物品，就没法再用鼠标框选了。
+
+这个模组补上了这个缺口：[b]按住触发键再拖动鼠标，可以从任意位置拉出批量选择框[/b]，直接按在已有物品的格子上开始拖也可以。
+
+[h3]用法[/h3]
+[list]
+[*]按住触发键（默认 [b]空格[/b]），在物品格上按住左键拖动 → 出现选择框，松手完成多选。
+[*]不按触发键时完全保持原版行为（只能从空位开始框选）。
+[*]按住触发键时，左键不会打开/使用/拖动物品，也不会误触单击交互。
+[/list]
+
+[h3]修改快捷键[/h3]
+进入游戏设置 → [b]按键[/b] → 找到「[b]修改触发拖拽的快捷键[/b]」→ 点击后按新键 → 点「应用」立即生效，无需重启。
+
+常态静默，仅快捷键按下时触发，无性能影响。"
+	"changenote"		"正式版首发"
+	"publishedfileid"		"3830936204"
+}

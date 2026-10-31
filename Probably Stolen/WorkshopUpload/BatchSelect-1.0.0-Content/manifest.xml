@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.BatchSelect</ID>
+  <Name>按键拖拽多选框</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.0.0</ModVersion>
+  <GameVersions><Version>0.46D</Version></GameVersions>
+  <Description>按住触发键（默认空格，可在游戏设置→按键→「修改触发拖拽的快捷键」中修改）后拖动鼠标，可以从任意位置拉出批量选择框，包括从已有物品的格子上开始；容器内没有空位时也能框选。不按触发键时保持原版行为（仅能从空位开始框选）。</Description>
+  <Assemblies><Assembly>BatchSelect.dll</Assembly></Assemblies>
+  <Capabilities><Capability>reflection-external</Capability></Capabilities>
+</Mod>

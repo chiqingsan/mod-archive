@@ -31,3 +31,21 @@
 **/tables_dump/
 **/il2cppdumper/script.json
 **/il2cppdumper/il2cpp.h
+
+# Local decompile/analysis caches and research scratch dirs
+/.tmp-*/
+/Probably Stolen/*-decompiled-*/
+/Probably Stolen/inspection-temp/
+/Probably Stolen/water-research/
+/Probably Stolen/brewing-research/
+/Probably Stolen/CollectorTower-Design/
+/save-recovery-*/
+
+# SteamCMD toolchain used only for local workshop uploads
+/Probably Stolen/WorkshopUpload/steamcmd/
+
+# Local deployment backups made before overwriting game mod files
+**/deploy-backups/
+**/deployment-backups/
+**/*.dll.bak
+**/*.bak.png
