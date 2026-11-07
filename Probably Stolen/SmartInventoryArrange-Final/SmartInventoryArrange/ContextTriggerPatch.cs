@@ -16,7 +16,7 @@ internal static class ContextTriggerPatch
 		}
 		bool menuCurrent = NativeSmartMenu.IsCurrent(__instance);
 		GameGridInventory? currentInventory = ContextAccess.CurrentInventory(__instance);
-		Debug.Log("Smart arrange click: button=" + (preserve ? "preserve" : "smart") + ", menuCurrent=" + menuCurrent + ", inventory=" + ((currentInventory != null) ? "yes" : "null") + ", busy=" + SmartArrangeMod.Busy);
+		Debug.Log("Smart arrange click: button=" + (preserve ? "preserve" : "smart") + ", menuCurrent=" + menuCurrent + ", inventory=" + ((currentInventory != null) ? "yes" : "null") + ", busy=" + SmartArrangeMod.Busy + ", container=" + SmartArrangeMod.DescribeInventory(currentInventory));
 		if (!menuCurrent)
 		{
 			return true;

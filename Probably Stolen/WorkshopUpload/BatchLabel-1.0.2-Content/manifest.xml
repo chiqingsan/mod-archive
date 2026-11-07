@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.BatchLabel</ID>
+  <Name>标签机批量打标签</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.0.2</ModVersion>
+  <GameVersions><Version>0.46D</Version></GameVersions>
+  <Description>装备标签机后按住触发键（默认空格），在物品上拖出选择框，松开左键后框内与起点同类型的物品批量复制该物品当前显示的标签（起点是正品就给正品标签，是赝品就给赝品标签）。框选期间游戏会临时取消标签机装备，松开左键后会自动重新装备。触发键可在 游戏设置→按键→「修改标签机批量打标签的快捷键」中修改，设为 None 可停用。不装标签机或不按触发键时保持原版行为。</Description>
+  <Assemblies><Assembly>BatchLabel.dll</Assembly></Assemblies>
+  <Capabilities><Capability>reflection-external</Capability></Capabilities>
+</Mod>

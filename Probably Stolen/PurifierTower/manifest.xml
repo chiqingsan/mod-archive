@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.PurifierTower</ID>
+  <Name>海德拉净水箱</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>0.6.0</ModVersion>
+  <GameVersions><Version>0.46D</Version></GameVersions>
+  <Description>海德拉净水箱 v0.6.0：三页签机器窗口（运行 / 净水器区 21×18 / 电池区+UV），全部使用游戏原版贴图。待处理 100L 与已处理 600L 为内置固定水箱（拖瓶子倒入、拖空瓶取水），v0.6.0 起水箱与 200L 自备容器改用桶装水外观（原版 water_container4/xl 帧），桶内水位按容量分档可见；待处理/已处理区各有一个 200L 自备容器槽，放了自备容器则打印停用。打印从已处理水灌装「满水瓶」放进输出区并扣电（瓶价+水价）。净化/自动接水逻辑待 M1。物品名已注入游戏「Item」本地化表，用物品管理器搜索「海德拉净水箱」或「200L 水容器」即可生成。测试/诊断：启动游戏时加命令行参数 -pt-debug 才自动发放测试道具（不读取任何文件）。</Description>
+  <Assemblies><Assembly>PurifierTower.dll</Assembly></Assemblies>
+  <Capabilities><Capability>reflection-external</Capability></Capabilities>
+</Mod>

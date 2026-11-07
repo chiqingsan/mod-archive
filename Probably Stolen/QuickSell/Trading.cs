@@ -40,7 +40,7 @@ public sealed partial class QuickSellMod
                 if (store != PlayerStore.Instance || entry != EmporiumEntry.Instance) yield break;
                 if (item.parentInventory != source.Inventory || !GeneralHelper.IsItemOwned(item)) { yield return null; continue; }
                 int id = item.GetUniqueID(); knownItems[id] = item;
-                if (item.contentWindow != null && !item.IsGameItemType("MACHINE") && !item.IsGameItemType("MODULE") && !item.IsGameItemType("NODE") && !item.IsTag("ADV_GUN_TAG"))
+                if (item.contentWindow != null && !item.IsGameItemType("MACHINE") && !item.IsGameItemType("MODULE") && !item.IsGameItemType("NODE") && !item.IsTag("ADV_GUN_TAG") && !IsToolbox(item))
                 {
                     var inventories = GraphUtils.FindChildrenType<GameInventory>(item.contentWindow);
                     string position = source.Inventory is GameGridInventory grid
@@ -93,6 +93,15 @@ public sealed partial class QuickSellMod
         bool markup = PlayerStore.Instance != null && PlayerStore.Instance.IsCurrentClientAcceptMarkup();
         return item.GetCurrentValue(useRetailMarkup: markup, forceMarkup: markup, extraMarketMod: extraMarketMod);
     }
+
+    // 商品包装容器：原版用它装试纸、净水片、营养片、啤酒等，卖出后内容物随盒成交。
+    private static bool IsPackagingContainer(GameItem item)
+        => item != null && item.contentWindow != null && item.IsTag(ContainerHelper.PRE_CONTAINER_TAG);
+
+    // 工具箱是玩家随身工具容器（原版 TOOLBOX_TAG、IMPORTANT_TAG）：里面的工具默认不参与上货，
+    // 工具箱本身也不作为商品，避免把要用到的工具或箱子误卖。
+    private static bool IsToolbox(GameItem item)
+        => item != null && item.IsTag(ToolboxHelper.TOOLBOX_TAG);
 
     // 物品上台瞬间原版会触发顾客对话；物品被回滚、台面没有可售物品时，
     // 这条对话会残留，看起来像上货成功了。只清理“放置物品”类对话。
@@ -201,7 +210,7 @@ public sealed partial class QuickSellMod
         var sourceContainers = new HashSet<GameItem>();
         foreach (int id in initialZones)
         {
-            if (knownItems.TryGetValue(id, out var container) && container.contentWindow != null && !IsProtected(container))
+            if (knownItems.TryGetValue(id, out var container) && container.contentWindow != null && !IsProtected(container) && !IsToolbox(container))
             {
                 sourceContainers.Add(container);
                 foreach (var inventory in GraphUtils.FindChildrenType<GameInventory>(container.contentWindow)) queue.Enqueue((inventory, false));
@@ -242,12 +251,15 @@ public sealed partial class QuickSellMod
             {
                 if (store != PlayerStore.Instance || customer != store.currentClientInstance) yield break;
                 if (item.parentInventory != inventory || !GeneralHelper.IsItemOwned(item) || !seen.Add(item)) { yield return null; continue; }
-                if (!SelectionRules.IsSourceCandidate(source.Main, item.contentWindow != null)) { yield return null; continue; }
+                if (!SelectionRules.IsSourceCandidate(source.Main, item.contentWindow != null, IsPackagingContainer(item))) { yield return null; continue; }
+                // 工具箱里的工具默认不参与计算；工具箱本身也不上货。
+                if (IsToolbox(item)) { yield return null; continue; }
                 if (keepOne.Value && (!keepers.TryGetValue(item.identifier, out var keeper)
                     || (!IsProtected(keeper) && IsProtected(item))))
                     keepers[item.identifier] = item;
                 bool container = item.contentWindow != null && !item.IsTag("ADV_GUN_TAG");
                 bool machineContainer = container && (item.IsGameItemType("MACHINE") || item.IsGameItemType("MODULE") || item.IsGameItemType("NODE"));
+                bool packagingContainer = container && item.IsTag(ContainerHelper.PRE_CONTAINER_TAG);
                 if (IsProtected(item))
                 {
                     // Count only items that could otherwise be candidates for this customer.
@@ -261,18 +273,19 @@ public sealed partial class QuickSellMod
                     yield return null;
                     continue;
                 }
-                if (container)
+                if (container && !machineContainer)
                 {
-                    if (!source.Main && initialNested && !machineContainer)
+                    // 商品包装容器不看嵌套检索开关、也不管是否在主物品栏，内容物都参与计算。
+                    if (packagingContainer || (!source.Main && initialNested))
                         foreach (var child in GraphUtils.FindChildrenType<GameInventory>(item.contentWindow)) queue.Enqueue((child, false));
                 }
                 bool emptyContainer = false;
-                if (container && !machineContainer && !protectedContainers.Contains(item))
+                if (container && !machineContainer && (!protectedContainers.Contains(item) || packagingContainer))
                 {
                     emptyContainer = item.FindAllChildItems().Count == 0;
                     if (!emptyContainer) previouslyNonEmpty.Add(item);
                 }
-                if (!protectedContainers.Contains(item) && (!container || emptyContainer) && Allowed(item, client)
+                if ((!protectedContainers.Contains(item) || (packagingContainer && emptyContainer)) && (!container || emptyContainer) && Allowed(item, client)
                     && (!client.isRequireVariety || !existing.Any(value => value.identifier == item.identifier)))
                 {
                     bool isStolen = StolenHelper.IsStolenItem(item), isContraband = ContrabandHelper.IsContraband(item);
@@ -349,7 +362,7 @@ public sealed partial class QuickSellMod
             if (keepOne.Value != initialKeepOne || stolenRule.Value != initialStolenRule || contrabandRule.Value != initialContrabandRule) { SetStatus("选货规则已变化，请重新上货。", true); yield break; }
             var item = candidates[choice.Item];
             if (item.parentInventory == null || !visited.Contains(item.parentInventory) || !Allowed(item, client)) continue;
-            if (item.parentInventory == entry.invElement && !SelectionRules.IsSourceCandidate(true, item.contentWindow != null)) continue;
+            if (item.parentInventory == entry.invElement && !SelectionRules.IsSourceCandidate(true, item.contentWindow != null, IsPackagingContainer(item))) continue;
             // A container selected while empty may have received contents while
             // the cooperative task was yielding. Never move it in that case.
             if (item.contentWindow != null && !item.IsTag("ADV_GUN_TAG") && item.FindAllChildItems().Count != 0) continue;
@@ -372,7 +385,7 @@ public sealed partial class QuickSellMod
             finally { (scan as IDisposable)?.Dispose(); }
             if (store != PlayerStore.Instance || customer != store.currentClientInstance || NegociationUIManager.IsTradeLocked()
                 || item.parentInventory == null || !visited.Contains(item.parentInventory) || !Allowed(item, client)) yield break;
-            if (item.parentInventory == entry.invElement && !SelectionRules.IsSourceCandidate(true, item.contentWindow != null)) continue;
+            if (item.parentInventory == entry.invElement && !SelectionRules.IsSourceCandidate(true, item.contentWindow != null, IsPackagingContainer(item))) continue;
             if (choice.Quantity > item.unitCount) continue;
             if (item.contentWindow != null && !item.IsTag("ADV_GUN_TAG") && item.FindAllChildItems().Count != 0) continue;
             currentHeat = StolenHelper.IsStolenItem(item) ? StolenHelper.GetFoundChance(item) : -1;

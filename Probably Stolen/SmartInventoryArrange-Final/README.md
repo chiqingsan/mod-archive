@@ -1,6 +1,6 @@
 # 更好的库存排序
 
-更好的库存排序工具（v1.3.3，适用游戏版本 0.46D）。DLL 文件名保持为英文 `SmartInventoryArrange.dll`。
+更好的库存排序工具（v1.3.4，适用游戏版本 0.46D）。DLL 文件名保持为英文 `SmartInventoryArrange.dll`。
 
 - 优先排列大件、容器、机器和储藏类物品。
 - 相同物品尽量连续摆放。

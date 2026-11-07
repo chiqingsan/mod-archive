@@ -49,3 +49,15 @@
 **/deployment-backups/
 **/*.dll.bak
 **/*.bak.png
+
+# Local scratch investigations, decompile caches and game save snapshots
+/tmp/
+/tmp-decomp/
+/tmp-liqdiag/
+/Probably Stolen/DragDiag-Temp/
+/Probably Stolen/WorkshopUpload/decompiled/
+**/save-backup-*/
+/Probably Stolen/save-backups/
+/save-rescue-*/
+**/*.es3
+Probably Stolen/nul

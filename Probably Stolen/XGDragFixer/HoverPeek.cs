@@ -23,7 +23,7 @@ internal static class HoverPeek
     private static int _openFrame = -1000;
     private static bool _busy;
 
-    private static bool Enabled => Core.MiddleClickPreview?.Value == true && PerfGate.Active;
+    private static bool Enabled => Core.MiddleClickPreview?.Value == true;
 
     internal static void Tick()
     {

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.AquaSense</ID>
+  <Name>更好的水商操作体验</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.10.1</ModVersion>
+  <GameVersions><Version>0.46D</Version></GameVersions>
+  <Description>增强水系统信息：悬停水容器时显示水质纯度、液体成分、滤芯名称和剩余耐久；倒水或转移液体后更新水质标签；滤芯耗尽时从玩家库存及嵌套容器寻找可用替换品并自动交换；韧棉织物耗尽时自动更换为另一块有耐久的韧棉织物；液体成分默认以对齐的彩色进度条视图显示，可关闭切回纯文本列表（填充段与深灰轨道同时可见，极小占比显示为细条；使用原生 UI 矩形绘制底轨与填充，按实际文字排版定位），占比为 0.00% 的成分在进度条模式下也会显示，过滤器最低耐久度滑条实时显示数值。水质扫描、标签更新、滤芯耐久显示、自动换芯、织物自动换新、0.00% 成分的隐藏、成分进度条及过滤器最低耐久度均可在模组设置中单独控制。</Description>
+  <Assemblies><Assembly>AquaSense.dll</Assembly></Assemblies>
+  <Capabilities><Capability>reflection-external</Capability></Capabilities>
+</Mod>

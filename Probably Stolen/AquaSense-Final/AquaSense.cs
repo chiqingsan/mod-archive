@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Reflection;
 using HarmonyLib;
+using TMPro;
 using UnityEngine;
 
 
@@ -11,14 +12,23 @@ public sealed class Core : IMod
     public void Init(ModManifest manifest)
     {
         Log = new ModLog(manifest);
+        ModId = manifest.ID;
 
         try
         {
             var category = ModConfig.For(manifest.ID);
+            ShowWaterComposition = category.Define("ShowWaterComposition", true, "AquaSense", () => "显示水质详情");
             ShowCompositionWithoutScanner = category.Define("ShowCompositionWithoutScanner", false, "AquaSense", () => "无需水质扫描仪查看液体成分");
+            ShowCompositionBars = category.Define("ShowCompositionBars", true, "AquaSense", () => "用彩色进度条显示成分占比");
+            HideZeroComponents = category.Define("HideZeroComponents", true, "AquaSense", () => "隐藏四舍五入后为 0.00% 的成分");
             AutoReplaceFilters = category.Define("AutoReplaceFilters", true, "AquaSense", () => "滤芯耗尽后自动更换");
+            AutoReplaceCloth = category.Define("AutoReplaceCloth", true, "AquaSense", () => "韧棉织物耗尽后自动更换");
             ShowFilterDurability = category.Define("ShowFilterDurability", true, "AquaSense", () => "悬浮面板显示滤芯耐久");
             AutoUpdateWaterLabels = category.Define("AutoUpdateWaterLabels", true, "AquaSense", () => "倒水后自动更新水质标签");
+            HighlightWaterQuality = category.Define("HighlightWaterQuality", true, "AquaSense", () => "给水质标签添加文字颜色");
+            SortCompositionByAmount = category.Define("SortCompositionByAmount", true, "AquaSense", () => "成分按占比从高到低排序");
+            MinFilterDurabilityEnabled = category.Define("MinFilterDurabilityEnabled", false, "AquaSense", () => "耐久度以下的过滤器不参与更换");
+            MinFilterDurability = category.Define("MinFilterDurability", 200, "AquaSense", () => "最低耐久度", 0, 600, () => "只有耐久度不低于此值的过滤器才会被自动换上");
         }
         catch (Exception ex)
         {
@@ -29,14 +39,18 @@ public sealed class Core : IMod
     private GameObject? _runner;
     private HarmonyLib.Harmony? _harmony;
     private bool _patchAttempted;
+    private bool _configPanelChecked;
 
     public void OnEnable()
     {
         if (_runner != null) return;
         _patchAttempted = false;
+        _configPanelChecked = false;
+        ConfigPanel.Reset();
         _runner = new GameObject("AquaSense");
         UnityEngine.Object.DontDestroyOnLoad(_runner);
         _runner.AddComponent<AquaSenseRunner>().Mod = this;
+        CompositionApi.Register();
     }
 
     private void InstallPatches()
@@ -62,6 +76,8 @@ public sealed class Core : IMod
                 new[] { typeof(GraphNodeStorage) }, nameof(Hooks.AfterItemParentChanged));
             Patch(harmony, typeof(GameItem), nameof(GameItem.RemoveParent),
                 new[] { typeof(GraphNodeStorage) }, nameof(Hooks.AfterItemParentChanged));
+            Patch(harmony, typeof(TextMeshProUGUI), "GenerateTextMesh",
+                Type.EmptyTypes, nameof(Hooks.AfterTooltipTextMesh));
         }
         catch (Exception ex)
         {
@@ -73,6 +89,13 @@ public sealed class Core : IMod
 
     internal void OnUpdate()
     {
+        // The settings panel (and its slider values) is reachable from the main menu,
+        // long before a save world exists. Patch its renderer as soon as the menu UI is
+        // alive; waiting for the store would leave the durability slider without its
+        // value text when the panel is opened from the main menu.
+        if (!_configPanelChecked && ConfigPanel.Install())
+            _configPanelChecked = true;
+
         // Wait until a playable store exists. OnEnable runs inside ModLoader.Awake,
         // before assets/localization are ready; patching can run target static constructors.
         if (!_patchAttempted)
@@ -88,22 +111,43 @@ public sealed class Core : IMod
 
     public void OnDisable()
     {
+        CompositionApi.Unregister();
+        ConfigPanel.Uninstall();
         _harmony?.UnpatchAll("chiqingsan.water-scan-tooltip");
         _harmony = null;
         if (_runner != null) UnityEngine.Object.Destroy(_runner);
         _runner = null;
         Hooks.ResetMaintenance();
+        TooltipCompositionBars.HideAll();
     }
+
+    internal static ConfigEntry<bool>? ShowWaterComposition { get; private set; }
 
     internal static ConfigEntry<bool>? ShowCompositionWithoutScanner { get; private set; }
 
+    internal static ConfigEntry<bool>? ShowCompositionBars { get; private set; }
+
+    internal static ConfigEntry<bool>? HideZeroComponents { get; private set; }
+
     internal static ConfigEntry<bool>? AutoReplaceFilters { get; private set; }
+
+    internal static ConfigEntry<bool>? AutoReplaceCloth { get; private set; }
 
     internal static ConfigEntry<bool>? ShowFilterDurability { get; private set; }
 
     internal static ConfigEntry<bool>? AutoUpdateWaterLabels { get; private set; }
 
+    internal static ConfigEntry<bool>? HighlightWaterQuality { get; private set; }
+
+    internal static ConfigEntry<bool>? SortCompositionByAmount { get; private set; }
+
+    internal static ConfigEntry<bool>? MinFilterDurabilityEnabled { get; private set; }
+
+    internal static ConfigEntry<int>? MinFilterDurability { get; private set; }
+
     internal static ModLog? Log { get; private set; }
+
+    internal static string ModId { get; private set; } = string.Empty;
 
     private static void Patch(
         HarmonyLib.Harmony harmony,
@@ -121,6 +165,180 @@ public sealed class Core : IMod
 
 }
 
+/// <summary>
+/// The vanilla mod-config window renders number settings as bare sliders with no
+/// visible value. This patch adds a live numeric readout to AquaSense's own ranged
+/// number settings (the minimum filter durability slider). It is installed as soon as
+/// the main-menu UI is alive, because the settings panel can be opened from the main
+/// menu before a save world exists; patching at save-world time would leave the
+/// slider without its value text there. When "更好的性能优化" is loaded it already
+/// replaces the same renderer for every mod, so this patch stays out of the way.
+/// </summary>
+internal static class ConfigPanel
+{
+    private const string HarmonyId = "chiqingsan.water-scan-settings";
+    private const string BetterPerformanceId = "chiqingsan.BetterPerformance";
+    private const float ValueWidth = 62f;
+    private const float SliderWidth = 224f;
+
+    private static HarmonyLib.Harmony? _harmony;
+    private static bool _installed;
+    private static bool _unavailable;
+
+    /// <summary>Called when the mod is enabled so a later enable can patch again.</summary>
+    internal static void Reset()
+    {
+        _installed = false;
+        _unavailable = false;
+        _harmony = null;
+    }
+
+    internal static void Uninstall()
+    {
+        try { _harmony?.UnpatchAll(HarmonyId); } catch { }
+        _harmony = null;
+        _installed = false;
+    }
+
+    /// <summary>
+    /// Returns true once the settings renderer is patched (or can never be patched);
+    /// false while the menu UI is not alive yet.
+    /// </summary>
+    internal static bool Install()
+    {
+        if (_installed || _unavailable) return true;
+        if (ModUIManager.Instance == null && MainMenuUIController.Instance == null)
+            return false;
+
+        if (IsBetterPerformanceLoaded())
+        {
+            _unavailable = true;
+            Core.Log?.Log("更好的性能优化已接管设置面板渲染，跳过滑条数值显示");
+            return true;
+        }
+
+        var target = AccessTools.Method(typeof(ModConfigWindow), "BuildEntry",
+            new[] { typeof(CustomUIBuilder), typeof(ModConfig), typeof(ConfigEntry) });
+        if (target == null)
+        {
+            _unavailable = true;
+            Core.Log?.Warning("未找到 ModConfigWindow.BuildEntry，跳过滑条数值显示");
+            return true;
+        }
+
+        try
+        {
+            var info = HarmonyLib.Harmony.GetPatchInfo(target);
+            if (info != null && info.Prefixes != null && info.Prefixes.Count > 0)
+            {
+                _unavailable = true;
+                Core.Log?.Log("设置面板渲染已被其他模组接管，跳过滑条数值显示");
+                return true;
+            }
+
+            _harmony = new HarmonyLib.Harmony(HarmonyId);
+            var prefix = AccessTools.Method(typeof(ConfigPanel), nameof(BuildEntryPrefix))
+                ?? throw new MissingMethodException(typeof(ConfigPanel).FullName, nameof(BuildEntryPrefix));
+            _harmony.Patch(target, prefix: new HarmonyMethod(prefix));
+            _installed = true;
+            Core.Log?.Log("已接管设置面板渲染：滑条实时显示数值");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            try { _harmony?.UnpatchAll(HarmonyId); } catch { }
+            _harmony = null;
+            _unavailable = true;
+            Core.Log?.Warning($"设置面板补丁安装失败: {ex.GetType().Name} {ex.Message}");
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Prefix replacement for the vanilla row builder: only AquaSense's ranged number
+    /// settings are rendered here so their slider shows the current value.
+    /// The first parameter must stay named "b": Harmony binds patch arguments to the
+    /// target by parameter name, and the game's BuildEntry declares (CustomUIBuilder b, ...).
+    /// </summary>
+    internal static bool BuildEntryPrefix(CustomUIBuilder b, ModConfig config, ConfigEntry entry)
+    {
+        if (b == null || config == null || entry == null) return true;
+        if (config.ModId != Core.ModId) return true;
+
+        var valueType = entry.ValueType;
+        if ((valueType != typeof(int) && valueType != typeof(float)) || !entry.HasRange)
+            return true;
+
+        try
+        {
+            BuildRangedEntry(b, config, entry);
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Core.Log?.Warning($"设置项渲染失败 {entry.Key}: {ex.GetType().Name} {ex.Message}");
+            return true; // fall back to the vanilla renderer
+        }
+    }
+
+    private static void BuildRangedEntry(CustomUIBuilder builder, ModConfig config, ConfigEntry entry)
+    {
+        var label = Safe(entry.Label, entry.Key);
+        if (entry.Tooltip != null)
+        {
+            var link = "modcfg:" + config.ModId + ":" + entry.Key;
+            TMPIconHover.CustomLinks[link] = entry.Tooltip;
+            label = label + " <link=\"" + link + "\"><sprite name=\"info\" tint=1></link>";
+        }
+
+        builder.BeginRow(4f, TextAnchor.MiddleLeft);
+        builder.AddLabel(label, "label_" + entry.Key);
+        builder.AddFlexibleSpace();
+
+        var value = Convert.ToSingle(entry.BoxedValue);
+        builder.AddLabel(FormatNumber(entry.ValueType, value), "value_" + entry.Key);
+        var valueLabel = builder.Last;
+        valueLabel.SetFixedWidth(ValueWidth);
+        builder.AddSlider(entry.Min, entry.Max, value,
+            v => valueLabel.SetText(FormatNumber(entry.ValueType, v)),
+            entry.ValueType == typeof(int), entry.Key);
+        builder.Last.SetFixedWidth(SliderWidth);
+        builder.End();
+    }
+
+    private static string FormatNumber(Type type, float value)
+    {
+        return type == typeof(int)
+            ? ((int)Math.Round(value)).ToString()
+            : value.ToString("0.##");
+    }
+
+    private static string Safe(Func<string>? getter, string fallback)
+    {
+        if (getter == null) return fallback;
+        try { return getter(); } catch { return fallback; }
+    }
+
+    private static bool IsBetterPerformanceLoaded()
+    {
+        try
+        {
+            var mods = ModLoader.Mods;
+            if (mods == null) return false;
+            foreach (var mod in mods)
+            {
+                if (mod == null || !mod.IsEnabled || mod.Manifest == null) continue;
+                if (mod.Manifest.ID == BetterPerformanceId) return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Core.Log?.Warning($"无法检查已加载模组: {ex.Message}");
+        }
+        return false;
+    }
+}
+
 internal static class Hooks
 {
     private const double MaintenanceBudgetMilliseconds = 2d;
@@ -131,9 +349,13 @@ internal static class Hooks
     // FILTER_SIZE_TAG of the vanilla water filter (game data 0.46D). Only used
     // when the prototype's tag cannot be read for some reason.
     private const int VanillaFilterSizeFallback = 22;
+
+    // Fallback for the preference value when the entry could not be created.
+    private const int DefaultMinFilterDurability = 200;
     private static readonly FieldInfo GridItems = typeof(GameGridInventory).GetField("items", BindingFlags.Instance | BindingFlags.NonPublic)!;
     private static readonly FieldInfo ScrollItems = typeof(GameGridScrollableInventory).GetField("items", BindingFlags.Instance | BindingFlags.NonPublic)!;
     private static List<(GameItem Item, GameInventory Inventory)>[] FilterCache = { new(), new(), new() };
+    private static List<(GameItem Item, GameInventory Inventory)>[] ClothCache = { new() };
     private static readonly Queue<GameItem> PendingFilters = new();
     private static readonly HashSet<GameItem> PendingFilterSet = new();
     private static float _nextFullScanAt;
@@ -221,12 +443,18 @@ internal static class Hooks
 
     public static void AfterFilter(GameItem __3)
     {
-        if (Core.AutoReplaceFilters is not { Value: true } || __3 == null ||
-            !__3.IsTag("WATER_FILTER") || !IsFilterItem(__3) ||
-            DurabilityHelper.GetRealDurability(__3) > 0 ||
-            IsInExcludedFilterHost(__3))
+        if (__3 == null || !__3.IsTag("WATER_FILTER") ||
+            DurabilityHelper.GetRealDurability(__3) > 0)
             return;
-        QueueFilter(__3);
+        if (IsInExcludedFilterHost(__3))
+            return;
+        if (IsFilterItem(__3))
+        {
+            if (Core.AutoReplaceFilters is { Value: true }) QueueFilter(__3);
+            return;
+        }
+        if (IsClothFilterItem(__3) && Core.AutoReplaceCloth is { Value: true })
+            QueueFilter(__3);
     }
 
     public static void AfterItemParentChanged(GameItem __instance, bool __result)
@@ -254,6 +482,8 @@ internal static class Hooks
             if (!IsWaterContainer(item))
                 return;
 
+            TryHighlightWaterLabelerLine(builder, item);
+
             var frame = Time.frameCount;
             if (_lastTooltipFrame != frame)
             {
@@ -272,7 +502,9 @@ internal static class Hooks
 
             // The water composition section needs actual liquid to describe; the
             // filter durability line does not, so an empty jug still shows it.
-            if ((Core.ShowCompositionWithoutScanner is { Value: true } || HasWaterScanner()) && IsFilledWaterContainer(item))
+            if (Core.ShowWaterComposition is { Value: true } &&
+                (Core.ShowCompositionWithoutScanner is { Value: true } || HasWaterScanner()) &&
+                IsFilledWaterContainer(item))
             {
                 var purity = WaterHelper.GetWaterPurity(item);
                 var locale = LocHelper.GetCurrentLocaleCode();
@@ -280,11 +512,28 @@ internal static class Hooks
                     ? $"水质详情 ({purity})"
                     : $"Water composition ({purity})";
                 var waterLabel = GetWaterLabel(item);
-                var title = string.IsNullOrEmpty(waterLabel)
-                    ? titlePrefix
-                    : $"{titlePrefix}  {waterLabel}";
+                var qualityIndex = GetWaterQualityIndex(item);
+                if (Core.HighlightWaterQuality is { Value: true } && !string.IsNullOrEmpty(waterLabel))
+                {
+                    // Two slices keep the prefix neutral and tint only the quality tag.
+                    // Unknown water (purity below the gutterflow tier) shares the last
+                    // colour instead of falling back to the game's default tint.
+                    var colorIndex = qualityIndex >= 0 ? qualityIndex : WaterQualityForegroundColors.Length - 1;
+                    builder.Add(titlePrefix + "  ");
+                    builder.Add(
+                        waterLabel,
+                        WaterQualityForegroundColors[colorIndex],
+                        "\n");
+                }
+                else
+                {
+                    var title = string.IsNullOrEmpty(waterLabel)
+                        ? titlePrefix
+                        : $"{titlePrefix}  {waterLabel}";
 
-                AddLine(builder, title);
+                    AddLine(builder, title);
+                }
+
                 AppendComposition(builder, item);
             }
 
@@ -366,6 +615,95 @@ internal static class Hooks
         catch
         {
             return string.Empty;
+        }
+    }
+
+    // One colour per water quality tier (pure, high quality, base, ghost, rusty,
+    // gutterflow) plus the unknown tier (purity below 3500), which shares the
+    // gutterflow colour. ColorPalette is an int-backed enum whose value is the
+    // literal 0xRRGGBB colour, so arbitrary tints cast straight into it.
+    private static readonly RenderHandler.ColorPalette[] WaterQualityForegroundColors =
+    {
+        (RenderHandler.ColorPalette)0x8FF7F0,
+        (RenderHandler.ColorPalette)0x9FE6A0,
+        (RenderHandler.ColorPalette)0xA6C8F5,
+        (RenderHandler.ColorPalette)0xD3A6F5,
+        (RenderHandler.ColorPalette)0xF0B27A,
+        (RenderHandler.ColorPalette)0xC73E3A
+    };
+
+    private static int GetWaterQualityIndex(GameItem item)
+    {
+        try
+        {
+            var index = WaterFeatureHelper.GetWaterIndex(item);
+            return index >= 0 && index < WaterQualityForegroundColors.Length ? index : -1;
+        }
+        catch
+        {
+            return -1;
+        }
+    }
+
+    // The game's labelled-feature line ("[标签] 优质水") is appended by
+    // LabelerHelper inside GetTooltipBasic, before our postfix runs, so it is
+    // found by slice pattern instead of a Harmony patch: the localized prefix
+    // slice is directly followed by the displayed water name.
+    internal static void TryHighlightWaterLabelerLine(RichTextBuilder builder, GameItem item)
+    {
+        if (builder == null || Core.HighlightWaterQuality is not { Value: true })
+            return;
+
+        var qualityIndex = GetWaterQualityIndex(item);
+        var label = GetWaterLabel(item);
+        if (string.IsNullOrEmpty(label))
+            return;
+        var colorIndex = qualityIndex >= 0 ? qualityIndex : WaterQualityForegroundColors.Length - 1;
+
+        try
+        {
+            var slices = (IList)typeof(RichTextBuilder).GetField("slices", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(builder)!;
+            if (slices == null)
+                return;
+
+            var prefix = (LocHelper.GetLocalizedMechanic("mech_label_tooltip_prefix") ?? string.Empty) + " ";
+            for (var index = 0; index < slices.Count; index++)
+            {
+                var slice = slices[index];
+                if (slice == null)
+                    continue;
+
+                var sliceType = slice.GetType();
+                if ((string?)sliceType.GetField("text")?.GetValue(slice) != prefix)
+                    continue;
+
+                for (var next = index + 1; next < slices.Count; next++)
+                {
+                    var candidate = slices[next];
+                    if (candidate == null)
+                        continue;
+
+                    var candidateType = candidate.GetType();
+                    if (candidateType.GetField("isNewLine")?.GetValue(candidate) is true)
+                        continue;
+
+                    var display = (string?)candidateType.GetField("text")?.GetValue(candidate);
+                    if (display == null)
+                        continue;
+
+                    if (display.TrimEnd('\n') != label)
+                        break;
+
+                    candidateType.GetField("color")?.SetValue(candidate, WaterQualityForegroundColors[colorIndex]);
+                    return;
+                }
+
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Core.Log?.Warning($"Water label highlight failed: {ex.Message}");
         }
     }
 
@@ -465,7 +803,74 @@ internal static class Hooks
         }
     }
 
-    private static void AppendComposition(RichTextBuilder builder, GameItem item)
+    // One composition row. Shared by the tooltip renderer and the read-only API
+    // so both expose the same names, volume text and percentages.
+    private readonly struct CompositionRowData
+    {
+        internal readonly string Name;
+        internal readonly string AmountText;
+        internal readonly double Percentage;
+        internal readonly string PercentageText;
+        internal readonly bool Tiny;
+        internal readonly int ColorIndex;
+
+        internal CompositionRowData(
+            string name,
+            string amountText,
+            double percentage,
+            string percentageText,
+            bool tiny,
+            int colorIndex)
+        {
+            Name = name;
+            AmountText = amountText;
+            Percentage = percentage;
+            PercentageText = percentageText;
+            Tiny = tiny;
+            ColorIndex = colorIndex;
+        }
+    }
+
+    // Read-only rows for the interoperability slot ("aquasense.composition.v1").
+    // Returns null when the composition feature is unavailable for this item (the
+    // same conditions the tooltip uses) and an empty list when the container holds
+    // no recognized liquid. Bar-mode semantics: traces are included even when the
+    // hide-zero display setting is on, and the "bars" display setting is ignored.
+    internal static IReadOnlyList<(string Name, string Amount, string Percent, float Ratio, int ColorRgb)>?
+        GetCompositionApiRows(GameItem item)
+    {
+        try
+        {
+            if (item == null || !IsFilledWaterContainer(item))
+                return null;
+            if (Core.ShowWaterComposition is not { Value: true })
+                return null;
+            if (!(Core.ShowCompositionWithoutScanner is { Value: true } || HasWaterScanner()))
+                return null;
+
+            var rows = BuildCompositionRows(item);
+            if (rows.Count == 0)
+                return Array.Empty<(string, string, string, float, int)>();
+
+            var result = new (string Name, string Amount, string Percent, float Ratio, int ColorRgb)[rows.Count];
+            for (var index = 0; index < rows.Count; index++)
+            {
+                var row = rows[index];
+                result[index] = (row.Name, row.AmountText, row.PercentageText,
+                    Math.Clamp((float)(row.Percentage / 100d), 0f, 1f),
+                    CompositionBarColors[row.ColorIndex % CompositionBarColors.Length]);
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Core.Log?.Warning($"Composition API failed for {(item == null ? "null" : item.identifier)}: {ex.Message}");
+            return null;
+        }
+    }
+
+    private static List<CompositionRowData> BuildCompositionRows(GameItem item)
     {
         var liquidDictionary = Liquid.LiquidDict;
         var liquids = Liquid.Liquids;
@@ -487,7 +892,54 @@ internal static class Hooks
             }
         }
 
+        var rows = new List<CompositionRowData>();
         if (entries.Count == 0 || totalAmount <= 0)
+            return rows;
+
+        var colorIndex = 0;
+        foreach (var entry in entries)
+        {
+            var percentage = 100d * entry.Amount / totalAmount;
+            var tiny = Math.Round(percentage, 2, MidpointRounding.AwayFromZero) <= 0d;
+
+            var percentageText = WaterFeatureHelper.FormatPurityPercentageFromDouble(percentage);
+            if (string.IsNullOrEmpty(percentageText))
+                percentageText = $"{percentage:0.00}%";
+
+            // A share that rounds to 0.00% would read as "nothing", so it is marked
+            // instead of pretending to be a whole percent. Bar mode always shows
+            // such rows; text mode only does when the hide-zero setting is off.
+            // The single-angle quote avoids '<', which TMP reads as a tag opener.
+            if (tiny)
+                percentageText = TinyPercentageText;
+
+            rows.Add(new CompositionRowData(
+                entry.Name,
+                FormatVolume(entry.Amount),
+                percentage,
+                percentageText,
+                tiny,
+                colorIndex++));
+        }
+
+        if (Core.SortCompositionByAmount is { Value: true } && rows.Count > 1)
+        {
+            // Highest share first; the colour index is the tie-breaker so equal
+            // shares keep a stable order across frames.
+            rows.Sort((left, right) =>
+            {
+                var byShare = right.Percentage.CompareTo(left.Percentage);
+                return byShare != 0 ? byShare : left.ColorIndex.CompareTo(right.ColorIndex);
+            });
+        }
+
+        return rows;
+    }
+
+    private static void AppendComposition(RichTextBuilder builder, GameItem item)
+    {
+        var rows = BuildCompositionRows(item);
+        if (rows.Count == 0)
         {
             var color = WaterHelper.GetLiquidContainerColor(item);
             if (!string.IsNullOrEmpty(color))
@@ -495,17 +947,63 @@ internal static class Hooks
             return;
         }
 
-        foreach (var entry in entries)
+        var showBars = Core.ShowCompositionBars?.Value ?? true;
+        var hideZero = Core.HideZeroComponents?.Value ?? true;
+
+        if (!showBars)
         {
-            var percentage = 100d * entry.Amount / totalAmount;
-            if (Math.Round(percentage, 2, MidpointRounding.AwayFromZero) <= 0d)
-                continue;
+            foreach (var row in rows)
+                if (!(hideZero && row.Tiny))
+                    AddLine(builder, $"{row.Name}: {row.AmountText} ({row.PercentageText})");
+            return;
+        }
 
-            var percentageText = WaterFeatureHelper.FormatPurityPercentageFromDouble(percentage);
-            if (string.IsNullOrEmpty(percentageText))
-                percentageText = $"{percentage:0.00}%";
+        // The bar mode lays every row out as
+        //   "name: amount" | bar | right-aligned percentage
+        // Columns use absolute <pos> tags in pixels: the
+        // tooltip font is proportional, so counting display cells cannot line the
+        // columns up.
+        var rowsText = new List<(string Text, double Percentage, string PercentageText, int ColorIndex)>(rows.Count);
+        var maxPercentageChars = 0;
+        var hasWideText = false;
+        foreach (var row in rows)
+        {
+            var text = $"{row.Name}: {row.AmountText}";
+            maxPercentageChars = Math.Max(maxPercentageChars, row.PercentageText.Length);
+            hasWideText |= HasWideText(text);
+            rowsText.Add((text, row.Percentage, row.PercentageText, row.ColorIndex));
+        }
 
-            AddLine(builder, $"{entry.Name}: {FormatVolume(entry.Amount)} ({percentageText})");
+        // The tooltip builder counts characters (a CJK glyph counts as one) and wraps
+        // a row past 35 characters in CJK tooltips, 40 in Latin ones. Only names
+        // that still exceed this budget get an ellipsis.
+        var rowBudget = hasWideText ? 35 : 40;
+        // One invisible link character anchors each native UI bar.
+        var textLimit = Math.Max(4, rowBudget - maxPercentageChars - 1);
+        var textColumn = 0;
+        var percentageColumn = 0;
+        for (var index = 0; index < rowsText.Count; index++)
+        {
+            var row = rowsText[index];
+            var text = TruncateChars(row.Text, textLimit);
+            rowsText[index] = (text, row.Percentage, row.PercentageText, row.ColorIndex);
+            textColumn = Math.Max(textColumn, MeasureTextWidth(text));
+            percentageColumn = Math.Max(percentageColumn, MeasureTextWidth(row.PercentageText));
+        }
+        var barColumn = CompositionBarWidth;
+
+        for (var index = 0; index < rowsText.Count; index++)
+        {
+            var row = rowsText[index];
+            AddCompositionRow(
+                builder,
+                row.Text,
+                textColumn + CompositionColumnGap,
+                row.Percentage,
+                textColumn + CompositionColumnGap + barColumn + CompositionColumnGap
+                    + percentageColumn - MeasureTextWidth(row.PercentageText),
+                row.PercentageText,
+                row.ColorIndex);
         }
     }
 
@@ -555,7 +1053,13 @@ internal static class Hooks
 
     private static string FormatVolume(int amountInMicroLiters)
     {
-        return $"{amountInMicroLiters / 1000d:0.##} ml";
+        // Below 0.1 ml the millilitre form needs three decimals and reads badly
+        // ("0.003 ml"), so traces switch to whole microlitres. The game's own
+        // scanner panel uses the ASCII "uL" wording for the same range.
+        if (amountInMicroLiters > 0 && amountInMicroLiters < 100)
+            return $"{amountInMicroLiters} uL";
+
+        return $"{amountInMicroLiters / 1000d:0.###} ml";
     }
 
     internal static void UpdateMaintenance(bool replaceFilters)
@@ -590,7 +1094,7 @@ internal static class Hooks
                 _inventoryRefreshRequested = false;
                 _maintenance = ScanInventory().GetEnumerator();
             }
-            else if (replaceFilters && PendingFilters.Count > 0 && Time.unscaledTime >= _nextMaintenanceAt)
+            else if ((replaceFilters || Core.AutoReplaceCloth is { Value: true }) && PendingFilters.Count > 0 && Time.unscaledTime >= _nextMaintenanceAt)
                 _maintenance = ProcessPendingFilters().GetEnumerator();
             else return;
         }
@@ -638,12 +1142,16 @@ internal static class Hooks
         PendingFilters.Clear();
         PendingFilterSet.Clear();
         foreach (var bucket in FilterCache) bucket.Clear();
+        foreach (var bucket in ClothCache) bucket.Clear();
         TooltipSections.Clear();
+        MeasureTextWidths.Clear();
+        _spaceUnitScale = -1f;
     }
 
     private static IEnumerable<object?> ScanInventory()
     {
         var buckets = new[] { new List<(GameItem, GameInventory)>(), new List<(GameItem, GameInventory)>(), new List<(GameItem, GameInventory)>() };
+        var clothBucket = new List<(GameItem, GameInventory)>();
         GameItem? scanner = null;
         foreach (var item in EnumerateOwnedItems())
         {
@@ -656,10 +1164,17 @@ internal static class Hooks
                     if (IsAvailableFilter(item) && item.parentInventory != null)
                         buckets[GetFilterPriority(item)].Add((item, item.parentInventory));
                 }
+                if (Core.AutoReplaceCloth is { Value: true })
+                {
+                    if (IsWaterContainer(item) && TryGetDepletedCloth(item, out var cloth)) QueueFilter(cloth!);
+                    if (IsAvailableCloth(item) && item.parentInventory != null)
+                        clothBucket.Add((item, item.parentInventory));
+                }
             }
             yield return null;
         }
         FilterCache = buckets;
+        ClothCache = new[] { clothBucket };
         _scannerItem = scanner;
         _scannerCache = scanner != null;
         _nextScannerValidationAt = Time.unscaledTime + 1f;
@@ -676,16 +1191,25 @@ internal static class Hooks
         {
             var filter = PendingFilters.Dequeue();
             PendingFilterSet.Remove(filter);
+            var cloth = IsClothFilterItem(filter);
             var container = filter.parentInventory?.GetParentItem();
-            if (container == null || !IsWaterContainer(container) ||
-                !TryGetDepletedFilter(container, out var installed) || installed != filter)
+            if (container == null || !IsWaterContainer(container))
+            {
+                yield return null;
+                continue;
+            }
+            GameItem? installed = null;
+            var upToDate = cloth
+                ? TryGetDepletedCloth(container, out installed)
+                : TryGetDepletedFilter(container, out installed);
+            if (!upToDate || installed != filter)
             {
                 yield return null;
                 continue;
             }
             var swapped = false;
             var attempted = false;
-            foreach (var bucket in FilterCache)
+            foreach (var bucket in (cloth ? ClothCache : FilterCache))
             {
                 for (var i = 0; i < bucket.Count;)
                 {
@@ -696,13 +1220,22 @@ internal static class Hooks
                     {
                         var cached = bucket[j];
                         yield return null;
-                        if (Core.AutoReplaceFilters is not { Value: true }) yield break;
-                        if (cached.Item.parentInventory != cached.Inventory || !IsAvailableFilter(cached.Item))
+                        if (cloth
+                                ? Core.AutoReplaceCloth is not { Value: true }
+                                : Core.AutoReplaceFilters is not { Value: true })
+                            yield break;
+                        if (cached.Item.parentInventory != cached.Inventory ||
+                            !(cloth ? IsAvailableCloth(cached.Item) : IsAvailableFilter(cached.Item)))
                         {
                             bucket.RemoveAt(j);
                             continue;
                         }
                         var durability = DurabilityHelper.GetRealDurability(cached.Item);
+                        if (!MeetsFilterDurabilityThreshold(durability))
+                        {
+                            j++;
+                            continue;
+                        }
                         if (durability > bestDurability && AreItemsStillOwned(container, cached.Item) &&
                             CanSwapFilterPlacement(filter, cached.Item))
                         {
@@ -741,6 +1274,16 @@ internal static class Hooks
         }
     }
 
+    // Called for every cached candidate before it can become the replacement:
+    // when the player set a durability floor, a filter below it is skipped and
+    // the next cached filter is compared instead.
+    private static bool MeetsFilterDurabilityThreshold(int durability)
+    {
+        if (Core.MinFilterDurabilityEnabled is not { Value: true })
+            return true;
+        return durability >= (Core.MinFilterDurability?.Value ?? DefaultMinFilterDurability);
+    }
+
     private static bool TryGetDepletedFilter(GameItem container, out GameItem? filter)
     {
         filter = null;
@@ -753,6 +1296,22 @@ internal static class Hooks
         catch (Exception ex)
         {
             Core.Log?.Warning($"Cannot inspect filter in {SafeIdentifier(container)}: {ex.Message}");
+            return false;
+        }
+    }
+
+    private static bool TryGetDepletedCloth(GameItem container, out GameItem? cloth)
+    {
+        cloth = null;
+        try
+        {
+            cloth = WaterHelper.GetFilterItem(container);
+            return cloth != null && IsClothFilterItem(cloth) &&
+                   DurabilityHelper.GetRealDurability(cloth) <= 0;
+        }
+        catch (Exception ex)
+        {
+            Core.Log?.Warning($"Cannot inspect cloth in {SafeIdentifier(container)}: {ex.Message}");
             return false;
         }
     }
@@ -910,15 +1469,39 @@ internal static class Hooks
         }
     }
 
+    private static bool IsAvailableCloth(GameItem item)
+    {
+        try
+        {
+            if (!IsClothFilterItem(item) ||
+                !TryGetParentInventory(item, out var parent) || parent == null ||
+                IsInstalledInWaterContainer(item) ||
+                IsInExcludedFilterHost(item))
+                return false;
+
+            return DurabilityHelper.GetRealDurability(item) > 0;
+        }
+        catch (Exception ex)
+        {
+            Core.Log?.Warning($"Cannot inspect cloth replacement {SafeIdentifier(item)}: {ex.Message}");
+            return false;
+        }
+    }
+
     private static bool ReplaceFilter(
         GameItem container, GameItem depletedFilter, GameItem replacement, out string toastMessage, out bool attempted)
     {
         toastMessage = string.Empty;
         attempted = false;
         if (!CanSwapFilterPlacement(depletedFilter, replacement) ||
-            !AreItemsStillOwned(container, replacement) ||
-            !TryGetDepletedFilter(container, out var installed) ||
-            installed! != depletedFilter ||
+            !AreItemsStillOwned(container, replacement))
+            return false;
+
+        GameItem? installed;
+        var upToDate = IsClothFilterItem(depletedFilter)
+            ? TryGetDepletedCloth(container, out installed)
+            : TryGetDepletedFilter(container, out installed);
+        if (!upToDate || installed! != depletedFilter ||
             !TryGetParentInventory(depletedFilter, out var targetInventory) ||
             !TryGetParentInventory(replacement, out var sourceInventory) ||
             targetInventory == null || sourceInventory == null)
@@ -1291,6 +1874,25 @@ internal static class Hooks
         }
     }
 
+    // Coarse chemistry cloth (韧棉织物, kotton_fabric) shares the WATER_FILTER
+    // tag and is consumed by durability in WaterHelper.HandleFilter, but its
+    // FILTER_SIZE_TAG is 150, far coarser than a real filter, so IsFilterItem
+    // deliberately rejects it. Cloth auto-replacement is a separate opt-in path
+    // that only ever swaps cloth for cloth: a fine filter must not be spent on
+    // coarse filtration, and a coarse cloth must not replace a fine filter.
+    private static bool IsClothFilterItem(GameItem item)
+    {
+        try
+        {
+            return IsWaterFilterSlotItem(item) &&
+                   NormalizeIdentifier(item.identifier ?? string.Empty) == "kottonfabric";
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private static int GetFilterPriority(GameItem item)
     {
         try
@@ -1398,6 +2000,195 @@ internal static class Hooks
     private static void AddLine(RichTextBuilder builder, string text)
     {
         AddColoredLine(builder, text, NoColor);
+    }
+
+    // Width in the same coordinates as measured text.
+    private const int CompositionBarWidth = TooltipCompositionBars.Width;
+
+    // Pixels between two composition columns.
+    private const int CompositionColumnGap = 8;
+
+    // Fallback cell width used when the game's text renderer is not reachable yet:
+    // the UI grid is 8 px wide and CJK glyphs take two cells.
+    private const int CompositionCellPixels = 8;
+
+    // A share too small to round to "0.01%" is marked with this label. The
+    // single-angle quote avoids '<', which TMP would read as a tag opener.
+    private const string TinyPercentageText = "‹0.01%";
+
+    // One colour per row keeps the bars easy to tell apart; the values are
+    // literal 0xRRGGBB colours because ColorPalette is an int-backed enum.
+    private static readonly int[] CompositionBarColors =
+    {
+        0x63ABA5,
+        0xA494BC,
+        0x8FA9BF,
+        0xC28D7E,
+        0xC4BE95,
+        0xBA8C9C,
+        0x3FB8AF,
+        0xE37FA6
+    };
+
+    // The tooltip font is proportional, so column positions are measured in pixels
+    // and emitted as <pos> tags. A hidden TMP node borrowed from the game's own text
+    // render prefab gives the exact advance width; the cache is dropped on load
+    // because a locale change can swap the font.
+    private static readonly System.Collections.Generic.Dictionary<string, int> MeasureTextWidths = new();
+    private static TextMeshProUGUI? _measureText;
+    private static bool _measureHasNode;
+    private static float _spaceUnitScale = -1f;
+
+    private static void AddCompositionRow(
+        RichTextBuilder builder,
+        string text,
+        int barPosition,
+        double percentage,
+        int percentagePosition,
+        string percentageText,
+        int index)
+    {
+        var none = (RenderHandler.ColorPalette)NoColor;
+        var color = CompositionBarColors[index % CompositionBarColors.Length];
+        var fraction = (percentage / 100d).ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+        var anchor = PositionTag(barPosition)
+            + $"<link=\"{TooltipCompositionBars.LinkPrefix}{fraction}:{color:X6}\">\u00A0</link>";
+        // The link only marks the row position; Image components draw the bar.
+        builder.Add(text + anchor + PositionTag(percentagePosition) + percentageText, none, "\n");
+        builder.AddProgressBarOld(0f, 0, none, none);
+    }
+
+    public static void AfterTooltipTextMesh(TextMeshProUGUI __instance)
+    {
+        if (__instance == null)
+            return;
+
+        var bars = __instance.GetComponent<TooltipCompositionBars>();
+        // TMP clears m_text while rebuilding, so the mesh hook cannot assume a string here.
+        var text = __instance.text;
+        if (Core.ShowCompositionBars is { Value: true }
+            && !string.IsNullOrEmpty(text)
+            && text.IndexOf(TooltipCompositionBars.LinkPrefix, StringComparison.Ordinal) >= 0)
+        {
+            (bars ??= __instance.gameObject.AddComponent<TooltipCompositionBars>()).Queue(__instance);
+        }
+        else if (bars != null)
+        {
+            bars.RequestHide();
+        }
+    }
+
+    private static string PositionTag(float pixels)
+    {
+        var units = (pixels / SpaceUnitScale()).ToString("0.####", System.Globalization.CultureInfo.InvariantCulture);
+        return $"<pos={units}px>";
+    }
+
+    private static float SpaceUnitScale()
+    {
+        if (!_measureHasNode)
+            return 1f;
+
+        if (_spaceUnitScale > 0f)
+            return _spaceUnitScale;
+
+        var baseline = MeasureTextWidth("A");
+        var probe = MeasureTextWidth("<space=100px>A");
+        _spaceUnitScale = Math.Max(0.01f, (probe - baseline) / 100f);
+        return _spaceUnitScale;
+    }
+
+    private static int MeasureTextWidth(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return 0;
+
+        if (MeasureTextWidths.TryGetValue(text, out var cached))
+            return cached;
+
+        var width = EstimateTextWidth(text);
+        var measured = false;
+        try
+        {
+            if (RenderHandler.current != null)
+            {
+                if (_measureText == null)
+                {
+                    var node = TreeNodeRender.InstantiateText();
+                    var measure = node != null ? node.text : null;
+                    if (measure != null)
+                    {
+                        measure.enableWordWrapping = false;
+                        measure.overflowMode = TextOverflowModes.Overflow;
+                    }
+                    _measureText = measure;
+                }
+
+                if (_measureText != null)
+                {
+                    _measureText.text = text;
+                    width = Math.Max(1, Mathf.CeilToInt(_measureText.preferredWidth));
+                    _measureText.text = string.Empty;
+                    measured = true;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _measureText = null;
+            Core.Log?.Warning($"Cannot measure tooltip text: {ex.Message}");
+            measured = false;
+        }
+
+        if (measured != _measureHasNode)
+        {
+            // Estimates cached while the renderer was unreachable must not leak into a
+            // pixel layout (and vice versa): drop everything when the mode flips.
+            _measureHasNode = measured;
+            _spaceUnitScale = -1f;
+            MeasureTextWidths.Clear();
+        }
+
+        if (MeasureTextWidths.Count > 256)
+            MeasureTextWidths.Clear();
+        MeasureTextWidths[text] = width;
+        return width;
+    }
+
+    // Fallback used before the game's renderer is reachable; the tests run on it.
+    private static int EstimateTextWidth(string text)
+    {
+        var width = 0;
+        foreach (var value in text)
+            width += IsWideCharacter(value) ? CompositionCellPixels * 2 : CompositionCellPixels;
+        return width;
+    }
+
+    private static string TruncateChars(string text, int maxChars)
+    {
+        if (text.Length <= maxChars)
+            return text;
+        return text.Substring(0, Math.Max(0, maxChars - 1)) + '…';
+    }
+
+    private static bool HasWideText(string text)
+    {
+        foreach (var value in text)
+            if (IsWideCharacter(value))
+                return true;
+        return false;
+    }
+
+    private static bool IsWideCharacter(char value)
+    {
+        return value >= '\u1100' && (
+            value <= '\u115F' ||
+            (value >= '\u2E80' && value <= '\uA4CF' && value != '\u303F') ||
+            (value >= '\uAC00' && value <= '\uD7A3') ||
+            (value >= '\uF900' && value <= '\uFAFF') ||
+            (value >= '\uFE30' && value <= '\uFE4F') ||
+            (value >= '\uFF00' && value <= '\uFF60') ||
+            (value >= '\uFFE0' && value <= '\uFFE6'));
     }
 
     // RenderHandler.ColorPalette is an int-backed enum whose values are literal

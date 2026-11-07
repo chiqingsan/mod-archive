@@ -1,0 +1,10 @@
+"workshopitem"
+{
+    "appid" "4348910"
+    "publishedfileid" "3829667143"
+    "contentfolder" "D:\code\mod\Probably Stolen\WorkshopUpload\QuickSell-3829667143-1.3.2-content"
+    "changenote" "1.3.2：
+- 原版 Mod 设置页不再显示供货区、物品保护等内部记录；这些记录改存到独立配置文件（仍是游戏自带配置写入，不需要额外文件权限）。
+- 面板「供货区」「物品保护」页底部新增「清空记录」按钮：3 秒内再次点击确认，清空当前存档的供货区与保护记录。
+- 包含 1.3.1 的设置页排序调整：常用设置在顶部，内部记录不再挤在最前面。"
+}

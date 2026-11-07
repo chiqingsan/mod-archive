@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.FastLoad</ID>
+  <Name>深空当铺 · 极速读档</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>0.2.2</ModVersion>
+  <GameVersions><Version>0.46D</Version></GameVersions>
+  <Description>读档提速与诊断：读档预览只解析 networkUpgrade 键；读档改用去掉约 1500 万字符库存 JSON 的精简副本（解码时按需补回原始数据）；延迟解码当天售出库存；批量解码时跳过逐个物品触发的整库校验、结束时统一校验一次；缓存物品形状/缺翻译修复结果；并记录读档各阶段、解码链路的细粒度耗时（区分含子/自耗时）与最慢物品清单。
+
+权限用途说明：
+· files —— 只读取当前存档 save_*.es3，并在同一存档目录写入两个自建临时文件 FastLoad_slim.es3 / FastLoad_preload.es3；不修改存档文件本身，不访问其他路径，不联网、不上传。
+· reflection-external —— 通过 Harmony 补丁接管上面这些读档函数。
+
+不使用 network / process / dynamic-code / native 权限。所有优化失败都会自动回退原版逻辑。</Description>
+  <Assemblies><Assembly>FastLoad.dll</Assembly></Assemblies>
+  <Capabilities>
+    <Capability>files</Capability>
+    <Capability>reflection-external</Capability>
+  </Capabilities>
+</Mod>

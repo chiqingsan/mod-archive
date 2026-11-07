@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>净水塔窗口 · UI 原型 v0.3.1</title>
+<style>
+  /* ============================================================
+     v0.3.1 设计令牌
+     · 组件形状/尺寸沿用游戏原生 MachineryStyle.cs（plate_notched /
+       bevel_frame / cell / tab_plate / progress / button / radio）
+     · 配色改为「水厂」主题：青绿石板 + 米白标签牌 + 语义色
+       （不再是黑白灰；所有颜色均可原生 SetSliced 染色实现）
+     ============================================================ */
+  :root{
+    --win:#1f2e2a; --win-edge:#0a0e0c; --win-hi:#4e5d57;
+    --panel:#46544e; --panel-hi:#616f67; --panel-lo:#2f3a35;
+    --plate:#d7d1b6; --plate-lo:#a29b80; --plate-text:#1e241f;
+    --cell:#1a2220; --cell-edge:#0a0e0c; --sec:#46544e;
+    --body:#e2dec8; --value:#f4f1df; --dim:#9aa79f; --rule:#101513;
+    --btn:#d8d2b6; --btn-hi:#ece6ca; --btn-lo:#a7a286; --btn-text:#242b25;
+    --green:#9ed879; --amber:#e2b169; --red:#c9504b; --gold:#ffe58f;
+    --water:#5fc4dd; --water-deep:#2c7e95; --dirty:#9c8a5c; --dirty-deep:#6b5d39;
+    --power:#f0cb5e; --uv:#c39be8; --pure:#7fd8ee; --hq:#9ed879; --base:#d6d2ba;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:18px;color:var(--body);
+       background:radial-gradient(900px 600px at 30% 10%, #17211e, #0b100e 70%);
+       font:9px/1.3 "Segoe UI","Microsoft YaHei",sans-serif;user-select:none}
+  .page{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap}
+  .col{display:flex;flex-direction:column;gap:8px}
+  h1{font-size:12px;margin:0;color:#f0ecd6;letter-spacing:.5px;font-weight:600}
+  .sub{color:#8d9a92;font-size:9px;margin:2px 0 10px}
+  .toolbar{display:flex;gap:6px;align-items:center;margin:0 0 10px;flex-wrap:wrap;font-size:9px}
+  .toolbar button{background:#2b3631;color:#d8d3ba;border:1px solid #49564f;padding:3px 8px;cursor:pointer;font-size:9px}
+  .toolbar button.on{background:#4a5a52;border-color:#7c8d7f;color:#fff6d6}
+  .toolbar label{color:#8d9a92;display:flex;gap:3px;align-items:center;cursor:pointer}
+  .toolbar .sep{width:1px;height:14px;background:#39443d;margin:0 3px}
+  body.shot .toolbar,body.shot h1,body.shot .sub,body.shot .spec{display:none}
+  body.zoom2 .stage{zoom:2}
+
+  /* ===== 窗口 368 宽 = 内容 352 + 边 8；标题 20 / 页签 20 / 页 340 ===== */
+  .stage{width:368px}
+  .win{width:368px;background:var(--win);border:1px solid var(--win-edge);
+       box-shadow:inset 1px 1px 0 var(--win-hi), inset -1px -1px 0 #070a08, 0 10px 26px rgba(0,0,0,.6)}
+  .title{height:20px;display:flex;align-items:center;justify-content:center;position:relative;gap:5px;
+         background:linear-gradient(180deg,#33403a,#26302c);border-bottom:1px solid var(--rule);
+         box-shadow:inset 0 1px 0 #4f5d56}
+  .title .drop{width:5px;height:5px;background:var(--water);border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+         box-shadow:0 0 5px rgba(95,196,221,.6)}
+  .title span{font-size:10px;color:var(--body);letter-spacing:.8px}
+  .title .x{position:absolute;right:2px;top:2px;width:16px;height:16px;background:#7d3634;border:1px solid #a85551;
+            color:#f5d9d5;font-size:9px;display:flex;align-items:center;justify-content:center}
+  .tabs{display:flex;gap:2px;padding:4px 4px 0;background:#18201d;border-bottom:1px solid var(--rule);height:20px;align-items:flex-start}
+  .tab{height:10px;min-width:32px;padding:0 5px;background:rgba(207,201,174,.14);color:#b9c4bb;
+       font-size:6px;letter-spacing:.4px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+       border-bottom:1px solid transparent}
+  .tab:hover{background:rgba(255,229,143,.20);color:var(--gold)}
+  .tab.on{background:rgba(207,201,174,.32);color:var(--value);border-bottom-color:rgba(207,201,174,.9)}
+  .pagebody{width:352px;height:340px;margin:0 auto;padding:4px;position:relative;background:#182320}
+
+  /* ===== 面板（MachineryPanel：plate + content） ===== */
+  .panel{background:linear-gradient(180deg,#4e6259,#3d4f47);border:1px solid #111714;border-top:2px solid var(--sec);
+         position:relative;box-shadow:inset 1px 1px 0 var(--panel-hi), inset -1px -1px 0 var(--panel-lo)}
+  .plate{height:10px;margin:4px 4px 0;background:linear-gradient(180deg,#e3ddc3,var(--plate));color:var(--plate-text);
+         font-size:6px;letter-spacing:.5px;display:flex;align-items:center;overflow:hidden;
+         border-bottom:1px solid var(--plate-lo);
+         clip-path:polygon(0 0,100% 0,100% 62%,calc(100% - 5px) 100%,0 100%)}
+  .plate .icon{width:21px;height:10px;display:flex;align-items:center;justify-content:center;flex:0 0 21px;
+         background:rgba(30,36,31,.08)}
+  .plate .sep{width:1px;height:5px;background:rgba(30,36,31,.35);margin:0 3px}
+  .plate .txt{flex:1;white-space:nowrap;overflow:hidden}
+  .plate .right{margin-right:7px;color:#4b4a3c;font-size:6px}
+  .content{position:relative;margin:4px 4px 4px;height:calc(100% - 22px)}
+  .row{display:flex;gap:4px}
+  .dim{color:var(--dim)}
+  .v{color:var(--value)}
+  .hint{font-size:6px;color:var(--dim)}
+
+  /* 小图标（原版用 8px icon sprite；这里用色块示意，颜色走语义色） */
+  .ico{width:7px;height:7px;display:inline-block;position:relative;flex:0 0 7px}
+  .ico.drop{background:var(--water);border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+            box-shadow:0 0 3px rgba(95,196,221,.5)}
+  .ico.clean{background:var(--green);border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+            box-shadow:0 0 3px rgba(158,216,121,.5)}
+  .ico.grid{background:
+      linear-gradient(var(--body),var(--body)) 0 0/3px 3px no-repeat,
+      linear-gradient(var(--body),var(--body)) 4px 0/3px 3px no-repeat,
+      linear-gradient(var(--body),var(--body)) 0 4px/3px 3px no-repeat,
+      linear-gradient(var(--body),var(--body)) 4px 4px/3px 3px no-repeat}
+  .ico.power{background:var(--power);clip-path:polygon(45% 0,100% 0,58% 42%,92% 42%,26% 100%,42% 54%,8% 54%);
+            filter:drop-shadow(0 0 2px rgba(240,203,94,.5))}
+  .ico.uv{background:var(--uv);width:8px;height:5px;border-radius:3px 3px 1px 1px;
+            box-shadow:0 0 3px rgba(195,155,232,.5)}
+  .ico.bottle{background:var(--water);width:4px;height:7px;border-radius:1px 1px 2px 2px}
+  .ico.tap{background:var(--body);width:8px;height:3px;border-radius:1px}
+  .ico.target{background:transparent;border:2px solid var(--gold);border-radius:50%}
+
+  /* ===== 水箱槽（GameSlotInventory + 容器水位） ===== */
+  .slot{width:44px;height:44px;background:var(--cell);border:1px solid var(--cell-edge);
+        box-shadow:inset 1px 1px 0 #040706, inset -1px -1px 0 #3a4640;position:relative;flex:0 0 auto}
+  .slot.s54{width:54px;height:54px}
+  .slot .tank{position:absolute;inset:6px 7px 6px;background:#0d1412;border:1px solid #07100e;overflow:hidden}
+  .slot .tank::after{content:"";position:absolute;left:0;right:0;top:0;height:24%;
+        background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,0));pointer-events:none}
+  .slot .tank i{position:absolute;left:0;right:0;bottom:0;display:block;
+        background:linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,.02) 32%),var(--water);
+        box-shadow:0 -1px 0 rgba(255,255,255,.55), 0 0 8px rgba(95,196,221,.25);
+        transition:height .4s ease-out}
+  .slot .tank.dirty i{background:linear-gradient(180deg,rgba(255,255,255,.36),rgba(255,255,255,.02) 32%),var(--dirty);
+        box-shadow:0 -1px 0 rgba(255,255,255,.4), 0 0 8px rgba(156,138,92,.22)}
+  .slot .tank.full i{background:linear-gradient(180deg,rgba(255,255,255,.36),rgba(255,255,255,.02) 32%),var(--amber)}
+  .slot .cap{position:absolute;top:2px;left:8px;right:8px;height:2px;background:#5c6a5f;border:1px solid #2c3630}
+
+  .pbar{height:8px;background:#0e1513;border:1px solid #050a08;position:relative;overflow:hidden;
+        box-shadow:inset 1px 1px 0 #030504,inset -1px -1px 0 #3d4a43}
+  .pbar i{display:block;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 52%),var(--green);
+        box-shadow:0 0 6px rgba(158,216,121,.35)}
+  .pbar.dirty i{background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 52%),var(--dirty)}
+  .pbar.clean i{background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 52%),var(--water)}
+  .pbar.warn i{background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 52%),var(--amber);
+        box-shadow:0 0 6px rgba(226,177,105,.35)}
+  .pbar.pure i{background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 52%),var(--pure);
+        box-shadow:0 0 6px rgba(127,216,238,.4)}
+  .pbar .ticks{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 15px,rgba(0,0,0,.30) 15px 16px)}
+
+  .chips{display:flex;gap:3px;flex-wrap:wrap}
+  .chip{height:10px;padding:0 4px;display:inline-flex;align-items:center;gap:3px;font-size:6px;
+        background:#222c28;border:1px solid #0f1512;color:var(--body);letter-spacing:.2px}
+  .chip.b{color:var(--base)} .chip.h{color:var(--hq);border-color:#3c4c30}
+  .chip.p{color:var(--pure);border-color:#2a444c}
+  .chip.w{color:var(--amber);border-color:#493b27}
+  .chip.d{color:var(--dirty)}
+  .chip i{width:4px;height:4px;border-radius:50%;background:currentColor;display:block;
+        box-shadow:0 0 3px currentColor}
+
+  /* ===== 单选 / 开关（RADIO_SIZE 16 + 6px 标签） ===== */
+  .radio{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:7px;color:var(--body)}
+  .radio .box{width:16px;height:16px;background:var(--cell);border:1px solid #050a08;
+              box-shadow:inset 1px 1px 0 #030504,inset -1px -1px 0 #46544d;position:relative;flex:0 0 16px}
+  .radio.on .box{background:#222d26}
+  .radio.on .box::after{content:"";position:absolute;inset:4px;background:var(--green);
+              box-shadow:0 0 4px rgba(158,216,121,.6);border:1px solid #6c9b4e}
+  .radio:hover{color:var(--gold)}
+  .radio:hover .box{box-shadow:inset 1px 1px 0 #030504,inset -1px -1px 0 #46544d,0 0 0 1px #7f8f82}
+
+  /* ===== 按钮（BUTTON_H 16） ===== */
+  .btn{height:16px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;gap:3px;
+       background:linear-gradient(180deg,var(--btn-hi),var(--btn-lo));color:var(--btn-text);
+       border:1px solid #17130d;border-bottom-color:#0b0906;font-size:7px;letter-spacing:.2px;cursor:pointer;
+       box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+  .btn:hover{filter:brightness(1.07)}
+  .btn.pri{background:linear-gradient(180deg,#cfeaa9,#8fc065);color:#1c2616;border-color:#26331b}
+  .btn.ghost{background:linear-gradient(180deg,#3a4640,#2b3530);color:var(--body);border-color:#141b17;
+       box-shadow:inset 0 1px 0 rgba(255,255,255,.16)}
+  body.st-idle .btn.pri,body.st-out .btn.pri,body.st-full .btn.pri{
+       background:linear-gradient(180deg,#5b655c,#464f47);color:#7f8a80;border-color:#1c231e;box-shadow:none;cursor:default;filter:none}
+
+  /* ===== 输出区 7×4（GameGridInventory，cell 16） ===== */
+  .ogrid{position:relative;width:114px;height:66px}
+  .ogrid .ovl{position:absolute;left:1px;top:1px;width:112px;height:64px;pointer-events:none}
+  .ogrid .cells{display:grid;grid-template-columns:repeat(7,16px);grid-template-rows:repeat(4,16px);
+       background:#141b18;border:1px solid #050a08;box-shadow:inset 1px 1px 0 #030504,inset -1px -1px 0 #3d4a43}
+  .ogrid .c{width:16px;height:16px;border-right:1px solid rgba(0,0,0,.40);border-bottom:1px solid rgba(0,0,0,.40);
+       box-shadow:inset 1px 1px 0 rgba(255,255,255,.05)}
+  .bottle{position:absolute;margin:0;z-index:2;border-radius:2px 2px 3px 3px;
+       background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.03) 45%),var(--water);
+       border:1px solid var(--water-deep);box-shadow:0 0 4px rgba(95,196,221,.30);
+       clip-path:polygon(32% 0,68% 0,68% 7%,100% 17%,100% 100%,0 100%,0 17%,32% 7%)}
+  .bottle::before{content:"";position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:50%;height:2px;
+       background:#c9c6b4;border:1px solid #6d6a5e;border-bottom:none;border-radius:1px 1px 0 0;z-index:3}
+  .bottle.b3{background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.03) 45%),#57bcd6}
+  .bottle.b6{background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.03) 45%),#4fb0cc}
+  .bottle.b20{background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.03) 45%),#449fbb}
+  .bottle.b60{background:linear-gradient(180deg,rgba(255,255,255,.36),rgba(255,255,255,.03) 45%),#388ba7}
+
+  /* ===== 净水器 20×19 ===== */
+  .pgrid{width:320px;height:304px;position:relative;background:#141b18;border:1px solid #050a08;
+       box-shadow:inset 1px 1px 0 #030504,inset -1px -1px 0 #3d4a43}
+  .pgrid .cells{display:grid;grid-template-columns:repeat(20,16px);grid-template-rows:repeat(19,16px)}
+  .pgrid .c{width:16px;height:16px;border-right:1px solid rgba(0,0,0,.35);border-bottom:1px solid rgba(0,0,0,.35);
+       box-shadow:inset 1px 1px 0 rgba(255,255,255,.045)}
+  .purifier{position:absolute;background:linear-gradient(180deg,#69746c,#48534d);
+       border:1px solid #202823;border-radius:2px;box-shadow:0 0 4px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.22)}
+  .purifier::after{content:"";position:absolute;left:4px;bottom:4px;width:5px;height:5px;border-radius:50%;
+       background:var(--green);box-shadow:0 0 5px rgba(158,216,121,.65)}
+  .purifier.no::after{background:var(--amber);box-shadow:0 0 5px rgba(226,177,105,.7)}
+  .purifier .corner{position:absolute;right:-3px;top:-3px;width:7px;height:7px;background:var(--amber);
+       border:1px solid #2b2417;box-shadow:0 0 3px rgba(0,0,0,.6)}
+
+  /* ===== 电池 4×4 ===== */
+  .bwrap{position:relative;width:64px;height:64px}
+  .bwrap .cells{display:grid;grid-template-columns:repeat(4,16px);grid-template-rows:repeat(4,16px);
+       background:#141b18;border:1px solid #050a08;box-shadow:inset 1px 1px 0 #030504,inset -1px -1px 0 #3d4a43}
+  .bwrap .c{width:16px;height:16px;border-right:1px solid rgba(0,0,0,.35);border-bottom:1px solid rgba(0,0,0,.35);
+       box-shadow:inset 1px 1px 0 rgba(255,255,255,.045)}
+  .batt{position:absolute;margin:0;background:linear-gradient(180deg,#6d6d5e,#45453a);
+       border:1px solid #171713;border-radius:1px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+  .batt::before{content:"";position:absolute;left:45%;top:-2px;width:40%;height:2px;background:#cfc9ae}
+  .batt::after{content:"";position:absolute;left:2px;right:2px;bottom:2px;height:3px;background:var(--power);
+       box-shadow:0 0 4px rgba(240,203,94,.4)}
+  .pblock{position:absolute;margin:0;background:linear-gradient(180deg,#756e59,#4c4634);
+       border:1px solid #1a170f;border-radius:1px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+  .pblock::after{content:"";position:absolute;inset:4px;background:var(--power);
+       clip-path:polygon(45% 0,100% 0,58% 42%,92% 42%,26% 100%,42% 54%,8% 54%);
+       filter:drop-shadow(0 0 4px rgba(240,203,94,.45))}
+  .uvslot{width:30px;height:44px;background:var(--cell);border:1px solid var(--cell-edge);
+          box-shadow:inset 1px 1px 0 #040706, inset -1px -1px 0 #3a4640;position:relative;flex:0 0 auto}
+  .uvslot .lamp{position:absolute;left:50%;top:8px;transform:translateX(-50%);width:14px;height:26px;background:#241d2c;
+          border:1px solid #4b3a5c;border-radius:2px}
+  .uvslot .lamp::after{content:"";position:absolute;inset:2px 4px;background:var(--uv);border-radius:2px;
+          box-shadow:0 0 8px rgba(195,155,232,.65)}
+
+  .statusline{display:flex;align-items:center;justify-content:space-between;height:12px;font-size:6px;color:var(--dim)}
+  .statusline .dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px;background:var(--green);
+          box-shadow:0 0 5px rgba(158,216,121,.7)}
+  body.st-idle .statusline .dot{background:#7d877f;box-shadow:none}
+  body.st-full .statusline .dot,body.st-pure .statusline .dot{background:var(--amber);box-shadow:0 0 5px rgba(226,177,105,.7)}
+  .kv{display:flex;align-items:center;justify-content:space-between;gap:4px}
+  .num{color:var(--value);font-size:9px;letter-spacing:.3px}
+  .num b{font-size:11px;color:#fffbe6}
+  .sec-title{font-size:6px;color:var(--dim);letter-spacing:.5px}
+  .bcol{display:flex;flex-direction:column;gap:4px}
+
+  /* ===== 规格说明（截图时隐藏） ===== */
+  .spec{max-width:660px;color:#9aa79f;font-size:9px;line-height:1.7;margin-top:14px}
+  .spec h2{font-size:10px;color:#e8e3c9;margin:12px 0 4px;letter-spacing:.4px}
+  .spec table{border-collapse:collapse;font-size:8px}
+  .spec td,.spec th{border:1px solid #39443d;padding:2px 6px;text-align:left}
+  .spec code{color:#c9d6b8}
+</style>
+</head>
+<body class="zoom2">
+<div class="page">
+  <div class="col">
+    <h1>净水塔 · 窗口原型 v0.3.1</h1>
+    <div class="sub">原生组件形状 + 水厂主题配色；电池区 4×4；文案精简；含 5 种状态</div>
+    <div class="toolbar">
+      <button data-tab="run" class="on">运行</button>
+      <button data-tab="purifier">净水器</button>
+      <button data-tab="battery">电池</button>
+      <span class="sep"></span>
+      <label><input type="checkbox" id="z2" checked>2×</label>
+      <span class="sep"></span>
+      <button data-state="normal" class="on">正常</button>
+      <button data-state="idle">无电池</button>
+      <button data-state="full">600L满</button>
+      <button data-state="pure">纯水不可达</button>
+      <button data-state="out">输出满</button>
+    </div>
+
+    <div class="stage">
+      <div class="win">
+        <div class="title"><i class="drop"></i><span>净水塔</span><div class="x">×</div></div>
+        <div class="tabs">
+          <div class="tab on" data-tab="run">运行</div>
+          <div class="tab" data-tab="purifier">净水器</div>
+          <div class="tab" data-tab="battery">电池</div>
+        </div>
+        <div class="pagebody">
+
+          <!-- ================= 运行页（352×340） ================= -->
+          <div class="pg" data-pg="run" style="display:flex;flex-direction:column;gap:4px">
+
+            <!-- 行1：待处理 / 已处理 -->
+            <div class="row" style="height:104px">
+              <div class="panel" style="--sec:var(--water);width:208px">
+                <div class="plate"><span class="icon"><i class="ico drop"></i></span><i class="sep"></i>
+                  <span class="txt">待处理水箱</span><span class="right">100 L</span></div>
+                <div class="content" style="display:flex;gap:6px;align-items:center">
+                  <div class="slot s54"><div class="tank dirty"><i style="height:62%"></i></div><div class="cap"></div></div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+                    <div class="kv"><span class="num"><b>62.5</b> / 100 L</span><span class="chip d"><i></i>基础</span></div>
+                    <div class="pbar dirty"><i style="width:62%"></i><div class="ticks"></div></div>
+                    <div class="kv"><span class="chip d">88.7%</span><span class="chip">水源 水龙头</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel" style="--sec:var(--green);width:140px">
+                <div class="plate"><span class="icon"><i class="ico clean"></i></span><i class="sep"></i>
+                  <span class="txt">已处理</span><span class="right">600 L</span></div>
+                <div class="content" style="display:flex;gap:5px;align-items:center">
+                  <div class="slot"><div class="tank"><i style="height:36%"></i></div><div class="cap"></div></div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+                    <div class="kv"><span class="num"><b id="plNum">214.8</b><span class="dim" id="plMax"> / 600</span></span></div>
+                    <div class="pbar clean" id="plBar"><i style="width:36%"></i><div class="ticks"></div></div>
+                    <span class="chip h" id="plTag"><i></i>优质 99.32%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 行2：目标 / 接水 -->
+            <div class="row" style="height:44px">
+              <div class="panel" style="--sec:var(--gold);width:208px">
+                <div class="plate"><span class="icon"><i class="ico target"></i></span><i class="sep"></i>
+                  <span class="txt">净水目标</span><span class="right">统一设置</span></div>
+                <div class="content" style="display:flex;align-items:center;gap:12px">
+                  <div class="radio"><span class="box"></span>普通</div>
+                  <div class="radio on"><span class="box"></span>优质</div>
+                  <div class="radio"><span class="box"></span>纯水</div>
+                </div>
+              </div>
+              <div class="panel" style="--sec:var(--base);width:140px">
+                <div class="plate"><span class="icon"><i class="ico tap"></i></span><i class="sep"></i>
+                  <span class="txt">接水</span><span class="right">默认关</span></div>
+                <div class="content" style="display:flex;align-items:center">
+                  <div class="radio"><span class="box"></span>水龙头</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 行3：输出 / 灌装 -->
+            <div class="row" style="height:160px">
+              <div class="panel" style="--sec:var(--pure);width:140px">
+                <div class="plate"><span class="icon"><i class="ico grid"></i></span><i class="sep"></i>
+                  <span class="txt">输出 7×4</span><span class="right">25/28</span></div>
+                <div class="content" style="display:flex;flex-direction:column;gap:6px;justify-content:center">
+                  <div class="ogrid">
+                    <div class="cells" id="ocells"></div>
+                    <div class="ovl" id="obottles"></div>
+                  </div>
+                  <div class="chips" style="gap:3px">
+                    <span class="chip" style="height:8px;padding:0 3px">1L</span>
+                    <span class="chip" style="height:8px;padding:0 3px">3L</span>
+                    <span class="chip" style="height:8px;padding:0 3px">6L</span>
+                    <span class="chip" style="height:8px;padding:0 3px">20L</span>
+                    <span class="chip" style="height:8px;padding:0 3px">60L</span>
+                  </div>
+                  <div class="kv"><span class="hint">空位 3 格</span><span class="hint">取出后自行售卖</span></div>
+                </div>
+              </div>
+              <div class="panel" style="--sec:var(--green);width:208px">
+                <div class="plate"><span class="icon"><i class="ico bottle"></i></span><i class="sep"></i>
+                  <span class="txt">灌装</span><span class="right">打印 + 装水</span></div>
+                <div class="content" style="display:flex;flex-direction:column;gap:6px">
+                  <div class="row" style="gap:3px">
+                    <div class="btn ghost" style="flex:1">1 L</div>
+                    <div class="btn ghost" style="flex:1">3 L</div>
+                    <div class="btn pri" style="flex:1">6 L</div>
+                    <div class="btn ghost" style="flex:1">20 L</div>
+                    <div class="btn ghost" style="flex:1">60 L</div>
+                  </div>
+                  <div class="kv">
+                    <span class="hint">6 L 瓶占 2×3 格</span>
+                    <span class="hint">≈27 电</span>
+                  </div>
+                  <div class="row" style="gap:3px">
+                    <div class="btn pri" style="flex:1">灌装 1 瓶</div>
+                    <div class="btn ghost" style="flex:1">灌满</div>
+                  </div>
+                  <div class="kv" style="margin-top:auto"><span class="hint">本夜 1 瓶 · 6 L</span><span class="hint">不足 10ml 不灌</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="statusline">
+              <span><i class="dot"></i>运行中 · 3 台净水器</span>
+              <span>电池 56/150 · 每夜 1 瓶</span>
+            </div>
+          </div>
+
+          <!-- ================= 净水器页 ================= -->
+          <div class="pg" data-pg="purifier" style="display:none;flex-direction:column;gap:4px">
+            <div class="panel" style="--sec:var(--water);width:344px;height:326px">
+              <div class="plate"><span class="icon"><i class="ico drop"></i></span><i class="sep"></i>
+                <span class="txt">净水器区 20×19</span><span class="right">4 台</span></div>
+              <div class="content">
+                <div class="pgrid"><div class="cells" id="pcells"></div><div id="pmachines"></div></div>
+              </div>
+            </div>
+            <div class="statusline"><span>双击净水器打开它自己的窗口</span><span>无容器不参与</span></div>
+            <div class="statusline" style="color:var(--amber)"><span>橙色角标 = 纯水不可达</span><span>共 2 台</span></div>
+          </div>
+
+          <!-- ================= 电池页 ================= -->
+          <div class="pg" data-pg="battery" style="display:none;flex-direction:column;gap:4px">
+            <div class="row" style="height:120px">
+              <div class="panel" style="--sec:var(--power);width:140px">
+                <div class="plate"><span class="icon"><i class="ico power"></i></span><i class="sep"></i>
+                  <span class="txt">电池 4×4</span><span class="right">16 格</span></div>
+                <div class="content" style="display:flex;flex-direction:column;gap:4px">
+                  <div class="bwrap"><div class="cells" id="bcells"></div><div id="bitems"></div></div>
+                  <div class="chips"><span class="chip w"><i></i>电池 2</span><span class="chip w"><i></i>列阵 1</span></div>
+                  <div class="kv"><span class="hint">电池 1×2 · 列阵 2×2</span></div>
+                </div>
+              </div>
+              <div class="panel" style="--sec:var(--power);width:204px">
+                <div class="plate"><span class="icon"><i class="ico power"></i></span><i class="sep"></i>
+                  <span class="txt">合并电量</span><span class="right">仅灌装</span></div>
+                <div class="content" style="display:flex;flex-direction:column;gap:6px;justify-content:center">
+                  <div class="kv"><span class="num"><b>56</b> <span class="dim">/ 150</span></span><span class="hint">每夜 1 瓶</span></div>
+                  <div class="pbar warn"><i style="width:37%"></i><div class="ticks"></div></div>
+                  <div class="chips">
+                    <span class="chip">普通 100</span><span class="chip">扩展 250</span>
+                    <span class="chip">增殖 100+4</span><span class="chip">一次性 1000</span>
+                  </div>
+                  <div class="kv"><span class="hint">所有电池电量合并取用</span><span class="hint">不占用带宽</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="height:104px">
+              <div class="panel" style="--sec:var(--uv);width:140px">
+                <div class="plate"><span class="icon"><i class="ico uv"></i></span><i class="sep"></i>
+                  <span class="txt">紫外灯</span><span class="right">1 槽</span></div>
+                <div class="content" style="display:flex;gap:6px;align-items:center">
+                  <div class="uvslot"><div class="lamp"></div></div>
+                  <div style="display:flex;flex-direction:column;gap:4px">
+                    <span class="chip p"><i></i>已装</span>
+                    <span class="hint">注水前自动 1 次</span>
+                    <span class="hint">杀菌不耗电</span>
+                  </div>
+                </div>
+              </div>
+              <div class="panel" style="--sec:var(--green);width:204px">
+                <div class="plate"><span class="icon"><i class="ico bottle"></i></span><i class="sep"></i>
+                  <span class="txt">灌装耗电</span></div>
+                <div class="content" style="display:flex;flex-direction:column;gap:5px;justify-content:center">
+                  <div class="chips" style="gap:4px">
+                    <span class="chip">1L <b style="color:var(--value)">7</b></span>
+                    <span class="chip">3L <b style="color:var(--value)">15</b></span>
+                    <span class="chip">6L <b style="color:var(--value)">27</b></span>
+                    <span class="chip">20L <b style="color:var(--value)">83</b></span>
+                    <span class="chip">60L <b style="color:var(--value)">243</b></span>
+                  </div>
+                  <div class="kv"><span class="hint">大瓶单位水量更省电</span><span class="hint">不足时当夜停灌</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel" style="--sec:var(--amber);width:344px;height:84px">
+              <div class="plate"><span class="icon"><i class="ico grid"></i></span><i class="sep"></i>
+                <span class="txt">能量列阵</span><span class="right">相邻充能</span></div>
+              <div class="content" style="display:flex;gap:12px;align-items:center">
+                <span class="chip w">电池 +2 / 夜</span>
+                <span class="chip w">商业电力 +4 / 夜</span>
+                <span class="hint">停电不充 · 不参与取电</span>
+                <span class="hint">需与电池相邻</span>
+              </div>
+            </div>
+            <div class="statusline"><span><i class="dot"></i>电池池仅用于灌装</span><span>净水器自备电池</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spec">
+    <h2>v0.3.2 变化（相对 v0.2）</h2>
+    <div>1. 配色从「黑白灰」改成水厂主题：青绿石板面板 <code>#3e4b46</code>、米白标签牌 <code>#cfc9ae</code>、奶白正文 <code>#e2dec8</code>，加语义色：水青 <code>#5fc4dd</code>、脏水黄褐 <code>#9c8a5c</code>、优质绿 <code>#9ed879</code>、纯水青 <code>#7fd8ee</code>、能量黄 <code>#f0cb5e</code>、UV 紫 <code>#c39be8</code>、警告橙 <code>#e2b169</code>。所有颜色原生可染色实现。</div>
+    <div>2. 电池区 <code>8×8</code> → <code>4×4</code>（16 格，64×64）；电池 1×2、能量列阵 2×2。</div>
+    <div>3. 文案精简到最短：净水目标/接水/输出/灌装/紫外灯/合并电量/能量列阵；解释句移出面板（放 tooltip）。</div>
+    <div>4. 水箱改成「槽内水箱 + 水位 + 数值」的组合（游戏原生 <code>GameSlotInventory</code> + 容器卡片，参考水塔 mod）。</div>
+<div>5. 修正：输出区网格固定 7×4、瓶子改为覆盖层按 16px 格精确落位；待处理水位条改水褐、已处理改水青、电量条改琥珀；面板内文案再精简一轮。</div>
+
+    <h2>尺寸（原生 px）</h2>
+    <table>
+      <tr><th>区域</th><th>规格</th><th>备注</th></tr>
+      <tr><td>窗口</td><td>368 宽；标题 20 / 页签 20 / 页 340</td><td>三页固定 352×340，不跳变</td></tr>
+      <tr><td>水箱槽</td><td>54×54 / 44×44</td><td>槽内水箱 + 水位条</td></tr>
+      <tr><td>输出区</td><td>7×4 = 112×64（cell 16）</td><td>瓶形 1L 1×3 / 3L 1×4 / 6L 2×3 / 20L 2×4 / 60L 2×4</td></tr>
+      <tr><td>净水器区</td><td>20×19 = 320×304</td><td>双击嵌套机器开窗</td></tr>
+      <tr><td>电池区</td><td>4×4 = 64×64（16 格）</td><td>电池 1×2、列阵 2×2</td></tr>
+      <tr><td>按钮 / 单选</td><td>高 16 / 16×16</td><td>文字 7 / 6 px</td></tr>
+    </table>
+
+    <h2>状态规则</h2>
+    <table>
+      <tr><th>状态</th><th>表现</th></tr>
+      <tr><td>正常</td><td>绿点；可灌装</td></tr>
+      <tr><td>无电池</td><td>灰点；灌装按钮置灰、不弹窗</td></tr>
+      <tr><td>600L 满</td><td>已处理条变橙；转运与补水一起停</td></tr>
+      <tr><td>纯水不可达</td><td>净水器格橙色角标；不白耗电（removed=0 不扣电）</td></tr>
+      <tr><td>输出满</td><td>灌装按钮置灰；先取走瓶子</td></tr>
+    </table>
+  </div>
+</div>
+
+<script>
+(function(){
+  const CS=16;
+
+  // ---------- 输出区 ----------
+  const oc=document.getElementById('ocells');
+  for(let y=0;y<4;y++) for(let x=0;x<7;x++){const d=document.createElement('div');d.className='c';oc.appendChild(d);}
+  const bottles=[
+    {cls:'',x:0,y:0,w:1,h:3},
+    {cls:'b6',x:1,y:0,w:2,h:3},
+    {cls:'b20',x:3,y:0,w:2,h:4},
+    {cls:'b60',x:5,y:0,w:2,h:4}
+  ];
+  if(new URLSearchParams(location.search).get('nob')==='1') bottles.length=0;
+  function drawBottles(){
+    const host=document.getElementById('obottles');
+    host.innerHTML='';
+    bottles.forEach(b=>{
+      const d=document.createElement('div');
+      d.className='bottle '+b.cls;
+      d.style.left=(b.x*CS)+'px'; d.style.top=(b.y*CS)+'px';
+      d.style.width=(b.w*CS-1)+'px'; d.style.height=(b.h*CS-1)+'px';
+      host.appendChild(d);
+    });
+  }
+
+  // ---------- 净水器 20×19 ----------
+  const pc=document.getElementById('pcells');
+  for(let y=0;y<19;y++) for(let x=0;x<20;x++){const d=document.createElement('div');d.className='c';pc.appendChild(d);}
+  const pm=document.getElementById('pmachines');
+  [{x:2,y:2,no:false},{x:7,y:2,no:true},{x:12,y:2,no:false},{x:2,y:8,no:true}].forEach(p=>{
+    const d=document.createElement('div');
+    d.className='purifier'+(p.no?' no':'');
+    d.style.left=(p.x*CS)+'px'; d.style.top=(p.y*CS)+'px';
+    d.style.width=(2*CS-2)+'px'; d.style.height=(2*CS-2)+'px';
+    if(p.no){const k=document.createElement('span');k.className='corner';d.appendChild(k);}
+    pm.appendChild(d);
+  });
+
+  // ---------- 电池 4×4 ----------
+  const bc=document.getElementById('bcells');
+  for(let y=0;y<4;y++) for(let x=0;x<4;x++){const d=document.createElement('div');d.className='c';bc.appendChild(d);}
+  const bi=document.getElementById('bitems');
+  [{x:0,y:0,w:1,h:2,cls:'batt'},{x:1,y:0,w:1,h:2,cls:'batt'},{x:2,y:1,w:2,h:2,cls:'pblock'}].forEach(b=>{
+    const d=document.createElement('div'); d.className=b.cls;
+    d.style.left=(b.x*CS)+'px'; d.style.top=(b.y*CS)+'px';
+    d.style.width=(b.w*CS-2)+'px'; d.style.height=(b.h*CS-2)+'px';
+    bi.appendChild(d);
+  });
+
+  // ---------- 交互 ----------
+  function setTab(t){
+    document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('on',e.dataset.tab===t));
+    document.querySelectorAll('.pg').forEach(e=>e.style.display=e.dataset.pg===t?'flex':'none');
+    document.querySelectorAll('.toolbar button[data-tab]').forEach(e=>e.classList.toggle('on',e.dataset.tab===t));
+    if(t==='run') requestAnimationFrame(drawBottles);
+  }
+  document.querySelectorAll('.tab,.toolbar button[data-tab]').forEach(el=>el.addEventListener('click',()=>setTab(el.dataset.tab)));
+  document.querySelectorAll('.toolbar button[data-state]').forEach(el=>{
+    el.addEventListener('click',()=>{
+      document.querySelectorAll('.toolbar button[data-state]').forEach(b=>b.classList.remove('on'));
+      el.classList.add('on');
+      ['st-idle','st-full','st-pure','st-out'].forEach(c=>document.body.classList.remove(c));
+      if(el.dataset.state!=='normal') document.body.classList.add('st-'+el.dataset.state);
+    });
+  });
+  document.getElementById('z2').addEventListener('change',e=>{
+    document.body.classList.toggle('zoom2',e.target.checked);
+    requestAnimationFrame(drawBottles);
+  });
+
+  const u=new URLSearchParams(location.search);
+  if(u.get('shot')==='1') document.body.classList.add('shot');
+  if(u.get('zoom')!=='2'){document.body.classList.remove('zoom2');const z=document.getElementById('z2');if(z)z.checked=false;}
+  const t=u.get('tab')||'run', s=u.get('state')||'normal';
+  setTab(t);
+  if(s!=='normal') document.body.classList.add('st-'+s);
+  if(s==='full'){
+    const n=document.getElementById('plNum'), b=document.getElementById('plBar'),
+          t=document.getElementById('plTag');
+    if(n) n.textContent='600';
+    if(b){ b.classList.remove('clean'); b.classList.add('warn'); b.querySelector('i').style.width='100%'; }
+    if(t){ t.innerHTML='<i></i>满 · 停转运与补水'; t.style.color='var(--amber)'; }
+  }
+  requestAnimationFrame(drawBottles);
+
+  if(u.get('debug')==='1'){
+    requestAnimationFrame(()=>{
+      const o=document.getElementById('ocells');
+      const cs=getComputedStyle(o);
+      const d=document.createElement('div');
+      d.style.cssText='position:fixed;left:8px;top:8px;z-index:99;background:#000;color:#0f0;font:12px monospace;padding:6px;white-space:pre';
+      const bl=[...o.children].filter(c=>c.classList.contains('bottle'));
+      d.textContent='ocells '+o.offsetWidth+'x'+o.offsetHeight+' kids '+o.children.length+' inline['+o.style.cssText+']'
+        +'\ncols '+cs.gridTemplateColumns+'\nrows '+cs.gridTemplateRows
+        +'\nbtl '+bl.map(c=>c.style.gridRow+'|'+c.style.gridColumn).join(' , ');
+      document.body.appendChild(d);
+    });
+  }
+})();
+</script>
+</body>
+</html>

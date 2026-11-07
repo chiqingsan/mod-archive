@@ -1,334 +1,220 @@
-# 深空当铺 · 更好的性能优化（BetterPerformance）
+# 深空当铺 · 更好的性能优化
 
-正式版《深空当铺》(Probably Stolen) 0.46D 的原生 ModLoader 模组，把 Nexus 上 Demo 版的
-[XG Drag Fixer](https://www.nexusmods.com/probablystolen/mods/405)（作者 798924038）针对
-Mono / Harmony 环境独立重写，并加入针对正式版原生逻辑的性能优化。原 mod 文件不包含在本工程中，
-也未做任何转载。
+《深空当铺》(Probably Stolen) 的社区模组，适配正式版 **0.46D**（Mono/ModLoader）。
 
-- 模组 ID：`chiqingsan.BetterPerformance`
-- 程序集：`BetterPerformance.dll`
-- 部署目录：`Mods/BetterPerformance/`
-- 配置文件：`ModConfigs/chiqingsan.BetterPerformance.json`
-- 能力：仅 `reflection-external`（不再需要 `files`）
-- 发布版本：`1.0.0`（首发版本号；内部迭代记录保留在下方章节）
+本模组包含拖拽修复、容器打开、提示框缓存、陈化结算折叠、模块效果去重和空位位图。
+离线测试覆盖部分托管逻辑；Unity 内的补丁兼容性仍需实机验证。
+全店物品查询、物品视觉刷新和遮罩通知均保持原版处理。
+安装后需要重开游戏生效。
 
-## 功能
+## 功能（7 组，默认全开）
 
-| 配置项 | 默认 | 说明 |
-| --- | --- | --- |
-| `FixGhostDrag` | 开 | 修复点击/双击物品后偶发“粘住拖拽”：`StartDrag` 触发时左键已松开则重置拖拽状态 |
-| `FastSlotFind` | 开 | 覆写 `GameGridInventory` 与 `GameGridScrollableInventory.TryFindOneValidInventorySlot`：用占用位图预筛候选方向/位置，只对通过预筛的候选调用原版 `TryInventorySlot`。搜索顺序、排序、堆叠、穿透（容器套容器）规则与原版一致 |
-| `FastContainerOpen` | 开 | 容器首次打开前预挂载浮动窗口画布/停靠层（`UIFamilyLayer.EnsureCanvas` / `PixelWindow.EnsureFloatingDock` / `UIFamilyLayer.Adopt`） |
-| `SkipContainerLayoutMark` | 开 | 打开容器期间（及之后 `SkipLayoutMarkFrames` 帧）跳过窗口子树内冗余的 `LayoutRebuilder.MarkLayoutForRebuild` |
-| `SkipLayoutMarkFrames` | 2 | 容器打开后继续抑制布局重建的帧数（0–8） |
-| `SkipMaskNotify` | 开 | 打开容器期间跳过窗口子树内的 `MaskUtilities.Notify2DMaskStateChanged` |
-| `SetTitleSkipValidate` | 开 | `PixelWindow.SetTitle` 内重复的第一次 `Validate()` 跳过 |
-| `MiddleClickPreview` | 开 | 按住鼠标中键悬浮在容器物品上快速预览内容；松开中键后预览窗口保持打开（与原 mod 一致） |
-| `PreviewHideTooltip` | 开 | 预览时隐藏物品提示框 |
-| `TooltipCache` | 开 | 缓存同一物品的基础/高级提示框 `RichText`，避免停住时每帧重算容器价值 |
-| `TooltipCacheFrames` | 30 | 提示框缓存帧数（1–120） |
-| `TooltipIdleSkip` | 开 | 提示框文本、位置、宽度在连续 `TooltipIdleFrames` 帧内未变时，跳过 `ShowTooltip` 里的重复重设/校验 |
-| `TooltipIdleFrames` | 6 | 允许连续跳过重复刷新的最大帧数（1–30） |
-| `RaycastFrameCache` | 开 | 同一帧内相同位置/指针的 `EventSystem.RaycastAll` 直接复用结果（提示框、拖拽、右键菜单等多处每帧射线检测） |
-| `ContextMenuSkip` | 关 | 物品右键菜单打开且鼠标未移动时，跳过菜单高亮重绘（鼠标静止最多 60 帧后自动重新校验；实测跳过率仅 0.6%，默认关闭） |
-| `NightValidateBatch` | 开 | 过夜结算期间合并库存界面刷新，结算结束后统一刷新一次 |
-| `NightSimUIQuiet` | 开 | 夜间化学模拟期间跳过纯界面的文字/布局刷新（模拟结束后正常刷新，不改变任何结算结果；修改后需重启生效） |
-| `ChemTagCache` | 开 | 化学模拟期间缓存容器标签读取，避免每次读取都克隆 `TagState`：任何标签写入立即失效，不改变模拟结果（修改后需重启生效） |
-| `AgingBatch` | 开 | 睡眠时酒架“n 格 × m 天”的陈化调用合并为每件物品一次刷新，最终天数与价值变化与原版一致 |
-| `MachineModuleSkip` | 开 | 机器生效时跳过每个模块内部重复的全量效果重算，只保留 `OnMachineActioned` 末尾的最终一次 |
-| `SpriteRefreshGuard` | 开 | `UpdateModSprite` 目标状态与当前贴图一致时跳过重复写入（外观动画帧不受影响） |
-| `SlotIndexDirect` | 开 | `GetIncompleteItemInventorySlot` / `GetItemInventorySlot` 直接扫描私有 items 列表，避免每次复制 `childItems` |
-| `SkipStoreHoverRaycast` | 开 | 商店界面悬停检测（`StoreUIManager.CheckRaycast`）在鼠标完全静止且无任何输入时跳过重复的 4–5 次全量射线；最多连续跳过 `StoreHoverIdleFrames` 帧后强制重算 |
-| `StoreHoverIdleFrames` | 15 | 鼠标静止时连续跳过商店悬停检测的最大帧数（1–60） |
-| `TextFieldFocusCache` | 开 | `StoreUIManager.IsTextFieldFocused` 每帧只计算一次 |
-| `SizeFitterGuard` | 开 | `AdvancedContentSizeFitter` 的尺寸只在首次生效，避免每帧 `SetSizeWithCurrentAnchors` 标脏布局 |
-| `StartupFaultGuard` | 开 | 读档时游戏处于后台，界面对象可能比逻辑晚一帧就绪并连锁抛 `NullReferenceException`（清空容器提示框、库存校验、物品标签校验等），这里只吞掉这类空引用异常并计数写日志，避免一次异常打断整帧初始化导致容器打不开/卡死；其它异常照常抛出（需重启） |
-| `LoadFocusBoost` | 开 | 读档窗口期（启动后 60 秒、每次场景加载后 30 秒）内游戏处于后台时临时解除“后台限帧 10 FPS”，保证加载期逻辑帧率，结束后把帧率交还给游戏设置（需重启） |
+1. **拖拽沾手修复**（`ItemMouseDragHandler.StartDrag` 前缀）
+   鼠标左键未按下时，原版会把 `ItemMouseDragHandler` 标记为拖拽中且不再复位，导致点击物品后偶发“粘住”、
+   拖拽漂移。命中时直接复位该状态并跳过原版开始拖拽逻辑；左键按住时完全走原版。
 
-### 诊断调试（默认关闭，普通游玩请勿开启）
+2. **大容器空位搜索加速**（`GameGridInventory.TryFindOneValidInventorySlot` 前缀）
+   先尝试堆叠到已有同类物品；否则把容器内所有物品的占位格烘成一张位图，用它预筛拖拽物品的候选位置，
+   只把可能放得下的位置交给原版 `TryInventorySlot` 做权威判定（槽位、旋转、形状检查仍全部由原版完成）。
+   库存准入检查、堆叠顺序与优先级保持原版；带子容器穿透回调的库存和滚动库存保持原版搜索；占位图每次查询按当前物品位置与形状重建，不跨调用缓存。
 
-| 配置项 | 默认 | 说明 |
-| --- | --- | --- |
-| `PerfDiagnostics` | 关 | 性能诊断：统计每帧耗时、分配、GC 与各补丁调用/跳过，定期写入游戏日志。仅供排查测试，会增加少量开销 |
-| `PerfReportSeconds` | 10 | 报告间隔秒数（2–120） |
-| `PerfABMode` | `Hotkey` | A/B 切换方式：`Hotkey` / `Auto` / `Both` / `Off`；仅诊断开启时生效 |
-| `PerfABKey` | `F8` | 手动切换 A/B 的按键（`F1`–`F12`） |
-| `PerfAutoABSeconds` | 300 | 自动切换间隔（30–3600），300 = 每 5 分钟 |
+3. **容器冷启动加速 + 打开后布局抑制**（`PixelWindow.Show(Vector2,Vector2,bool)` 前缀/finalizer）
+   首次打开容器时，窗口画布尚未挂到 UI 层，原版会先在默认位置构建、再重新布局一次。
+   前缀在构建前把画布预挂到 UI 层（含窗口/遮罩/家族层级），finalizer 结束抑制作用域，异常也会清理。
 
-以上诊断设置均为即时生效：在设置里改完立刻应用并弹出提示，无需重启。
+4. **布局刷新抑制**（`LayoutRebuilder.MarkLayoutForRebuild` 前缀）
+   容器打开期间只抑制该窗口子树的布局通知；打开后 N 帧内只抑制该子树中隐藏对象的布局重算。异常时通过 finalizer 结束作用域。
+
+5. **中键悬浮预览**（`ItemContextHandler` 中键路径）
+   按住鼠标中键扫过容器时直接显示容器预览，不需要打开；预览可见期间可屏蔽提示框（`PreviewHideTooltip`）。
+
+6. **提示框缓存**（`GameItemElement.GetTooltip()` / `GetTooltipAdvanced()` 前缀+后缀）
+   鼠标静止时同一物品的提示框 30 帧内复用（帧数可调），拖动/切换物品立即失效。
+
+7. **性能优化**（3 项独立开关，见配置表）
+   陈化机按天循环折叠成一次结算、模块动作效果重算去重、
+   容器空位位图。物品视觉刷新保持原版同步执行。
+   陈化与模块结算开始后如发生异常，保留异常，不再重复执行原版结算。
+   全店物品查询不再挂接补丁；空位位图设置关闭时不挂接空位判断方法，修改后需重启游戏。
+
+
+## 配置
+
+设置 → 模组设置 → 本模组。功能开关默认开启，改动需重启游戏；诊断默认关闭，保存设置后立即生效。
+
+| 配置项 | 分区 | 默认 | 说明 |
+| --- | --- | --- | --- |
+| `FixGhostDrag` | 拖拽 | 开 | 修复点击后偶发粘住拖拽 |
+| `Fix4Enabled` | 拖拽 | 开 | 大容器空位搜索加速 |
+| `FastContainerOpen` | 容器 | 开 | 容器冷启动预挂载 + 打开后布局抑制 |
+| `SkipLayoutMark` | 容器 | 开 | 打开容器后跳过重复布局标记 |
+| `StickyLayoutFrames` | 容器 | 2 | 打开后抑制布局的帧数（0–8） |
+| `MiddleClickPreview` | 中键预览 | 开 | 中键悬浮预览容器 |
+| `PreviewHideTooltip` | 中键预览 | 开 | 预览期间不弹提示框 |
+| `TooltipCache` | 提示框 | 开 | 复用静止鼠标下的提示框结果 |
+| `TooltipCacheFrames` | 提示框 | 30 | 缓存帧数（1–120） |
+| `AgingCollapse` | 性能优化 | 开 | 陈化机按天循环折叠为一次结算 |
+| `ModuleRecomputeDedup` | 性能优化 | 开 | 模块动作触发时效果只结算一次 |
+| `GridOccupancyShortcut` | 性能优化 | 开 | 用占用位图加速容器空位判断 |
+| `DiagnosticsEnabled` | 诊断 | 关 | 性能与异常诊断，每 10 秒汇总，开关立即生效 |
+
+## 诊断
+
+在“诊断”分区开启 `DiagnosticsEnabled` 后，现有游戏日志中会出现 `[诊断]` 行：
+
+- `FindSlot`：网格找位；`WindowShow`：窗口打开；`Aging`：陈化结算；`Module`：模块动作结算；`Occupancy`：空位判断。
+- 每 10 秒按探针汇总调用次数、平均/最大耗时、传播到 finalizer 的异常数量及本周期首次异常堆栈；空闲周期不输出统计。
+- 同时统计找位准入拒绝、子容器穿透回原版、找位和空位位图异常回退次数。
+- 补丁安装后输出一次 `GameItem.ModifyTag` 与 `ModuleEffectHelper.ResetAllTempStat` 的 Harmony owner 快照；若之后才开启诊断，则在开启后输出，重新开关可刷新。`none` 表示快照中没有 Harmony owner，不代表已验证 Mono 原生入口健康。
+- 测量范围从本模组 prefix 到 finalizer，包含执行到的原版方法和其他模组补丁；陈化可能包含模块结算，不能把这些耗时相加。
+- 关闭诊断或禁用模组时输出剩余统计；关闭后不读取诊断计时器、不累计样本。诊断不开新文件、不增加权限或新的游戏方法挂接点。
+
+日志由游戏写入 `%USERPROFILE%/AppData/LocalLow/Questing Goose Studio/Probably Stolen/Player.log`。
+只覆盖已挂接的上述路径，不能单凭这些统计判断其他方法的故障根因，也不能替代 Unity/Mono 实机验证。
+
+## 安装 / 卸载
+
+- 安装：把 `BetterPerformance.dll`、`manifest.xml`、`preview.png` 放到
+  `游戏目录/Mods/BetterPerformance/`，启动游戏。
+- 卸载：删除该目录，重启游戏。
+
+## 说明
+
+- 只改运行时行为，不自行写盘或创建诊断文件，不修改存档格式；诊断通过现有游戏日志输出，存档与官方版本互通。
+- 优化条件不满足时放行原版；有状态的结算开始后不使用重跑原版作为异常回退。
+- 与其它模组兼容性未做穷举；如果和某个模组冲突，可在设置中逐项关闭定位。
+- 版本 1.1.0 移除了 v1.0.x 里自创的优化项（找位加速缓存、射线缓存、结算批处理、化学标签缓存等），
+  原因见仓库内 `OPTIMOD_RESEARCH.md`：它们缺少运行时等价验证，且多次引发异常与物品异常。
 
 ## 构建
 
-需要 .NET SDK 6+。游戏目录可用 `-p:GameDirectory=...` 覆盖（默认
-`D:\app\steam\steamapps\common\Probably Stolen`）。
-
-```powershell
-dotnet build XGDragFixer.csproj -c Release
+```
+dotnet build -c Release
+dotnet run -c Release --project ../XGDragFixer.Tests/XGDragFixer.Tests.csproj
 ```
 
-产物：`bin/Release/netstandard2.1/BetterPerformance.dll`，与 `manifest.xml`、`preview.png`
-一起放入 `Mods/BetterPerformance/`。
+## 版本与部署记录
 
-## 目录结构
+- **1.3.12**（2026-11-07 构建，发布候选）：去取证版本，用于本地部署验证与后续工坊更新。
+  移除 1.3.10/1.3.11 的临时取证补丁与 `ForensicsEnabled` 配置（`Forensics.cs` 已从工程删除，备份在 `D:\code\mod\tmp\bp-forensics-20261106\`），
+  保留 1.3.9 的三项修复（销毁容器物品时释放隐藏窗口、搅拌机混合液体合并批次、化学精炼机压片合并形状校验）与原有全部优化；
+  离线回归通过。1.3.10/1.3.11 为临时诊断版本，未部署、未上传工坊。
+  DLL `c039e964d59b0f6e429f2a02f097f6f756451671ac343639c74a05b0fd1e4920`（`47104` B，AssemblyVersion 1.3.12.0），manifest 1.3.12，仅 `reflection-external`。
 
-```
-XGDragFixer.csproj      # 工程文件（AssemblyName=BetterPerformance）
-manifest.xml            # ModLoader 清单
-Core.cs                 # IMod 入口、配置、延迟安装补丁、Runner 驱动
-Hooks.cs                # Harmony 前后缀入口（名字与 Core 中的注册保持一致）
-FastSlotFind.cs         # 空位搜索覆写 + 占用位图缓存（固定格 / 滚动格）
-SlotFit.cs              # 纯函数候选预筛（可离线测试）
-LayoutSuppressor.cs     # 打开容器期间的布局/遮罩抑制状态机
-ContainerShowFix.cs     # 冷启动预挂载、SetTitle 去重、窗口可见性查询
-HoverPeek.cs            # 中键悬浮预览
-TooltipCache.cs         # 提示框缓存
-TooltipIdleSkip.cs      # 提示框空闲跳过重复刷新
-RaycastFrameCache.cs    # 同帧 UI 射线检测缓存
-ContextMenuSkip.cs      # 右键菜单静止跳过
-AgingBatch.cs           # 睡眠陈化合并刷新
-MachineBatch.cs         # 机器模块效果跳过重复重算
-SpriteGuards.cs         # 贴图写入守卫
-SlotIndexDirect.cs      # 槽位索引直查
-StoreHoverCache.cs      # 商店悬停检测跳过（鼠标静止）
-TextFieldFocusCache.cs  # 输入框焦点每帧缓存
-SizeFitterGuard.cs      # 尺寸自适应只应用一次
-NightValidateBatch.cs   # 过夜结算期间合并库存界面刷新
-NightSimQuiet.cs        # 化学模拟期间的界面静默
-ChemBreakdown.cs        # 化学模拟子阶段计时
-ChemTagCache.cs         # 化学模拟标签读取缓存（避免 TagState 克隆）
-NightBreakdown.cs       # 过夜结算细分诊断
-PerfGate.cs             # A/B 总开关
-Toast.cs                # 提示（游戏原生通知条，回退到自绘覆盖层）
-ConfigValueLabels.cs    # 模组设置滑条数值显示
-PerfDiagnostics.cs      # 可选性能诊断（日志输出每补丁计数/耗时 + 帧时间/分配）
-```
+- **1.3.11**（2026-11-06 构建，取证诊断增强版，未部署、未上传工坊）：在 1.3.10 取证基础上补上读档链的异常捕获。
+  1.3.10 实机复现发现：第一次读档正常，重进存档时 `SaveManager.DecodeNodes` 抛 NRE（`DecodeSaveItem` → `LoadGame_Patch7` → `EmporiumEntry.Start`），
+  而旧取证只挂了 postfix，异常时不会执行，因此没抓到具体位置。本版新增：
+  `GameItem.Destroy` 之外，为 `PlayerStore.LoadGame`、`SaveManager.DecodeNodes`、`SaveManager.DecodeNodesInternal`、
+  `PlayerStore.DecodeSaveItem`、`DirectoryMaster.Item` 增加 finalizer（异常抛出时记录异常、参数与调用栈）；
+  `DecodeNodesInternal` 前置检查统一扫描存档节点，报告 `itemState`/`itemShape`/`itemModifiedShape` 为 null 的节点标识与数量；
+  重复目录警告改为拦截 `UnityEngine.Debug.LogWarning`（`AddDirectory` 为泛型方法无法挂接），抓取打警告时的调用栈。
+  仍然只读、限流（前 20 条详情，之后每 10 秒汇总），不改变游戏行为。
+  离线回归通过；Unity 内 finalizer 挂接数量与日志格式需实机确认。
+  DLL `8281fc41…`（59,392 B，AssemblyVersion 1.3.11.0），manifest 1.3.11，仅 `reflection-external`；未部署到 Mods、未上传工坊。
 
-## 离线测试
+- **1.3.10**（2026-11-06 构建，取证诊断版，未部署、未上传工坊）：临时取证版本，用于定位"偶现坏物品 / 营业卡住"的时序来源。
+  在“诊断”分区新增 `ForensicsEnabled`（默认开，可即时关闭）。开启时在现有游戏日志中输出 `[取证]` 行，记录：
+  读档完成与每个存档节点解码后的坏物品扫描（`state`/`modifiedState` 为 null、`TagSystem.dict` 为 null 或含 null 值，附物品标识）；
+  `GameItem.state` / `modifiedState` 被赋 null 时的调用栈；`CustomEventHandler.Update`、`GameItemElement.GetTooltipBasic`、
+  `StoreClientList.CreateThief`、`StoreClientListSupplier.CreateThiefMedSeller`、`WaterHelper.TransferLiquid` 的异常上下文
+  （EventSystem 状态、场景、物品状态、调用栈）；`DirectoryMaster.AddDirectory` 重复注册时的目录类型与调用栈。
+  取证只读取不写入、限流输出（前 20 条详情，之后每 10 秒一条累计汇总），不改变游戏行为；
+  复现一次异常后把日志中 `[取证]` 开头的行发回即可定位来源。这是临时诊断版，不应长期使用，定位完成后应关闭开关或回退 1.3.9。
+  离线回归通过；Unity 内取证补丁的挂接数量与日志格式需实机确认。
+  DLL `3bbb9ddf…`（55,808 B，AssemblyVersion 1.3.10.0），manifest 1.3.10，仅 `reflection-external`；未部署到 Mods、未上传工坊。
 
-`../XGDragFixer.Tests` 复用 `SlotFit.cs`，用反编译的 `GridShape.ForwardTransform` /
-`InverseTransform` 与 `TryInventorySlot` 的相交规则做差分验证（2 万次往返 + 5 万次随机
-形状/占用差分 + 手选边界用例）：
+- **1.3.9**（2026-11-05 23:40 构建，未部署、未上传工坊）：新增三项容器修复/优化——
+  原版 `GameItemElement.Destroy()` 只对 `contentWindow` 调 `Hide()`，窗口 GameObject 及其子树从不释放
+  （无 Mod 新开局实测：销毁 60 个空啤酒箱后界面对象 6177 → 7317，约 19 个/箱）；本版在 Destroy 后置补丁中
+  确认窗口为空后销毁 `contentWindow.handler.gameObject`，窗口内仍有内容物时保持原版，只记诊断计数。
+  搅拌机 `ChemicalHelper.BlendInto` 原版把每种液体分 10 批调用 `AddLiquid`（每批都做温度混合、水特征与
+  sprite 刷新）；本版 prefix 按原版取整规则合并为每种液体 1 次写入，总量超过容器剩余容量时回退原版分批截断，
+  写入异常时跳过原版避免重复添加。
+  化学精炼机压片原版依次执行 `RemoveAllLiquid` / `TransferLiquidToChem` / `IntroduceImpurity`，
+  内部每个标签写入都触发一次完整 `ValidateShapeState`；本版在这三个方法执行期间临时跳过形状校验、
+  每个方法结束时补一次（压片一次约从 15 次校验降到 3 次），标签数据写入路径完全不变。
+  三项均可在设置面板单独关闭，目标缺失或异常时保持原版行为。
+  离线验证：分批/合并的总量与温度混合在 3000 组随机输入下等价（取整与线性混合公式对照）；
+  压片校验合并为纯校验时序调整（未改数据写入），需实机压片流程验证；
+  窗口释放依赖 Unity 对象生命周期，只能实机验证（用同一无 Mod 新开局对象数法对照 6177）。
+  未部署到 Mods、未上传工坊；Mods 目录仍为 1.3.8。
+  DLL `23f39baa…`（47,104 B，AssemblyVersion 1.3.9.0），manifest 1.3.9，仅 `reflection-external`。
 
-```powershell
-dotnet run --project ../XGDragFixer.Tests/XGDragFixer.Tests.csproj -c Release
-```
+- **1.3.8**（2026-11-05 20:10 本地部署，未上传工坊）：撤掉 `GameItem.ModifyTag` 和 `ModuleEffectHelper.ResetAllTempStat` 的两处挂接，
+  删除临时属性跳过校验逻辑及 `TempStatSkip` 设置，恢复原版三次标签写入和中间校验。旧配置中残留的同名键不再读取，无需手工清理。
+  此变更用于排除偶发标签入口异常中的本模组挂接因素，尚未证明读档故障根因或通过实机复测；其他结算与拖拽逻辑保持不变。
+  诊断开启时只读取上述两处的 Harmony owner，不调用目标方法、不预热入口、不新增挂接或权限。
+  离线回归覆盖原版三项临时属性重置及三次校验、诊断开关/快照去重/无新增挂接；仍需完整重启游戏后复测读档与营业。
+  DLL、manifest、preview 三件套已同步并核对 SHA-256；DLL `290c2867…`，版本 1.3.8，仅 `reflection-external`。
+  旧版三件套已备份至 `deploy-backups/20261105-201033-before-1.3.8/`，不在 Mods 扫描目录内。
 
-### 离线微基准（空位搜索）
+- **1.3.7**（2026-11-05 13:50 本地部署，未上传工坊）：修复找位加速堆叠分支遗漏的库存准入检查，
+  恢复原版空间排序和槽位优先级；带子容器穿透回调时交回原版完整搜索。
+  找位候选坐标恢复原版范围，允许形状右侧/底部空白格越界；回归对照覆盖空白边缘与实际占位格越界拒绝。
+  移除 SetTitle/Validate 补丁及其设置，保留原版计算标题前的尺寸校验。
+  新增默认关闭、可即时切换的诊断开关，在已有补丁入口计时并汇总异常和回退原因；不新增游戏方法挂接点或文件权限。
+  离线回归覆盖拒绝堆叠、堆叠顺序/数量/优先级的原版对照、两种穿透回调的原版放行、诊断开关/定时汇总/异常保留及已有回归；
+  Unity 中标题显示、子容器转存与整体营业流程仍需实机验证。
+  DLL、manifest、preview 三件套已同步并核对 SHA-256；DLL `27fc6abc…`，版本 1.3.7，仅 `reflection-external`。
+  旧版三件套已备份至 `deploy-backups/20261105-135004-before-1.3.7/`，不在 Mods 扫描目录内。
 
-```powershell
-dotnet run --project ../XGDragFixer.Tests/XGDragFixer.Tests.csproj -c Release -- --bench
-```
+- **1.3.6**（2026-11-05 04:01 本地部署）：移除 `PlayerStore.FindAllItem` / `EmporiumEntry.GetAllItems` 的查询替换补丁、
+  遍历缓冲实现及对应设置，恢复原版全店物品查询，保留空位位图修复。
+  1.3.5 的 03:51:17 会话出现 30 次 `EmporiumEntry.GetAllItems` 空引用，其中开店在顾客生成阶段中断。
+  1.3.4 的设置门控没有移除默认开启的查询补丁；1.3.5 撤掉遮罩补丁也不能解决此查询路径的问题。
+  本次移除可疑接管点用于缩小运行时故障范围，不宣称已找到 Harmony/Mono 异常的根因或已通过实机验证。
+  DLL、manifest、preview 已同步并逐项核对 SHA-256；DLL `c62c3d68…`（37,888 B），适配 0.46D，仅 `reflection-external`。
+  1.3.5 备份：`deploy-backups/20261105-040149-before-1.3.6/`。未上传工坊。
+  验证限制：尝试在现有 .NET 6 离线测试中实际安装 Harmony 补丁时，游戏附带 MonoMod 因
+  `ILGenerator.MarkSequencePoint` 缺失而失败。已移除不适用此环境的包装实验，保留托管逻辑回归；
+  离线通过不能代表 Unity/Mono 的补丁入口通过。
 
-在 20×20 库存、大件物品的模拟数据上对比“原版逐候选检查”（包围盒快拒绝 + 重叠格比较）与
-“占用位图预筛”的搜索 CPU 工作量，输出候选数、包围盒/格子检查次数、首个可放置位置是否一致
-与耗时倍数。注意：这是按反编译条件模拟的原版代价模型，不包含 Unity 侧真实分配，用于证明
-预筛确实减少了计算量，不等价于帧时间收益。
+- **1.3.5**（2026-11-05 03:50 本地部署）：撤掉 `MaskUtilities.Notify2DMaskStateChanged` 全局补丁及遮罩通知抑制设置，
+  恢复原版遮罩生命周期。03:45:14 会话共 702 次空引用均位于该方法；03:47:24 呼叫下一位顾客时，
+  `StoreClientInstance` 创建库存触发该异常，入场流程中断。移除补丁用于排除本模组对该方法的影响，
+  仍需同一存档完整重启后复测，尚未证明运行时入口异常的根因。
+  已同步 DLL、manifest、preview 并核对 SHA-256；DLL `355aa529…`（40,960 B），适配 0.46D，仅 `reflection-external`。
+  1.3.4 备份：`deploy-backups/20261105-035025-before-1.3.5/`。未上传工坊。
 
-## 验证性能收益（实机 A/B，日志版）
+- **1.3.4**（2026-11-05 03:42 本地部署）：修正空位位图端点、取消找位旧位图缓存；布局抑制限定在窗口子树，
+  纠正隐藏状态判断并补充异常 finalizer；机器窗口设置标题保留唯一一次校验。移除帧末延迟刷新，
+  物品视觉刷新恢复同步；陈化与模块结算失败不再重跑或吞掉异常。查询设置关闭时不再挂接对应方法。
+  新增空位原版对照、移动后找位、嵌套标题/机器标题、窗口异常清理、模块异常与查询关闭回归测试。
+  仍需游戏内验证同一存档的读档、开店、收摊，不能据离线测试宣称营业故障已解决。
+  已同步 DLL、manifest、preview 并逐项核对 SHA-256；DLL `6bccb707…`（41,984 B），仅 `reflection-external`，适配 0.46D。
+  上版备份：`deploy-backups/20261105-034207-before-1.3.4/`。未上传工坊。
 
-诊断默认关闭，避免平时影响性能。最省事的方式是用内置的 A/B 切换：**一次正常游玩**即可同时
-采集“补丁全开”和“补丁全关”两种状态的样本。
-
-1. 游戏内 设置 → 模组设置 → 深空当铺 · 更好的性能优化 → **诊断调试** → 把 `PerfDiagnostics`
-   打开（会弹出提示确认开启）；
-2. 选择切换方式（诊断调试分组，或直接改 JSON）：
-
-   | `PerfABMode` | 行为 |
-   | --- | --- |
-   | `Hotkey`（默认） | 按 `PerfABKey`（默认 `F8`）手动切换全开/全关 |
-   | `Auto` | 每 `PerfAutoABSeconds` 秒自动切换一次（默认 300 秒 = 5 分钟） |
-   | `Both` | 自动切换，同时热键可以提前切换并重置计时 |
-   | `Off` | 不切换（只记录当前状态） |
-
-3. 正常游玩即可（例如打烊结算、拖物品、开容器、滚动库存、商店买卖各来几轮），不需要固定脚本；
-4. 每次报告间隔（默认 10 秒）游戏日志会输出：
-
-   - `[性能诊断] #N ab=全开/全关 fps=… p50=… p95=… p99=… >33ms=… 分配=…KB/s GC0=… 补丁耗时=…ms`；
-   - `[性能诊断] 明细 #N：FastSlot=…次/跳过…%/…ms；…`（每补丁调用次数、跳过率、自身耗时）。
-
-   对比 `ab=全开` 与 `ab=全关` 的 `p50/p95/p99`、`>33ms` 长帧数、分配量、GC0，看分布差异
-   而不是单次 FPS；`skip_pct` 长期接近 0 而调用次数很高的补丁可能是负收益。
-
-切换时屏幕顶部会弹出游戏原生通知条（与 AquaSense 等本地 mod 相同，走
-`StoreUIManager.Instance.Notify`），不用看日志也能确认状态。
-
-> 诊断模式自身会增加少量耗时（计数器 + 每帧采样），只用于对比测量；正式游玩时请保持关闭。
-> A/B 切换时清空当前帧缓存，避免两种状态的样本互相污染。
-
-## 注意
-
-- 所有功能都可单独关闭；`FastSlotFind` 遇到位图无法表示的形状（形状值 ≥ 32、库存形状缺失）
-  时自动回退到原版实现。
-- 与 `SmartInventoryArrange`（库存排序）、`QuickSell` 等现有 mod 无补丁目标重叠。
-- 从旧名称（`chiqingsan.SmoothDragAccel` / `Mods/SmoothDragAccel/`）升级时，旧配置文件
-  `chiqingsan.SmoothDragAccel.json` 不会自动迁移，新配置会重置为默认值。
-
-## 过夜结算（v1.6.0 起）
-
-夜间结算 `PlayerStore.EndNight` 是游戏里单次耗时最长的原生流程（实测约 3.9 秒）。
-
-1. **合并库存界面刷新**（`NightValidateBatch`，默认开启）：结算期间每次物品状态变化都会触发
-   `物品.ValidateShapeState() → 所属库存.Validate()`，整场结算会把同一批库存重复刷新上百次。
-   现在把这些刷新记下来，结算结束后统一刷新一次，可见结果一致，设置里可关闭。
-2. **结算细分诊断**（在 `PerfDiagnostics` 开启时自动生效）：结算结束后游戏日志输出一行
-   `[结算诊断] 过夜结算细分`，按耗时列出每个原生阶段（化学模拟、冷库、漏斗、物品扫描、
-   物品刷新、结算 Handler 集合等）以及库存刷新被合并的次数/耗时。
-
-### v1.7.0：化学模拟细分与夜间界面静默
-
-实测（2026-11-01 会话）过夜结算总耗时约 3.57 秒，其中 **化学模拟 3.34 秒（94%）**，
-其余阶段合计不到 0.2 秒。化学模拟是原版 `RunNightlyChemicalSimulation()` 对每个
-“每秒回调”物品连续执行 360 次（相当于把一晚 6 分钟拆成 360 个模拟秒），机器回调里
-的大头是**不可见的界面刷新**：加热板的温度/标签文字、化学完成机的布局 `Validate()`、
-模式选择按钮状态等，每模拟一秒都完整刷新一遍。
-
-v1.7.0 的“夜间界面静默”（`NightSimUIQuiet`，默认开启）：
-
-- 在 `RunNightlyChemicalSimulation()` 执行期间给界面刷新加静默标记；
-- 期间跳过 `TMP_Text.SetText` 的所有重载、`MachineryStack.Validate()`、
-  `MachineryRadioList.Select()` 这类纯显示刷新；
-- 化学数值计算（环境降温、温度反应、加热、冷库降温）完全照常执行，结果不变；
-- 这些回调本来每个正常游戏秒都会再执行一次，所以窗口打开后显示立即恢复正确；
-- 修改该开关需重启游戏生效。
-
-同时新增“化学模拟细分”诊断（诊断开启时自动输出），把化学模拟拆成
-`环境降温 / 温度反应 / 冷库降温` 三个原生方法的耗时与调用次数。
-
-### v1.8.0 / v1.8.1：化学标签读取缓存
-
-v1.7.0 的实机结算细分：总 3974ms，其中化学模拟 3740ms（`温度反应` 3279ms / 26640 次、
-`环境降温` 379ms / 26640 次）；`TMP_Text.SetText` 静默命中 0 次（机器标签不走这条路径），
-只跳过了 9000 次机器布局刷新，所以 v1.7.0 对化学模拟几乎无帮助。
-
-继续追原版实现，找到真正的开销：
-
-1. 每模拟一秒，`ChemicalHelper.containerTempTick` 执行 `HandleAmbientTempDrop` +
-   `HandleTemperatureReaction`；后者串联检查 23 个反应 handler；
-2. 每个 handler 入口都调用 `WaterHelper.IsEmpty(容器)`，而它为了判断“液体是否为空”会遍历
-   全部 36 种液体、逐个读取 `GetTagReadonly(液体对应的 tag)`；
-3. 原版 `GameItem.GetTagReadonly(string)` 的实现是 `return modifiedState.GetTag(name).Clone();`
-   —— **每次读取都新建一个 `TagState` 并复制字段**；
-4. 于是单个液体容器每模拟一秒要做约 24 次 `IsEmpty` × 36 次读取 ≈ 800 多次克隆；整晚
-   74 个液体容器 × 360 秒 ≈ 2000 万次克隆，这就是化学模拟那 3.7 秒的来源。
-
-v1.8.0 的“化学标签读取缓存”（`ChemTagCache`，默认开启）：
-
-- 缓存 `GetTagReadonly` 与 `IsEmpty` 的结果；
-- 缓存只消除“重复读取同一份未改动数据”的克隆开销，不改模拟步数、不改任何反应判断、
-  不改变结算结果；
-- 诊断开启时日志会追加 `化学标签缓存命中 X / 未命中 Y`；
-- 修改该开关需重启游戏生效。
-
-v1.8.0 第一版每结束一个容器 tick 就清空缓存，实测命中率只有 **53.5%**（命中 4,994,640 /
-未命中 4,341,960），化学模拟仅从 4.5s 降到 3.0s。
-
-v1.8.1 把缓存按“容器”维度保留到整场结算结束，只在真正会改变读取结果的地方失效：
-`GetTagReadonly` 返回的是 `modifiedState` 的克隆，而 `modifiedState` 只在原版
-`GameItem.ValidateShapeState()` 里重建 —— 因此只在该方法执行时丢弃该容器的克隆缓存；
-只改 live state 的写入（`skipValidate`）不会改变 `GetTagReadonly` 的返回值，因此只重置
-`IsEmpty` 这一项。
-
-### v1.9.0：改名、游戏原生提示条、诊断只写日志
-
-- 模组改名为 **深空当铺 · 更好的性能优化**（ID `chiqingsan.BetterPerformance`，
-  程序集 `BetterPerformance.dll`，部署目录 `Mods/BetterPerformance/`）；
-- A/B 切换、诊断开启等提示改用游戏原生通知条（`StoreUIManager.Instance.Notify`，
-  与 AquaSense 等本地 mod 一致），异常时回退到自绘覆盖层；
-- 诊断不再写 CSV 文件，所有统计改为写游戏日志；因此 manifest 移除 `files` 权限，
-  只保留 `reflection-external`；
-- 设置分组“诊断”改名为“诊断调试”，并标注“仅供测试排查，普通游玩请勿开启”；
-- 全部配置说明精简。
-
-### v1.9.1：读档期稳定性
-
-2026-11-01 凌晨连续出现“进入游戏后容器打不开、重启恢复”“点击容器无反应后回主菜单再读档卡死”。
-日志（`GameLog_2026-11-01_03-43-59.txt`，174,189 行）里同一秒内 `PixelWindow.Validate`、`GameGridInventory.Validate`、`EmporiumEntry.Validate`、`GameItem.EnableTag` 总计抛了 25,178 个 `NullReferenceException`：这些异常发生在读档瞬间，游戏会记录每一个并中断当帧后续初始化，`PlayerStore` 构造因此每帧重试，编辑器日志被写爆后表现为卡死。
-复现场景与用户观察一致：**读档时游戏窗口在后台**。而游戏自带“窗口失焦时降到 10 FPS”的选项（`EmporiumOption.ApplyFpsCap`），后台读档会让加载期的逻辑帧严重不足，部分纯界面对象比其宿主晚一帧就绪。
-
-v1.9.1 增加两个默认开启的稳定性选项（都在“稳定性”分组，修改后需重启）：
-
-- `StartupFaultGuard`：对 `GameGridInventory/GameGridScrollableInventory/GameSlotInventory/PixelWindow.Validate`、`EmporiumEntry.Validate`、`GameItem.EnableTag/ValidateShapeState/SetGameItemType`、`WaterHelper.UpdateContainerGoodType` 加 Harmony finalizer，只吞 `NullReferenceException` / `MissingReferenceException`，首次按方法名记一次警告、每 30 秒汇总一次计数；
-- `LoadFocusBoost`：启动后 60 秒内、每次 `SceneManager.sceneLoaded` 后 30 秒内，若窗口失焦则把 `targetFrameRate` 临时抬到 60（`vSyncCount=0`），窗口恢复焦点或窗口期结束时调用游戏自己的 `EmporiumOption.ApplyFpsCap` 把限帧交还。
-
-两者都不会改变任何结算/库存数据；关掉后行为与 v1.9.0 完全一致。
-
-另外修复一处 v1.9.0 的界面回归：模组设置面板如果从**主菜单**（存档尚未载入）打开，滑条左侧的数值不再显示——
-因为本模组此前要等场景里商店就绪才安装补丁。现在 `ConfigValueLabels` 会在模组页 UI 真正存在时
-（`ModUIManager.Instance` 就绪）安装补丁，主菜单与游戏内打开设置面板都能看到数值。
-
-### v1.9.2：设置面板补丁不再在 `OnEnable` 里提前安装
-
-v1.9.1 首次修复主菜单设置数值时，把 `ConfigValueLabels` 的安装放进了 `OnEnable`。但 `OnEnable` 是在
-`ModLoader.Awake` 内部执行的，此时游戏资源与本地化尚未就绪，提前给界面类型打补丁可能触发目标的静态构造、
-进而影响界面文字渲染。v1.9.2 改为在 `ModRunner.Update` 里轮询：只有 `ModUIManager.Instance` 已存在
-（模组页 UI 已就绪、设置面板确实可以打开）时才安装，仍比等商店就绪早，但已离开启动期最危险的时间窗。
-若主菜单一路没出现模组页，也会在商店就绪后的常规安装阶段补上。
-
-同一版还修了提示框的一个回归：鼠标停在物品上不动时，提示框内容会一直停在旧值，必须把鼠标移开再移回来才刷新。
-原因是 `TooltipCache` 与 `TooltipIdleSkip` 两个补丁都用前缀拦截了原方法，但 Harmony 在前缀返回 false 时
-**仍会执行后缀**，后缀又把“上次刷新帧号/缓存时间戳”更新成当前帧，导致超时永远不触发、缓存永不过期。
-v1.9.2 让两个后缀只在原方法真正执行过时才更新时间戳（缓存命中则跳过），并把 `TooltipIdleSkip` 的默认值改为关；
-即使手动打开，提示框内容也会在约 `TooltipIdleFrames` 帧内重新刷新，不会再卡住。
-
-### v1.9.3：设置面板补丁改为主菜单就绪后安装
-
-实测发现 v1.9.2 的轮询条件（`ModUIManager.Instance != null`）在正常流程里几乎不会满足：`ModUIManager`
-的实例要等玩家打开“模组”页面才会 Awake，而设置面板正是在那个页面里打开的，等于补丁永远晚一步。v1.9.3
-改为在主菜单 UI 就绪（`MainMenuUIController.Instance != null`）时就安装，仍处于游戏资源/本地化加载完成之后、
-早于任何可能打开设置面板的时机；不再依赖模组页是否被打开过。
-
-同一版本实测了一次过夜结算（2026-11-01 06:06，开启性能诊断）：总耗时 **1872.6ms**，其中化学模拟
-1583.3ms（温度反应 1343.7ms / 23760 次、环境降温 165.4ms / 23760 次），化学标签缓存命中 99.7%；
-库存刷新抑制 1808 次、实际只刷新 82 个；`NightValidateBatch` 合并了 1581 次 Validate；夜间静默跳过
-9000 次机器布局。对比 v1.6 的 3565ms、v1.7 的 3974ms、v1.8.1 的约 3000ms，已是目前最好的一次。
-
-## 权限声明
-
-manifest 只声明 `reflection-external`：Harmony 补丁安装与少量私有成员访问（冷启动预挂载、
-滚动库存私有字段、化学模拟委托等）。不再写入任何文件。
-
-首次启用时游戏模组列表可能弹出能力确认，确认后才会加载。
-
-## 本地部署记录
-
-> 2026-11-01 03:xx 起改名为 BetterPerformance，旧目录 `Mods/SmoothDragAccel/` 在部署新版时
-> 应删除，新目录为 `Mods/BetterPerformance/`。
-
-- 2026-10-31：v1.3.0 部署到 `Mods/SmoothDragAccel/`（`SmoothDragAccel.dll` + `manifest.xml` + `preview.png`）。
-- 2026-10-31：v1.5.0 部署（DLL SHA256 `db29e9ef…`、manifest 1.5.0、preview 未变；v1.3.0 备份在
-  `XGDragFixer/deploy-backups/2026-10-31-v1.3.0/`）。
-- 2026-11-01：v1.6.0 部署（DLL SHA256 `2e3bdce9…`、manifest 1.6.0、preview 未变；v1.5.0 备份在
-  `XGDragFixer/deploy-backups/2026-11-01-v1.5.0/`）。
-- 2026-11-01：v1.7.0 部署（DLL SHA256 `c4f5ccf0…`、78,848 B；manifest 1.7.0、`fc4c1755…`；preview 未变；v1.6.0 备份在
-  `XGDragFixer/deploy-backups/2026-11-01-v1.6.0/`）。
-- 2026-11-01：v1.8.0 部署（DLL SHA256 `2ba2e92c…`、81,920 B；manifest 1.8.0、`9a9c2b1b…`；preview 未变；v1.7.0 备份在
-  `XGDragFixer/deploy-backups/2026-11-01-v1.7.0/`）。
-- 2026-11-01：v1.8.1 部署（DLL SHA256 `33d99855…`、82,432 B；manifest 1.8.1、`f9c583d4…`；preview 未变；v1.8.0 备份在
-  `XGDragFixer/deploy-backups/2026-11-01-v1.8.0/`）。
-- 2026-11-01 03:30：**v1.9.0 改名后重新部署**到 `Mods/BetterPerformance/`（DLL `BetterPerformance.dll`
-  80,896 B SHA256 `bcab3f2b…`；manifest `1b4bbeff…`，ID `chiqingsan.BetterPerformance`、仅
-  `reflection-external`；preview `d586868b…` 1280×720 508 KB）。旧目录 `Mods/SmoothDragAccel/` 已删除，
-  其 v1.8.1 三件套备份在 `XGDragFixer/deploy-backups/2026-11-01-v1.8.1/`。旧配置
-  `chiqingsan.SmoothDragAccel.json` 未迁移，新 ID 配置从默认值开始（诊断默认关闭）。
-- 2026-11-01 04:16：**v1.9.1 部署**（DLL `BetterPerformance.dll` 86,016 B SHA256 `dca4c11b…`；
-  manifest 1.9.1 `158dfaae…`；preview 未变 `d586868b…`）。v1.9.0 三件套备份在
-  `XGDragFixer/deploy-backups/2026-11-01-v1.9.0/`。本次包含读档期异常兜底、后台限帧临时解除，
-  以及主菜单设置面板数值显示修复。
-- 2026-11-01 05:27：**v1.9.2 部署**（DLL `BetterPerformance.dll` 92,160 B SHA256 `92eced76…`；
-  manifest 1.9.2 `5d19c014…`；preview 未变 `d586868b…`）。v1.9.1 三件套备份在
-  `XGDragFixer/deploy-backups/2026-11-01-v1.9.1/`。本次包含设置面板补丁改到 `ModUIManager` 就绪后安装、
-  提示框缓存时间戳修复（悬停时内容不再冻结）、`TooltipIdleSkip` 默认关闭。
-- 2026-11-01 06:24：**v1.9.3 部署**（DLL `BetterPerformance.dll` 92,160 B SHA256 `eeb660f7…`；
-  manifest 1.9.3 `c6e1a87e…`；preview 未变 `d586868b…`）。v1.9.2 三件套备份在
-  `XGDragFixer/deploy-backups/2026-11-01-v1.9.2/`。本次把设置面板补丁的安装时机改为主菜单 UI 就绪
-  （`MainMenuUIController.Instance != null`），修复“主菜单打开设置看不到滑条数值”。
-- 2026-11-01 06:45：**v1.0.0（首发版本号）部署**（DLL `BetterPerformance.dll` 86,016 B SHA256
-  `f6c01a98…`，Release 构建；manifest 1.0.0 `d147490f…`（869 B，简短版 `<Description>`，无署名）；
-  preview 未变 `d586868b…`）。上一版 Debug 1.9.3 三件套备份在
-  `XGDragFixer/deploy-backups/2026-11-01-v1.9.3-debug/`。对外发布版本号统一重置为 1.0.0，
-  内部迭代记录保留在上方章节。
-- 2026-11-01 06:52：**首发上传 Steam 创意工坊**，Workshop ID `3831227725`
-  （https://steamcommunity.com/sharedfiles/filedetails/?id=3831227725），公开可见；
-  内容为 `BetterPerformance-1.0.0-Content/` 三件套 + 封面 `BetterPerformance-cover.jpg`。
-  工坊登记已写入 `WorkshopUpload/README.md`；后续更新使用最小 VDF
-  `BetterPerformance-3831227725-1.0.0.vdf`（只含 appid/publishedfileid/contentfolder）。
+- **1.3.3**（2026-11-04 19:58 本地部署）：修复“陈化结算折叠”从加入起一直未生效的问题。原因是我方扫描条件写成
+  “0 参数、返回 `GameItem`”的方法，而游戏里该逻辑位于编译器闭包
+  `MachineWineRack+<>c__DisplayClass3_0/<AgeWell>b__5`，签名是 `void(GameItem, GameInventory, SlotMarker)`；
+  本版按参考实现硬定位该闭包（命名变化时退回按 IL 特征扫描，找不到仍 `[兼容]` 跳过），prefix 同步改为
+  四个闭包字段注入签名。其余功能与 v1.3.2 完全一致。
+  DLL `5f76e856…`（43,008 B）、manifest `8f3ff0f8…`（1.3.3，仅 reflection-external）、
+  preview `d586868b…` 未变；上一版 v1.3.2 三件套备份在 `deploy-backups/20261104-195744-before-v1.3.3/`。
+- **1.3.2**（2026-11-03 01:05 本地部署）：去掉面向玩家的“参考/移植”措辞——配置分区“参考优化”改为
+  “性能优化”，功能名、配置说明、模组介绍与日志前缀不再标注来源；功能与行为不变。
+  DLL `7c29dbec…`（43,520 B）、manifest `7a4ad05d…`（1.3.2，仅 reflection-external）、preview `d586868b…`
+  未变；上一版 v1.3.1 三件套备份在 `deploy-backups/2026-11-03-before-v1.3.2/`。
+- **1.3.1**（2026-11-03 00:55 本地部署）：撤掉 v1.3.0 的两项 transpiler（输入动作排序短路、射线结果
+  排序短路）。这两项改写了 `InputActionManager.Update`/`EventSystem.RaycastAll` 的 IL，扫描器因此判定本模组
+  需要 `dynamic-code`（运行时加载或生成代码）能力，而 manifest 未声明，游戏将其标为 `Changed` 并拒绝加载。
+  本版回到只依赖 `reflection-external` 的权限面；其余 6 项优化保留。
+  DLL `70a6517b…`（43,520 B）、manifest `ba13d655…`（1.3.1，仅 reflection-external）、preview `d586868b…`
+  未变；被拒绝的 v1.3.0 三件套备份在 `deploy-backups/2026-11-03-before-v1.3.1/`。
+- **1.3.0**（2026-11-03 00:45 本地部署）：新增 8 项逻辑优化——视觉刷新合并、陈化结算折叠、
+  模块效果去重、临时属性跳过校验、空位占用位图、输入动作排序短路、射线结果排序短路、大规模物品列表
+  遍历缓冲。全部独立开关、目标缺失或判定不成立时回退原版；本版不包含任何读档期跳过或异常吞并。
+  DLL `c33bbdfa…`（47,104 B）、manifest `7fbd5bbf…`（1.3.0，仅 reflection-external）、
+  preview `d586868b…` 未变；上一版 v1.2.0 备份在 `deploy-backups/2026-11-03-before-v1.3.0/`。
+- **1.2.0**（2026-11-03 00:17 本地部署）：补上大容器空位搜索加速（Fix4），并修正三处
+  与原版不一致的地方——SetTitle 作用域不再区分窗口类型；布局抑制在“显示期间”按原版无条件跳过、
+  sticky 阶段只跳过隐藏窗口（此前方向相反）。DLL `e90800c2…`（30,720 B）、manifest `fedd31de…`（1.2.0，
+  仅 reflection-external）、preview `d586868b…` 未变；v1.1.1 停用时的备份在
+  `deploy-backups/2026-11-02-v1.1.1-disabled/`。
+- **1.1.1**（2026-11-02 23:49 本地部署）：代码审查整改——拖拽复位反射失败改为记录并放行原版；
+  容器冷启动反射缺失时记录并允许重试；布局抑制只作用于正在打开的窗口子树；提示框缓存（TooltipCache）
+  增加离线回归测试；设置面板渲染补丁目标缺失时不再反复重试。
+  DLL `0ffe4704…`、manifest `a1b960f0…`、preview 未变；上一版 v1.0.15 备份在
+  `deploy-backups/2026-11-02-before-v1.1.1/`。
+- **1.1.0**：删除无法验证的自创优化项，只保留 6 组补丁。
+- **1.0.0**：工坊首发版本。

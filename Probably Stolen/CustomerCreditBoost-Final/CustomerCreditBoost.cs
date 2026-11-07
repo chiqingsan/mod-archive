@@ -72,9 +72,48 @@ public sealed class CustomerCreditBoostMod : IMod
         if (boostedBudget <= budget)
             return;
 
-        client.OverrideBudget((int)boostedBudget);
+        var newBudget = (int)boostedBudget;
+        client.OverrideBudget(newBudget);
+        var syncedLines = SyncDialogueBudgets(client.mainDialogue, budget, newBudget);
         _lastBoostedDay[client] = day;
-        Debug.Log($"[CustomerCreditBoost] {client.identifier} 展示柜匹配基础价值 {showcaseBaseValue}，预算 {budget} -> {boostedBudget}（+{totalBoostPercent}%）。");
+        Debug.Log($"[CustomerCreditBoost] {client.identifier} 展示柜匹配基础价值 {showcaseBaseValue}，预算 {budget} -> {boostedBudget}（+{totalBoostPercent}%，同步对话文本 {syncedLines} 处）。");
+    }
+
+    /// <summary>
+    /// 顾客介绍文本在创建时就用当时的预算数字固化了，加成后只能把旧数字整体替换成新数字。
+    /// 显示与对话历史都只读 <see cref="Dialogue.plainText"/>（与 LocGenderHelper 的做法一致）。
+    /// </summary>
+    private static int SyncDialogueBudgets(Dialogue? dialogue, int oldBudget, int newBudget)
+    {
+        return SyncDialogueBudgets(dialogue, oldBudget, newBudget, new HashSet<Dialogue>());
+    }
+
+    private static int SyncDialogueBudgets(Dialogue? dialogue, int oldBudget, int newBudget, HashSet<Dialogue> visited)
+    {
+        var syncedLines = 0;
+        while (dialogue != null && visited.Add(dialogue))
+        {
+            var plainText = dialogue.plainText;
+            if (!string.IsNullOrEmpty(plainText))
+            {
+                var replacedText = BudgetTextSync.ReplaceBudget(plainText, oldBudget, newBudget);
+                if (!ReferenceEquals(replacedText, plainText))
+                {
+                    dialogue.plainText = replacedText;
+                    syncedLines++;
+                }
+            }
+
+            foreach (var choice in dialogue.choices)
+            {
+                if (choice.Item2 != null)
+                    syncedLines += SyncDialogueBudgets(choice.Item2, oldBudget, newBudget, visited);
+            }
+
+            dialogue = dialogue.nextDialogue;
+        }
+
+        return syncedLines;
     }
 
     private static long GetShowcaseBaseValue(string attractedType, string attractedItemId)

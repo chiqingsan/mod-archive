@@ -107,6 +107,47 @@ internal sealed class InventoryTransaction
 
 	public int UnknownCategoryCount => Enumerable.Count(Problem.Items, (LayoutItem i) => i.PrimaryCategory == "~unknown");
 
+	internal GameGridInventory Inventory => _inventory;
+
+	internal string DescribeLayoutChange(IReadOnlyList<Placement> candidate, int maxItems)
+	{
+		Dictionary<string, Placement> dictionary = new Dictionary<string, Placement>(StringComparer.Ordinal);
+		foreach (Placement item in candidate)
+		{
+			dictionary[item.StableId] = item;
+		}
+		Dictionary<string, Snap> dictionary2 = new Dictionary<string, Snap>(StringComparer.Ordinal);
+		foreach (Snap item2 in _movable)
+		{
+			dictionary2[item2.StableId] = item2;
+		}
+		StringBuilder builder = new StringBuilder();
+		int num = 0;
+		foreach (Placement originalPlacement in OriginalPlacements)
+		{
+			if (!dictionary.TryGetValue(originalPlacement.StableId, out Placement value))
+			{
+				continue;
+			}
+			if (num >= maxItems)
+			{
+				builder.Append("...");
+				break;
+			}
+			if (num > 0)
+			{
+				builder.Append(';');
+			}
+			string text = (dictionary2.TryGetValue(originalPlacement.StableId, out Snap value2) ? (value2.Item.identifier + "#" + value2.Item.uniqueId) : originalPlacement.StableId);
+			builder.Append(text).Append(':');
+			builder.Append(originalPlacement.X).Append(',').Append(originalPlacement.Y).Append(',').Append(originalPlacement.GameOrientation);
+			builder.Append("->");
+			builder.Append(value.X).Append(',').Append(value.Y).Append(',').Append(value.GameOrientation);
+			num++;
+		}
+		return builder.ToString();
+	}
+
 	private InventoryTransaction(GameGridInventory inventory, List<Snap> movable, List<ValueTuple<GameItem, GridShape>> allOriginal, LayoutProblem problem, IReadOnlyList<Placement> originals, int originX, int originY, InventoryObservation capturedObservation, InstanceOrderInfo[] instanceOrder, bool keepContainers, IReadOnlyDictionary<IntPtr, bool> windowPresence, int preservedContainerCount)
 	{
 		_inventory = inventory;
@@ -556,19 +597,10 @@ internal sealed class InventoryTransaction
 			long slotCheckStarted = PerfTrace.Mark();
 			foreach (ValueTuple<Snap, GridShape, Placement> item3 in list)
 			{
-				if (!((GameInventory)_inventory).CheckInventorySlotStillValid(item3.Item1.Item, item3.Item2, item3.Item1.Item.state))
+				if (!((GameInventory)_inventory).CheckInventorySlotStillValid(item3.Item1.Item, item3.Item2, item3.Item1.Item.modifiedState))
 				{
-					val3 = new DefaultInterpolatedStringHandler(55, 4);
-					val3.AppendLiteral("Game slot/state validation rejected ");
-					val3.AppendFormatted(item3.Item1.StableId);
-					val3.AppendLiteral(" at ");
-					val3.AppendFormatted<int>(item3.Item3.X);
-					val3.AppendLiteral(",");
-					val3.AppendFormatted<int>(item3.Item3.Y);
-					val3.AppendLiteral(" orientation ");
-					val3.AppendFormatted<int>(item3.Item3.GameOrientation);
-					val3.AppendLiteral(".");
-					throw new InvalidOperationException(val3.ToStringAndClear());
+					string slotChecks = DescribeSlotValidation(_inventory, item3.Item1.Item, item3.Item2, item3.Item1.Item.modifiedState);
+					Debug.LogWarning("Smart arrange slot check warning: " + item3.Item1.StableId + " at " + item3.Item3.X + "," + item3.Item3.Y + " orientation " + item3.Item3.GameOrientation + "; checks=" + slotChecks + "; applying anyway (game sort does not run this check).");
 				}
 			}
 			PerfTrace.Add("applySlotCheck", slotCheckStarted);
@@ -597,6 +629,28 @@ internal sealed class InventoryTransaction
 			Rollback();
 			throw;
 		}
+	}
+
+	private static string DescribeSlotValidation(GameGridInventory inventory, GameItem item, GridShape shape, TagSystem state)
+	{
+		string result;
+		try
+		{
+			SlotMarker slot = new SlotMarker();
+			slot.item = item;
+			slot.inventory = inventory;
+			slot.itemGridShape = shape;
+			result = "insertLocked=" + inventory.IsInsertLocked()
+				+ ", mayHaveValid=" + inventory.MayHaveValidInventorySlot(item)
+				+ ", stateValid=" + item.CheckIsStateValid(inventory, slot, shape, state)
+				+ ", parentModifier=" + inventory.CheckChangeParentShapeStateModifier(item, slot, shape, state)
+				+ ", maxNumAdd=" + item.MaxNumAdd(slot);
+		}
+		catch (Exception ex)
+		{
+			result = "subCheckFailed=" + ex.GetType().Name + ":" + ex.Message;
+		}
+		return result;
 	}
 
 	private void Rollback()

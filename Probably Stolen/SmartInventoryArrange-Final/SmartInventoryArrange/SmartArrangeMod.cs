@@ -241,6 +241,34 @@ public sealed class SmartArrangeMod : IMod
 		return new BackgroundResult(request, result, score, progress, diagnostic, occupancy, mode, validateMs, metricsMs, contextMs, beginMs, backgroundAlloc, advanceAlloc);
 	}
 
+	internal static string DescribeInventory(GameGridInventory? inventory)
+	{
+		try
+		{
+			RectTransform rectTransform = inventory?.rectTransform;
+			if (rectTransform is not RectTransform current)
+			{
+				return "unknown";
+			}
+			string text = "";
+			Transform transform = current;
+			for (int i = 0; i < 3; i++)
+			{
+				if (transform == null)
+				{
+					break;
+				}
+				text = ((text.Length == 0) ? transform.gameObject.name : (transform.gameObject.name + "/" + text));
+				transform = transform.parent;
+			}
+			return text;
+		}
+		catch
+		{
+			return "unknown";
+		}
+	}
+
 	private static void ApplyOrKeep(InventoryTransaction tx, BackgroundResult background, long applyFrameStarted, ref bool applied, ref bool applicationStarted)
 	{
 		LayoutResult item = background.Result;
@@ -308,7 +336,7 @@ public sealed class SmartArrangeMod : IMod
 			val.AppendFormatted(VisualSummary(background.Score));
 			val.AppendLiteral(", diagnostic=");
 			val.AppendFormatted(background.Diagnostic);
-			Debug.Log(val.ToStringAndClear() + ", spaceBetter=" + spaceBetter + ", comparison=" + comparison);
+			Debug.Log(val.ToStringAndClear() + ", spaceBetter=" + spaceBetter + ", comparison=" + comparison + ", container=" + DescribeInventory(tx.Inventory) + ", layout=" + tx.DescribeLayoutChange(item.Placements, 48));
 		}
 		else
 		{
@@ -346,7 +374,7 @@ public sealed class SmartArrangeMod : IMod
 			val.AppendFormatted(DeterministicSolver.DescribeSplits(item.Placements));
 			val.AppendLiteral(", native34=");
 			val.AppendFormatted(background.Diagnostic);
-			Debug.Log(val.ToStringAndClear());
+			Debug.Log(val.ToStringAndClear() + ", container=" + DescribeInventory(tx.Inventory));
 		}
 		PerfTrace.Add("applyFrame", applyFrameStarted);
 	}

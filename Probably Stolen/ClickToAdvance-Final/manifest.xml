@@ -3,9 +3,9 @@
   <ID>chiqingsan.ClickToAdvance</ID>
   <Name>点击推进对话</Name>
   <Author>原版作者未知；正式版适配：chiqingsan</Author>
-  <ModVersion>1.0.0</ModVersion>
+  <ModVersion>1.1.0</ModVersion>
   <GameVersions><Version>0.46D</Version></GameVersions>
-  <Description>对话期间点击鼠标左键，立即显示当前文字或推进对话；对话选项仍由玩家手动选择。</Description>
+  <Description>对话期间点击鼠标左键，立即显示当前文字或推进对话；对话选项仍由玩家手动选择。可在 设置 → 按键 中开启“屏蔽键”：按住该键（默认 Alt）时点击不会推进对话，开关默认关闭。</Description>
   <Assemblies><Assembly>ClickToAdvance.dll</Assembly></Assemblies>
   <Capabilities></Capabilities>
 </Mod>

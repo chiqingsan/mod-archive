@@ -29,6 +29,12 @@ internal static class TooltipCache
     private static readonly CacheSlot BasicSlot = new();
     private static readonly CacheSlot AdvancedSlot = new();
 
+    /// <summary>
+    /// Frame source. Replaced by tests so cache expiry can be verified without a
+    /// Unity player loop (Time.frameCount throws outside of it).
+    /// </summary>
+    internal static Func<int> Clock = () => Time.frameCount;
+
     internal static bool GetTooltipPrefix(GameItemElement __instance, ref RichText? __result)
     {
         return TryGet(__instance, BasicSlot, ref __result);
@@ -97,7 +103,7 @@ internal static class TooltipCache
             return true;
         }
 
-        var age = Time.frameCount - slot.Frame;
+        var age = Clock() - slot.Frame;
         if (age < 0 || age >= frames)
         {
             return true;
@@ -117,7 +123,7 @@ internal static class TooltipCache
 
         slot.Instance = instance;
         slot.UniqueId = instance.uniqueId;
-        slot.Frame = Time.frameCount;
+        slot.Frame = Clock();
         slot.Text = result;
     }
 }

@@ -1,0 +1,9 @@
+"workshopitem"
+{
+    "appid" "4348910"
+    "publishedfileid" "3829667143"
+    "contentfolder" "D:\code\mod\Probably Stolen\WorkshopUpload\QuickSell-3829667143-1.2.6-content"
+    "changenote" "1.2.6：
+- 修复 1.2.5 中物品右键菜单没有「保护」选项的问题：菜单结构识别方向写反，导致每次都跳过保护按钮。
+- 与其它改写右键菜单的 Mod 的兼容逻辑保留；确实无法识别的结构仍会跳过右键按钮（面板保护照常可用），并在日志中记录实际结构。"
+}

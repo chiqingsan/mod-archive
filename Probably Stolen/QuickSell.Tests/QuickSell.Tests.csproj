@@ -14,5 +14,6 @@
     <Compile Include="../QuickSell/NativeContracts.cs" Link="NativeContracts.cs" />
     <Compile Include="../QuickSell/HintBounds.cs" Link="HintBounds.cs" />
     <Compile Include="../QuickSell/ShortcutKeys.cs" Link="ShortcutKeys.cs" />
+    <Compile Include="../QuickSell/MenuStructure.cs" Link="MenuStructure.cs" />
   </ItemGroup>
 </Project>

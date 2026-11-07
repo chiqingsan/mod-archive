@@ -18,6 +18,7 @@ internal static class ConfigValueLabels
     private const float FieldWidth = 245f;
 
     private static bool _installed;
+    private static bool _unavailable;
 
     internal static bool Installed => _installed;
 
@@ -29,7 +30,7 @@ internal static class ConfigValueLabels
 
     internal static void Install(Harmony harmony)
     {
-        if (_installed)
+        if (_installed || _unavailable)
         {
             return;
         }
@@ -38,6 +39,7 @@ internal static class ConfigValueLabels
             new[] { typeof(CustomUIBuilder), typeof(ModConfig), typeof(ConfigEntry) });
         if (target == null)
         {
+            _unavailable = true;
             Core.Log?.Log("[兼容] 未找到 ModConfigWindow.BuildEntry，跳过滑条数值显示");
             return;
         }
@@ -45,7 +47,7 @@ internal static class ConfigValueLabels
         harmony.Patch(target,
             prefix: new HarmonyMethod(AccessTools.Method(typeof(ConfigValueLabels), nameof(BuildEntryPrefix))));
         _installed = true;
-        Core.Log?.Log("已安装：模组设置滑条数值显示");
+        Core.Log?.Log("已接管设置面板渲染：滑条数值显示（对所有模组生效）");
     }
 
     private static bool BuildEntryPrefix(CustomUIBuilder b, ModConfig config, ConfigEntry entry)

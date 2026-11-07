@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.WaterTankLevel</ID>
+  <Name>储水罐水位显示</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.1.4</ModVersion>
+  <GameVersions>
+    <Version>0.46D</Version>
+  </GameVersions>
+  <Description>为储水罐使用做旧灰绿透明桶身，直接显示六档水位及液体颜色。悬停提示仍显示精确容量；不修改容量、液体或存档中的原版贴图路径。</Description>
+  <Assemblies>
+    <Assembly>WaterTankLevel.dll</Assembly>
+  </Assemblies>
+  <Capabilities>
+    <Capability>reflection-external</Capability>
+  </Capabilities>
+</Mod>

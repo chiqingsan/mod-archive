@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.UndergroundExchangeAssistant</ID>
+  <Name>地下交易材料单</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.1.14</ModVersion>
+  <GameVersions><Version>0.46D</Version></GameVersions>
+  <Description>垃圾桶正面贴可点击的纸质材料单：悬浮高亮，点击打开本 mod 自绘的纸质交易窗口。每项右侧有交换按钮，自动把一份库存材料投入垃圾桶，奖励仍由夜间清洁服务结算。材料优先损坏模组与低耐久滤芯，排除机器内物品；仅补缺额、不重复投放；非空走私者暗格需二次确认。</Description>
+  <Assemblies><Assembly>UndergroundExchangeAssistant.dll</Assembly></Assemblies>
+  <Capabilities>
+    <Capability>reflection-external</Capability>
+  </Capabilities>
+</Mod>

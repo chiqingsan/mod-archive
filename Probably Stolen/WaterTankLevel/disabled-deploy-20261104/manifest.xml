@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+  <ID>chiqingsan.WaterTankLevel</ID>
+  <Name>储水罐水位显示</Name>
+  <Author>chiqingsan</Author>
+  <ModVersion>1.0.0</ModVersion>
+  <GameVersions><Version>0.46D</Version></GameVersions>
+  <Description>将原版储水罐显示为桶装水，并根据容器内液体显示水位。水位沿用原版桶装水的分档贴图。</Description>
+  <Assemblies><Assembly>WaterTankLevel.dll</Assembly></Assemblies>
+  <Capabilities><Capability>reflection-external</Capability></Capabilities>
+</Mod>

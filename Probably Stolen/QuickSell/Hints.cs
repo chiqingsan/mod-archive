@@ -87,6 +87,8 @@ public sealed partial class QuickSellMod
         if (demand.Value && client != null && client.IsClientBuying() && client.IsClientBuyingThisItem(item)) mask |= 1;
         if (stolen.Value && StolenHelper.IsStolenItem(item)) mask |= 2;
         if (contraband.Value && ContrabandHelper.IsContraband(item)) mask |= 4;
+        if (learning.Value && ((item.IsTag(ModuleEffectHelper.MODULE_EFFECT1_TAG) && item.GetTagReadonly(ModuleEffectHelper.MODULE_EFFECT1_TAG).GetString() == ModuleEffectHelper.MODULE_EFFECT_LEARNING_ALGORITHM)
+            || (item.IsTag(ModuleEffectHelper.MODULE_EFFECT2_TAG) && item.GetTagReadonly(ModuleEffectHelper.MODULE_EFFECT2_TAG).GetString() == ModuleEffectHelper.MODULE_EFFECT_LEARNING_ALGORITHM))) mask |= 8;
         return mask;
     }
 
@@ -165,7 +167,7 @@ public sealed partial class QuickSellMod
         }
         if (canUseKeys && ShortcutKeys.Pressed(restockKeys, KeyHeld, KeyDown)
             && (IsRestocking || (PlayerStore.Instance?.currentClientInstance != null && wantsActions))) BeginRestock();
-        bool next = canUseKeys && (demand.Value || stolen.Value || contraband.Value) && ShortcutKeys.Held(keys, KeyHeld);
+        bool next = canUseKeys && (demand.Value || stolen.Value || contraband.Value || learning.Value) && ShortcutKeys.Held(keys, KeyHeld);
         if (!next) { if (holding) HideHints(); return; }
         if (!holding) { holding = true; hintsDirty = true; }
         var windows = WindowsHandler.current?.visibleWindows;
@@ -331,7 +333,9 @@ public sealed class ItemHintGraphic : MaskableGraphic
         {
             float height = size * 757 / 784;
             Quad(mesh, bx, by + size - height, size, height, HintArtwork.Regions[4]);
+            bx -= size + 1;
         }
+        if ((mask & 8) != 0) Quad(mesh, bx, by, size, size, HintArtwork.Regions[6]);
     }
     private static void Quad(VertexHelper mesh, float x, float y, float w, float h, Rect uv)
     {

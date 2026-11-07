@@ -8,11 +8,11 @@ namespace QuickSell;
 internal static class HintArtwork
 {
     internal static Texture2D? Texture { get; private set; }
-    internal static readonly Rect[] Regions = new Rect[6];
+    internal static readonly Rect[] Regions = new Rect[7];
 
     internal static void Load()
     {
-        var sources = new List<Texture2D>(3);
+        var sources = new List<Texture2D>(4);
         try
         {
             foreach (string name in new[] { "Demand", "Stolen", "Contraband" })
@@ -24,6 +24,14 @@ internal static class HintArtwork
                 sources.Add(source);
                 if (!ImageConversion.LoadImage(source, bytes.ToArray())) throw new InvalidDataException("高亮图片无法解码：" + name);
             }
+            // Pixel-art badge: a blue chip with a light upward learning arrow.
+            var learning = new Texture2D(192, 192, TextureFormat.RGBA32, false);
+            sources.Add(learning);
+            string[] pixels = { "..########..", ".#BBBBBBBB#.", "#BBBBWWBBBB#", "#BBBWWWWBBB#", "#BBWWBBWWBB#", "#BBBBWWBBBB#", "#BBBBWWBBBB#", "#BBBBWWBBBB#", "#BBBBWWBBBB#", "#BBBBBBBBBB#", ".#BBBBBBBB#.", "..########.." };
+            var colors = new Color32[192 * 192];
+            for (int y = 0; y < 192; y++) for (int x = 0; x < 192; x++)
+                colors[(191 - y) * 192 + x] = pixels[y / 16][x / 16] switch { '#' => new Color32(24, 20, 35, 255), 'B' => new Color32(69, 150, 188, 255), 'W' => new Color32(239, 232, 197, 255), _ => new Color32(0, 0, 0, 0) };
+            learning.SetPixels32(colors); learning.Apply();
             // Decode and pack only on enable. All visible items share one small,
             // non-readable texture; no image loading or pixel scans while holding.
             Texture = new Texture2D(2, 2, TextureFormat.RGBA32, false)
@@ -37,6 +45,7 @@ internal static class HintArtwork
             Regions[3] = Region(packed[0], 918, 185, 152, 151); // bottom right
             Regions[4] = Region(packed[1], 276, 225, 784, 757);
             Regions[5] = Region(packed[2], 154, 203, 946, 847);
+            Regions[6] = packed[3];
         }
         finally
         {

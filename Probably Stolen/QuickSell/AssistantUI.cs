@@ -97,7 +97,7 @@ public sealed partial class QuickSellMod
         var title = Text(root, "更好的交易体验", 26, 22, 730, 42, AssistantTypography.Title);
         settings.frame.titleText = title;
         TabletUI.SmallButton(skin, root, 794, 20, 40, 38, "×", CloseSettings);
-        string[] names = { "供货区", "物品保护", "快捷与高亮", "选货规则" };
+        string[] names = { "供货区", "物品保护", "高亮物品", "选货规则" };
         for (int i = 0; i < names.Length; i++)
         {
             int index = i;
@@ -156,17 +156,24 @@ public sealed partial class QuickSellMod
             || protectedIds.Any(id => !knownItems.ContainsKey(id))
             || unprotectedIds.Any(id => !knownItems.ContainsKey(id));
         if (!missing) return;
-        var lookup = new Dictionary<int, GameItem>();
-        foreach (var item in entry.GetAllItems())
-            if (item != null && item.uniqueId > 0 && !lookup.ContainsKey(item.uniqueId)) lookup[item.uniqueId] = item;
-        int filled = 0;
-        foreach (int id in zoneIds.Concat(protectedIds).Concat(unprotectedIds))
-            if (!knownItems.ContainsKey(id) && lookup.TryGetValue(id, out var item))
-            {
-                knownItems[id] = item;
-                filled++;
-            }
-        if (filled > 0) Debug.Log($"[QuickSell] 保护页按全量库存补齐 {filled} 条名称记录。");
+        try
+        {
+            var lookup = new Dictionary<int, GameItem>();
+            foreach (var item in StoreGraph.GetAllItems())
+                if (item != null && item.uniqueId > 0 && !lookup.ContainsKey(item.uniqueId)) lookup[item.uniqueId] = item;
+            int filled = 0;
+            foreach (int id in zoneIds.Concat(protectedIds).Concat(unprotectedIds))
+                if (!knownItems.ContainsKey(id) && lookup.TryGetValue(id, out var item))
+                {
+                    knownItems[id] = item;
+                    filled++;
+                }
+            if (filled > 0) Debug.Log($"[QuickSell] 保护页按全量库存补齐 {filled} 条名称记录。");
+        }
+        catch (Exception error)
+        {
+            Debug.LogWarning("[QuickSell] 补齐保护页名称失败，本次按已知记录显示：" + error);
+        }
     }
 
     private void RefreshPage()
@@ -237,7 +244,13 @@ public sealed partial class QuickSellMod
                 string target = name;
                 rows.Add(("[已保护] " + name + "（同类）", "解保", () => UnprotectSimilar(target), null, false));
             }
-            Text(pageRoot, "受保护物品出售前需确认", 0, 0, 808, 30);
+            Text(pageRoot, "受保护物品出售前需确认", 0, 0, 414, 30);
+            Text(pageRoot, "右键菜单保护", 474, 0, 150, 30);
+            var menuState = Text(pageRoot, menuProtection.Value ? "已开启" : "已关闭", 638, 0, 126, 30);
+            menuState.alignment = TextAlignmentOptions.MidlineRight;
+            var menuToggle = TabletUI.Checkbox(skin, pageRoot, 788, 5, menuProtection.Value,
+                on => { menuProtection.Set(on); menuState.text = on ? "已开启" : "已关闭"; if (!on) RestoreProtectionMenu(); });
+            TabletUI.AddTooltip(menuToggle.gameObject, () => "与其它修改物品右键菜单的 Mod 冲突时可关闭；关闭后右键不再注入保护按钮，面板内保护照常可用。");
         }
         int pageCount = Math.Max(1, (rows.Count + 6) / 7);
         listPage = Math.Min(listPage, pageCount - 1);
@@ -261,6 +274,11 @@ public sealed partial class QuickSellMod
         }
         if (rows.Count == 0) Text(pageRoot, page == 0 ? "暂无容器，点击刷新。" : "暂无台面物品或保护记录。", 0, 55, 808, 40);
         TabletUI.SmallButton(skin, pageRoot, 0, 370, 150, 40, "刷新", StartDiscovery);
+        if (page <= 1)
+        {
+            var clear = TabletUI.SmallButton(skin, pageRoot, 170, 370, 150, 40, "清空记录", ClearAllRecords);
+            TabletUI.AddTooltip(clear.gameObject, () => "清空本存档的供货区、物品保护与单件解保记录；3 秒内再次点击确认，清空后不可撤销。");
+        }
         var previous = TabletUI.SmallButton(skin, pageRoot, 508, 370, 100, 40, "上一页", () => { if (listPage > 0) { listPage--; RefreshPage(); } });
         previous.SetInteractable(listPage > 0);
         Text(pageRoot, $"{listPage + 1} / {pageCount}", 620, 370, 76, 40).alignment = TextAlignmentOptions.Midline;
@@ -288,6 +306,7 @@ public sealed partial class QuickSellMod
         ToggleRow(210, "顾客需求物品", demand);
         ToggleRow(270, "赃物", stolen);
         ToggleRow(330, "违禁物", contraband);
+        ToggleRow(390, "自学习模组", learning);
     }
 
     private void BindingRow(float y, string label, ConfigEntry<string> value)

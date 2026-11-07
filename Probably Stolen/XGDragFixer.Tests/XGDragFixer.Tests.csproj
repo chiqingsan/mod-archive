@@ -7,8 +7,18 @@
     <LangVersion>latest</LangVersion>
     <AssemblyName>XGDragFixer.Tests</AssemblyName>
     <RootNamespace>XGDragFixer.Tests</RootNamespace>
+    <GameDirectory Condition="'$(GameDirectory)' == ''">D:\app\steam\steamapps\common\Probably Stolen</GameDirectory>
+    <ManagedDirectory>$(GameDirectory)\Probably Stolen_Data\Managed</ManagedDirectory>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="../XGDragFixer/SlotFit.cs" Link="SlotFit.cs" />
+    <ProjectReference Include="../XGDragFixer/XGDragFixer.csproj" />
+    <Reference Include="Assembly-CSharp"><HintPath>$(ManagedDirectory)\Assembly-CSharp.dll</HintPath></Reference>
+    <Reference Include="0Harmony"><HintPath>$(ManagedDirectory)\0Harmony.dll</HintPath></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(ManagedDirectory)\UnityEngine.CoreModule.dll</HintPath></Reference>
+    <Reference Include="UnityEngine.UI"><HintPath>$(ManagedDirectory)\UnityEngine.UI.dll</HintPath></Reference>
+    <Reference Include="UnityEngine.UIModule"><HintPath>$(ManagedDirectory)\UnityEngine.UIModule.dll</HintPath></Reference>
+    <Reference Include="UnityEngine.InputLegacyModule"><HintPath>$(ManagedDirectory)\UnityEngine.InputLegacyModule.dll</HintPath></Reference>
+    <Reference Include="Unity.TextMeshPro"><HintPath>$(ManagedDirectory)\Unity.TextMeshPro.dll</HintPath></Reference>
+    <Reference Include="UnityEngine.TextRenderingModule"><HintPath>$(ManagedDirectory)\UnityEngine.TextRenderingModule.dll</HintPath></Reference>
   </ItemGroup>
 </Project>

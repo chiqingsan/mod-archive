@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>html,body{margin:0;padding:0;background:transparent;overflow:hidden}canvas{display:block}</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+const q = new URLSearchParams(location.search);
+const name = q.get('n') || 'tower';
+const P = {
+  ink:'#0b1a17', dark:'#3d4f47', mid:'#5b776c', light:'#7fa093', pale:'#cfe3d8',
+  water:'#5fc4dd', waterDeep:'#2f7f96', glass:'#9fdfec', cap:'#d7d1b6', amber:'#e2b169'
+};
+function px(ctx,x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);}
+
+function drawTower(ctx){
+  px(ctx,3,39,42,7,P.dark);
+  px(ctx,3,39,42,2,P.mid);
+  px(ctx,6,44,36,2,P.ink);
+  px(ctx,9,31,4,9,P.mid); px(ctx,35,31,4,9,P.mid);
+  px(ctx,6,10,36,22,P.mid);
+  px(ctx,6,10,36,2,P.light);
+  px(ctx,6,30,36,2,P.dark);
+  px(ctx,8,12,32,16,P.waterDeep);
+  px(ctx,10,14,28,2,P.water);
+  px(ctx,10,18,28,1,P.water);
+  px(ctx,10,22,28,1,P.water);
+  px(ctx,16,12,1,16,P.dark); px(ctx,24,12,1,16,P.dark); px(ctx,32,12,1,16,P.dark);
+  px(ctx,4,6,40,5,P.light);
+  px(ctx,4,6,40,1,P.pale);
+  px(ctx,2,5,44,2,P.cap);
+  px(ctx,20,1,8,5,P.mid);
+  px(ctx,21,2,6,2,P.pale);
+  px(ctx,42,16,4,6,P.amber);
+  px(ctx,40,18,2,3,P.ink);
+  px(ctx,12,35,24,2,P.waterDeep);
+}
+
+function drawBottle(ctx,W,H,neckW,capColor){
+  const nw=neckW, cx=W/2;
+  const capH=4, neckH=10, top=1;
+  const bodyTop=top+capH+neckH;
+  px(ctx,cx-nw/2-1,top,nw+2,capH,capColor);
+  px(ctx,cx-nw/2-1,top,nw+2,1,P.ink);
+  px(ctx,cx-nw/2,top+capH,nw,neckH,P.glass);
+  px(ctx,cx-nw/2,top+capH,nw,1,P.ink);
+  ctx.fillStyle=P.glass;
+  ctx.beginPath();
+  ctx.moveTo(cx-nw/2,bodyTop);
+  ctx.lineTo(cx-W/2+2,bodyTop+8);
+  ctx.lineTo(cx-W/2+2,H-3);
+  ctx.lineTo(cx+W/2-2,H-3);
+  ctx.lineTo(cx+W/2-2,bodyTop+8);
+  ctx.lineTo(cx+nw/2,bodyTop);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle=P.water;
+  ctx.beginPath();
+  ctx.moveTo(cx-W/2+3,H-4);
+  ctx.lineTo(cx-W/2+3,bodyTop+12);
+  ctx.lineTo(cx+W/2-3,bodyTop+12);
+  ctx.lineTo(cx+W/2-3,H-4);
+  ctx.closePath();
+  ctx.fill();
+  px(ctx,cx-W/2+4,bodyTop+14,2,Math.max(2,H-bodyTop-20),P.pale);
+  ctx.strokeStyle=P.ink; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(cx-nw/2,bodyTop);
+  ctx.lineTo(cx-W/2+2,bodyTop+8);
+  ctx.lineTo(cx-W/2+2,H-3);
+  ctx.lineTo(cx+W/2-2,H-3);
+  ctx.lineTo(cx+W/2-2,bodyTop+8);
+  ctx.lineTo(cx+nw/2,bodyTop);
+  ctx.stroke();
+  px(ctx,cx-W/2+5,H-18,W-10,7,P.cap);
+  px(ctx,cx-W/2+5,H-18,W-10,1,P.ink);
+  px(ctx,cx-W/2+6,H-16,W-12,1,P.mid);
+}
+
+const c=document.getElementById('c'), ctx=c.getContext('2d');
+ctx.imageSmoothingEnabled=false;
+const SPECS = {
+  tower:    {W:48,H:48, rows:3, cols:3, draw:(ctx)=>drawTower(ctx)},
+  bottle1l: {W:16,H:48, rows:3, cols:1, draw:(ctx)=>drawBottle(ctx,16,48,6,P.cap)},
+  bottle3l: {W:16,H:64, rows:4, cols:1, draw:(ctx)=>drawBottle(ctx,16,64,6,P.cap)},
+  bottle6l: {W:32,H:48, rows:3, cols:2, draw:(ctx)=>drawBottle(ctx,32,48,10,P.cap)},
+  bottle20l:{W:32,H:64, rows:4, cols:2, draw:(ctx)=>drawBottle(ctx,32,64,10,P.amber)},
+  bottle60l:{W:32,H:64, rows:4, cols:2, draw:(ctx)=>drawBottle(ctx,32,64,12,P.dark)}
+};
+const s=SPECS[name];
+c.width=s.W; c.height=s.H;
+s.draw(ctx);
+// 贴图占格补齐：确保每个目标格中心 alpha>0（游戏按格中心 alpha 计算 GridShape）
+// alpha=1/255 的像素肉眼不可见，但能保证占格与贴图一致。
+const gs=16;
+const img=ctx.getImageData(0,0,s.W,s.H);
+const d=img.data;
+for(let r=0;r<s.rows;r++){
+  for(let col=0;col<s.cols;col++){
+    const x=col*gs+gs/2, y=r*gs+gs/2;
+    const i=(y*s.W+x)*4;
+    if(((col*gs+gs/2) < s.W) && d[i+3]===0){ d[i+3]=1; }
+  }
+}
+ctx.putImageData(img,0,0);
+document.title='ready';
+</script>
+</body>
+</html>

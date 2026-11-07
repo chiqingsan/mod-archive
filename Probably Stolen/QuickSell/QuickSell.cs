@@ -15,7 +15,7 @@ public sealed partial class QuickSellMod : IMod
 {
     internal static QuickSellMod? Current;
     internal ConfigEntry<string> selections = null!, protection = null!, nameProtection = null!, unprotected = null!, holdKey = null!, panelKey = null!, restockKey = null!;
-    internal ConfigEntry<bool> nested = null!, split = null!, demand = null!, stolen = null!, contraband = null!, keepOne = null!, mainInventory = null!;
+    internal ConfigEntry<bool> nested = null!, split = null!, demand = null!, stolen = null!, contraband = null!, learning = null!, keepOne = null!, mainInventory = null!, menuProtection = null!;
     internal ConfigEntry<string> stolenRule = null!, contrabandRule = null!;
     internal ConfigEntry<string> allowance = null!;
     internal int AllowanceAmount => int.Parse(allowance.Value, System.Globalization.CultureInfo.InvariantCulture);
@@ -38,13 +38,9 @@ public sealed partial class QuickSellMod : IMod
     public void Init(ModManifest manifest)
     {
         var config = ModConfig.For(manifest.ID);
-        selections = config.Define("TradeZones", "", "存档数据", () => "供货区记录（请在交易助手内修改）");
-        protection = config.Define("ProtectedItems", "", "存档数据", () => "物品保护记录（请在交易助手内修改）");
-        nameProtection = config.Define("ProtectedNames", "", "存档数据", () => "同类保护记录（请在交易助手内修改）");
-        unprotected = config.Define("UnprotectedItems", "", "存档数据", () => "单件解保记录（请在交易助手内修改）");
-        holdKey = config.Define("HoldKey", "N", "高亮物品", () => "按住查看快捷键", tooltip: () => "默认按住 N；也可在交易助手中绑定。");
         panelKey = config.Define("PanelKey", "LeftControl+L", "交易助手", () => "面板快捷键", tooltip: () => "默认 Ctrl+L 打开／关闭面板，进入存档后可用；也可在高亮物品页绑定。");
         restockKey = config.Define("RestockKey", "", "交易助手", () => "一键上货快捷键");
+        menuProtection = config.Define("MenuProtection", true, "物品保护", () => "右键菜单显示保护按钮", tooltip: () => "与其它修改物品右键菜单的 Mod 冲突时可关闭；关闭后右键不再注入保护按钮，面板内保护照常可用。");
         mainInventory = config.Define("MainInventorySource", true, "供货区", () => "从主物品栏上货", tooltip: () => "仅选择主物品栏直接放置的非容器物品，不检索其内容。");
         nested = config.Define("SearchNested", true, "选货规则", () => "检索内层容器");
         split = config.Define("SplitStacks", true, "选货规则", () => "按需拆分堆叠（仅通过状态与报价校验的物品）");
@@ -53,9 +49,100 @@ public sealed partial class QuickSellMod : IMod
         contrabandRule = config.Define("ContrabandRule", "正常选货", "选货规则", () => "违禁物", new[] { "正常选货", "低优先级", "不自动上货" });
         priority = config.Define("SelectionPriority", "尽量用满预算", "选货规则", () => "选货优先级", new[] { "尽量用满预算", "优先腾空间" });
         allowance = config.Define("OverBudget", "0", "选货规则", () => "允许超预算金额", new[] { "0", "5", "10", "20" }, tooltip: () => "0 表示关闭；超出顾客预算的部分需手动确认抹零。");
+        holdKey = config.Define("HoldKey", "N", "高亮物品", () => "按住查看快捷键", tooltip: () => "默认按住 N；也可在交易助手中绑定。");
         demand = config.Define("ShowDemand", true, "高亮物品", () => "顾客需求物品");
         stolen = config.Define("ShowStolen", true, "高亮物品", () => "赃物");
         contraband = config.Define("ShowContraband", true, "高亮物品", () => "违禁物");
+        learning = config.Define("ShowLearning", false, "高亮物品", () => "自学习模组");
+        // 内部存档记录不注册进本 Mod 的可见设置；旧版本存在主配置里的记录会一次性迁移。
+        InitRecordConfig(config);
+    }
+
+    private const string RecordConfigSuffix = ".records";
+
+    // 记录单独放在 ModConfigs/chiqingsan.QuickSell.records.json：原版 Mod 设置页只列主配置条目，
+    // 内部记录因此不会显示成可编辑的长输入框；写入仍走游戏自带的 ModConfig，不需要额外的文件权限。
+    private void InitRecordConfig(ModConfig mainConfig)
+    {
+        bool useMainConfig = false;
+        try
+        {
+            var records = ModConfig.For(mainConfig.ModId + RecordConfigSuffix);
+            selections = records.Define("TradeZones", "", "记录", () => "供货区记录");
+            protection = records.Define("ProtectedItems", "", "记录", () => "物品保护记录");
+            nameProtection = records.Define("ProtectedNames", "", "记录", () => "同类保护记录");
+            unprotected = records.Define("UnprotectedItems", "", "记录", () => "单件解保记录");
+            useMainConfig = !TryMigrateLegacyRecords(mainConfig);
+        }
+        catch (Exception error)
+        {
+            Debug.LogWarning("[QuickSell] 独立记录文件不可用，记录仍保存在主配置：" + error.Message);
+            useMainConfig = true;
+        }
+        if (!useMainConfig) return;
+        // 回退：记录继续放主配置（会显示在设置页，但不会丢数据）。
+        selections = mainConfig.Define("TradeZones", "", "存档数据", () => "供货区记录（请在交易助手内修改）");
+        protection = mainConfig.Define("ProtectedItems", "", "存档数据", () => "物品保护记录（请在交易助手内修改）");
+        nameProtection = mainConfig.Define("ProtectedNames", "", "存档数据", () => "同类保护记录（请在交易助手内修改）");
+        unprotected = mainConfig.Define("UnprotectedItems", "", "存档数据", () => "单件解保记录（请在交易助手内修改）");
+    }
+
+    /// <summary>把 1.3.1 及更早版本存在主配置里的记录搬到独立配置，并从主配置里删掉旧键。</summary>
+    private bool TryMigrateLegacyRecords(ModConfig mainConfig)
+    {
+        if (!string.IsNullOrEmpty(selections.Value) || !string.IsNullOrEmpty(protection.Value)
+            || !string.IsNullOrEmpty(nameProtection.Value) || !string.IsNullOrEmpty(unprotected.Value)) return true;
+        Dictionary<string, string>? raw;
+        try
+        {
+            raw = typeof(ModConfig).GetField("rawValues", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                ?.GetValue(mainConfig) as Dictionary<string, string>;
+        }
+        catch (Exception error)
+        {
+            Debug.LogWarning("[QuickSell] 读取旧记录失败，本次不迁移：" + error.Message);
+            return false;
+        }
+        if (raw == null) return false;
+        int moved = 0;
+        void Move(ConfigEntry<string> target, string key)
+        {
+            if (!raw.TryGetValue(key, out var value) || string.IsNullOrEmpty(value)) return;
+            target.Set(value);
+            raw.Remove(key);
+            moved++;
+        }
+        Move(selections, "TradeZones");
+        Move(protection, "ProtectedItems");
+        Move(nameProtection, "ProtectedNames");
+        Move(unprotected, "UnprotectedItems");
+        if (moved == 0) return true;
+        mainConfig.Save();
+        Debug.Log($"[QuickSell] 已把 {moved} 条旧记录迁移到独立配置文件。");
+        return true;
+    }
+
+    private long clearRecordsUntil;
+
+    /// <summary>清空本存档的供货区、物品保护与单件解保记录；3 秒内再次点击确认。</summary>
+    internal void ClearAllRecords()
+    {
+        long now = DateTime.UtcNow.Ticks;
+        if (now > clearRecordsUntil)
+        {
+            clearRecordsUntil = now + TimeSpan.FromSeconds(3).Ticks;
+            SetStatus("再次点击「清空记录」确认清空本存档的供货区与保护记录。", true);
+            return;
+        }
+        clearRecordsUntil = 0;
+        zoneIds.Clear(); protectedIds.Clear(); protectedNames.Clear(); unprotectedIds.Clear();
+        SaveIds(selections, zoneIds);
+        SaveIds(protection, protectedIds);
+        SaveNames();
+        SaveIds(unprotected, unprotectedIds);
+        Debug.Log("[QuickSell] 已清空本存档的供货区与保护记录。");
+        SetStatus("已清空本存档的供货区与保护记录。", true);
+        if (settings != null && settings.IsAlive && (page == 0 || page == 1)) RefreshPage();
     }
 
     public void OnEnable()
@@ -304,8 +391,16 @@ public sealed partial class QuickSellMod : IMod
         var entry = EmporiumEntry.Instance;
         if (entry == null) return;
         var existing = new HashSet<int>();
-        foreach (var item in entry.GetAllItems())
-            if (item != null && item.uniqueId > 0) existing.Add(item.uniqueId);
+        try
+        {
+            foreach (var item in StoreGraph.GetAllItems())
+                if (item != null && item.uniqueId > 0) existing.Add(item.uniqueId);
+        }
+        catch (Exception error)
+        {
+            Debug.LogWarning("[QuickSell] 每天结算清理读取商店物品失败，本次跳过：" + error);
+            return;
+        }
         int removed = protectedIds.RemoveWhere(id => !existing.Contains(id));
         int released = unprotectedIds.RemoveWhere(id => !existing.Contains(id));
         foreach (int id in knownItems.Keys.ToArray())

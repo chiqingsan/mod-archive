@@ -18,10 +18,12 @@ internal static class LayoutSuppressor
     private static readonly List<RectTransform> Roots = new();
     private static readonly List<Transform> RootTransforms = new();
     private static int _stickyUntil = -1;
-    private static bool _pending;
 
-    private static bool SuppressionEnabled =>
-        Core.SkipLayoutMark?.Value == true || Core.SkipMaskNotify?.Value == true;
+    internal static int Depth => _depth;
+
+    internal static Func<int> Clock = () => Time.frameCount;
+
+    private static bool SuppressionEnabled => Core.SkipLayoutMark?.Value == true;
 
     internal static void Reset()
     {
@@ -30,7 +32,6 @@ internal static class LayoutSuppressor
         Roots.Clear();
         RootTransforms.Clear();
         _stickyUntil = -1;
-        _pending = false;
     }
 
     internal static void Begin(RectTransform root)
@@ -42,7 +43,7 @@ internal static class LayoutSuppressor
 
         // Show() always runs and finishes within the same frame, so an "active"
         // suppression block from an earlier frame is a leftover from an exception.
-        if (_active && _beginFrame != Time.frameCount)
+        if (_active && _beginFrame != Clock())
         {
             Reset();
         }
@@ -72,9 +73,8 @@ internal static class LayoutSuppressor
         }
 
         _active = true;
-        _beginFrame = Time.frameCount;
+        _beginFrame = Clock();
         _stickyUntil = -1;
-        _pending = false;
     }
 
     internal static void End()
@@ -98,74 +98,35 @@ internal static class LayoutSuppressor
 
         _active = false;
         var frames = Core.StickyLayoutFrames?.Value ?? 0;
-        _stickyUntil = frames > 0 ? Time.frameCount + frames : -1;
-        _pending = true;
-    }
-
-    internal static void Tick()
-    {
-        if (_pending && Time.frameCount > _stickyUntil)
-        {
-            _pending = false;
-        }
+        _stickyUntil = frames > 0 ? Clock() + frames : -1;
     }
 
     internal static bool MarkLayoutPrefix(RectTransform rect)
     {
-        if (Core.SkipLayoutMark?.Value != true)
+        if (Core.SkipLayoutMark?.Value != true || rect == null)
         {
             return true;
         }
 
+        if (!InWindow(rect))
+        {
+            return true;
+        }
+
+        // Suppression belongs only to the window currently being opened.
         if (_active)
         {
             return false;
         }
 
-        if (rect == null || Time.frameCount > _stickyUntil)
+        if (Clock() > _stickyUntil)
         {
             return true;
-        }
-
-        if (InWindow(rect))
-        {
-            return false;
         }
 
         // Sticky phase: keep suppressing rebuilds for windows that are not visible.
         // Their layout is rebuilt anyway the next time they get activated.
-        return IsActive(rect);
-    }
-
-    internal static bool MaskNotifyPrefix(Component mask)
-    {
-        if (Core.SkipMaskNotify?.Value != true || !_active || mask == null)
-        {
-            return true;
-        }
-
-        try
-        {
-            var transform = mask.transform;
-            if (transform == null)
-            {
-                return true;
-            }
-
-            for (var i = 0; i < RootTransforms.Count; i++)
-            {
-                if (IsUnder(transform, RootTransforms[i]))
-                {
-                    return false;
-                }
-            }
-        }
-        catch
-        {
-            // Fall through to the vanilla call.
-        }
-
-        return true;
+        return !ShouldDropHidden(rect);
     }
 
     private static bool InWindow(RectTransform rect)
@@ -206,11 +167,13 @@ internal static class LayoutSuppressor
         }
     }
 
-    private static bool IsActive(RectTransform rect)
+    private static bool ShouldDropHidden(RectTransform rect)
     {
         try
         {
-            return rect.gameObject != null && rect.gameObject.activeInHierarchy;
+            // Reference missMode 2: drop rebuilds for windows that are currently
+            // inactive (their layout is rebuilt when they get activated again).
+            return rect.gameObject != null && !rect.gameObject.activeInHierarchy;
         }
         catch
         {

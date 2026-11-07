@@ -1,0 +1,10 @@
+"workshopitem"
+{
+	"appid"		"4348910"
+	"publishedfileid"		"3831227725"
+	"contentfolder"		"D:\code\mod\Probably Stolen\WorkshopUpload\BetterPerformance-1.3.2-Content"
+	"changenote"		"1.3.2：
+- 移除 v1.0.x 中未经运行时验证的自创优化项（找位加速缓存、射线缓存、结算批处理、化学标签缓存等），只保留有验证的补丁。
+- 修复大容器空位搜索与布局抑制的两处与原版不一致；新增视觉刷新合并、陈化结算折叠、模块效果去重、临时属性跳过校验、空位占用位图、物品列表遍历缓冲等逻辑优化。
+- 撤掉两项会被扫描器判为 dynamic-code 的 transpiler，回到仅 reflection-external 权限；清理面向玩家的来源措辞。"
+}

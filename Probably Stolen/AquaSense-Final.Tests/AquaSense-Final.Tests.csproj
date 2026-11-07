@@ -1,4 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net6.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
-  <ItemGroup><Compile Include="..\AquaSense-Final\AquaSense.cs" Link="AquaSense.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="..\AquaSense-Final\AquaSense.cs" Link="AquaSense.cs" /><Compile Include="..\AquaSense-Final\CompositionApi.cs" Link="CompositionApi.cs" /><Compile Include="..\AquaSense-Final\TooltipCompositionBars.cs" Link="TooltipCompositionBars.cs" /></ItemGroup>
 </Project>

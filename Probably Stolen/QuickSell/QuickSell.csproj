@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <Version>1.2.4</Version>
+    <Version>1.3.2</Version>
     <GameDirectory Condition="'$(GameDirectory)' == ''">D:\app\steam\steamapps\common\Probably Stolen</GameDirectory>
     <ManagedDirectory>$(GameDirectory)\Probably Stolen_Data\Managed</ManagedDirectory>
   </PropertyGroup>

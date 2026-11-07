@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../UndergroundExchangeAssistant/PaperArtwork.cs" Link="PaperArtwork.cs" />
+    <Compile Include="../UndergroundExchangeAssistant/PaperHover.cs" Link="PaperHover.cs" />
+    <Compile Include="../UndergroundExchangeAssistant/PaperPointerBlocker.cs" Link="PaperPointerBlocker.cs" />
+    <Compile Include="../UndergroundExchangeAssistant/NativeOfferRows.cs" Link="NativeOfferRows.cs" />
+    <Compile Include="../UndergroundExchangeAssistant/ExchangeSimulation.cs" Link="ExchangeSimulation.cs" />
+    <Compile Include="../UndergroundExchangeAssistant/MaterialPlan.cs" Link="MaterialPlan.cs" />
+    <Compile Include="../UndergroundExchangeAssistant/GameMaterials.cs" Link="GameMaterials.cs" />
+    <Compile Include="../UndergroundExchangeAssistant/ExchangeTransfer.cs" Link="ExchangeTransfer.cs" />
+  </ItemGroup>
+</Project>

@@ -8,7 +8,6 @@ namespace XGDragFixer;
 /// Port of the original mod's container opening fixes:
 /// - warm up the floating-window canvas/dock before the window is populated,
 ///   so the first shown frame does not pay for the whole docking chain;
-/// - skip the redundant layout validation that SetTitle performs.
 /// </summary>
 internal static class ContainerShowFix
 {
@@ -16,9 +15,7 @@ internal static class ContainerShowFix
     private static MethodInfo? _ensureFloatingDock;
     private static MethodInfo? _adopt;
     private static bool _methodsResolved;
-
-    private static bool _inSetTitle;
-    private static int _setTitleValidateSeen;
+    private static bool _missingLogged;
 
     internal static void ColdStartPrefix(PixelWindow __instance)
     {
@@ -71,38 +68,6 @@ internal static class ContainerShowFix
         }
     }
 
-    internal static void SetTitlePrefix()
-    {
-        if (Core.SetTitleSkipValidate?.Value == true)
-        {
-            _inSetTitle = true;
-            _setTitleValidateSeen = 0;
-        }
-    }
-
-    internal static void SetTitlePostfix()
-    {
-        _inSetTitle = false;
-    }
-
-    internal static bool ValidatePrefix()
-    {
-        if (Core.SetTitleSkipValidate?.Value != true || !_inSetTitle)
-        {
-            return true;
-        }
-
-        // SetTitle validates twice (once before measuring, once after resizing);
-        // the first validation is redundant because layout is rebuilt later anyway.
-        if (_setTitleValidateSeen == 0)
-        {
-            _setTitleValidateSeen = 1;
-            return false;
-        }
-
-        return true;
-    }
-
     internal static bool IsWindowOpen(PixelWindow window)
     {
         try
@@ -134,7 +99,6 @@ internal static class ContainerShowFix
             return;
         }
 
-        _methodsResolved = true;
         const BindingFlags staticFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
         const BindingFlags instanceFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
@@ -145,11 +109,32 @@ internal static class ContainerShowFix
             _ensureFloatingDock = typeof(PixelWindow).GetMethod("EnsureFloatingDock", instanceFlags, null,
                 Type.EmptyTypes, null);
         }
-        catch
+        catch (Exception ex)
         {
             _ensureCanvas = null;
             _adopt = null;
             _ensureFloatingDock = null;
+            if (!_missingLogged)
+            {
+                _missingLogged = true;
+                Core.Log?.Warning($"[兼容] 容器冷启动反射解析失败: {ex.GetType().Name}");
+            }
+
+            return;
+        }
+
+        if (_ensureCanvas != null && _adopt != null && _ensureFloatingDock != null)
+        {
+            _methodsResolved = true;
+            return;
+        }
+
+        if (!_missingLogged)
+        {
+            _missingLogged = true;
+            Core.Log?.Warning(
+                $"[兼容] 容器冷启动所需方法缺失（EnsureCanvas={_ensureCanvas != null}, " +
+                $"Adopt={_adopt != null}, EnsureFloatingDock={_ensureFloatingDock != null}），本次运行跳过冷启动优化");
         }
     }
 

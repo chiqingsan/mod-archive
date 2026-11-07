@@ -42,6 +42,9 @@ Check(SelectionRules.HasSource(true, 0) && SelectionRules.HasSource(false, 1) &&
 Check(SelectionRules.IsSourceCandidate(true, false) && !SelectionRules.IsSourceCandidate(true, true)
     && SelectionRules.IsSourceCandidate(false, true) && SelectionRules.IsSourceCandidate(false, false),
     "main inventory excludes items with content windows while selected supply containers retain their rules");
+Check(SelectionRules.IsSourceCandidate(true, true, true) && !SelectionRules.IsSourceCandidate(true, true, false)
+    && SelectionRules.IsSourceCandidate(false, true, false) && SelectionRules.IsSourceCandidate(true, false, false),
+    "packaging containers are scanned from the main inventory while ordinary containers are still skipped");
 Check(SelectionRules.RetryAfterEmptyContainer(1, true, 0, 8)
     && !SelectionRules.RetryAfterEmptyContainer(0, true, 0, 8)
     && !SelectionRules.RetryAfterEmptyContainer(1, false, 0, 8)
@@ -135,4 +138,17 @@ Check(spaceFallback.Select(option => option.Space).SequenceEqual(new[] { 3, 2, 1
 var cappedFallback = new List<SelectionPlanner.Option>();
 SelectionPlanner.AppendAlternatives(Groups(Enumerable.Range(0, 40).Select(index => ((long)(80 - index), 1)).ToArray()), cappedFallback, new HashSet<int>(), 0, false);
 Check(cappedFallback.Count == 33, "fallback candidate batch stays bounded");
+MenuCellKind NativeCell(int x, int y) => x == 0 && y < 7 ? MenuCellKind.Text : MenuCellKind.Empty;
+Check(MenuStructure.IsNativeRow(1, 7, NativeCell), "native 1-column 7-row context menu is recognized");
+Check(!MenuStructure.IsNativeRow(7, 1, NativeCell) && !MenuStructure.IsNativeRow(1, 6, NativeCell),
+    "context menu with a different size is not mistaken for the native layout");
+Check(!MenuStructure.IsNativeRow(1, 7, (x, y) => y == 3 ? MenuCellKind.Other : MenuCellKind.Text),
+    "native layout detection requires text buttons only");
+Check(MenuStructure.TryLocateWrappedRow(1, 2,
+        (x, y) => y == 0 ? MenuCellKind.Grid : MenuCellKind.Text,
+        (x, y) => y == 0,
+        out int wrappedX, out int wrappedY) && wrappedX == 0 && wrappedY == 0,
+    "nested native menu wrapped by another mod is located by its container cell");
+Check(!MenuStructure.TryLocateWrappedRow(1, 2, (x, y) => MenuCellKind.Text, (x, y) => false, out _, out _),
+    "unknown context menu structure is rejected instead of being taken over");
 Console.WriteLine($"{passed} checks passed.");
